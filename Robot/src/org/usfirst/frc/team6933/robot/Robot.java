@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
 	public static AHRS navx_ahrs_;
 	public static Encoder leftEncoder_;
 	public static Encoder rightEncoder_;
-	public static double testSpeed = 0.1;
+	public static double testSpeed = 0.2;
 
 	public static double WHEELCIRCUMFERENCE = 6 * 2.54 * Math.PI;
 	/**
