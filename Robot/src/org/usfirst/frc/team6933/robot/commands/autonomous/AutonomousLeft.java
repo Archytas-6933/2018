@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class AutonomousGroupB extends CommandGroup {
+public class AutonomousLeft extends CommandGroup {
 
-    public AutonomousGroupB() {
+    public AutonomousLeft() {
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());
@@ -24,5 +24,8 @@ public class AutonomousGroupB extends CommandGroup {
         // e.g. if Command1 requires chassis, and Command2 requires arm,
         // a CommandGroup containing them would require both the chassis and the
         // arm.
+    	
+    	
+    	System.out.println("AutonomousLeft");
     }
 }

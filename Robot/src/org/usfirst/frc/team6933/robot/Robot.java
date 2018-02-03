@@ -7,20 +7,25 @@
 
 package org.usfirst.frc.team6933.robot;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 //import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import org.usfirst.frc.team6933.robot.commands.basic.Drive;
+import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
+import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousRight;
+import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousTestingGroup;
 import org.usfirst.frc.team6933.robot.subsystems.Arm;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team6933.robot.subsystems.Chassis;
 import org.usfirst.frc.team6933.robot.subsystems.Grabber;
+import org.usfirst.frc.team6933.robot.subsystems.Video;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.Command;
 
 
 
@@ -33,41 +38,39 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  */
 public class Robot extends TimedRobot {
 	
-	public static Chassis chassis;	
-	public static OI oi;
-	public static Grabber grabber;
-	public static Arm arm;
+	public static Chassis chassis = new Chassis();	
+	public static OI oi = new OI();
+	public static Grabber grabber = new Grabber();
+	public static Arm arm = new Arm();
+	public static Video video = new Video();
 	
-	public CommandGroup auto_;
-
+	private Command autonomousCommand;
 
 	public static double testSpeed = 0.2;
+	
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
-        chassis = new Chassis();
-		oi = new OI();
-		grabber = new Grabber();
-		arm = new Arm();
 		
-//		CameraServer.getInstance().startAutomaticCapture();
-
-		setupButtons();
+		//SmartDashboard.putData(Scheduler.getInstance());
+		System.out.println("robotInit");
+	
 	}
 
 	
-	public void setupButtons() 
-	{
-		auto_ = new CommandGroup();
- 		//turnRight(90);
-		//turnLeft(45);
-		driveForward(1.0);
-		//driveBackward(.5);
-		oi.button1.whenPressed(auto_);
-	}
+//	public void setupButtons() 
+//	{
+//		autonomousCommand = new CommandGroup();
+// 		//turnRight(90);
+//		//turnLeft(45);
+//		driveForward(1.0);
+//		//driveBackward(.5);
+//		oi.button1.whenPressed(autonomousCommand);
+//	}
 	
 
 	/**
@@ -77,17 +80,23 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void disabledInit() {
-
+		System.out.println("disabledInit");
 	}
+
+
 
 	@Override
-	public void disabledPeriodic() {
-		Scheduler.getInstance().run();//?
-		Robot.chassis.sendInfo();
-		Robot.arm.putDashboard();
-		Robot.grabber.putDashboard();
+	public void teleopInit() {
+		// This makes sure that the autonomous stops running when
+		// teleop starts running. If you want the autonomous to
+		// continue until interrupted by another command, remove
+		// this line or comment it out.
+		if (autonomousCommand != null) {
+			autonomousCommand.cancel();
+		}
+		System.out.println("teleopInit");
 	}
-
+	
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select
 	 * between different autonomous modes using the dashboard. The sendable
@@ -109,11 +118,25 @@ public class Robot extends TimedRobot {
 		if(gameData.charAt(0) == 'L')
 		{
 			System.out.println("Left was read");
+			autonomousCommand = new AutonomousLeft();
 		} else {
 			System.out.println("Right was read");
+			autonomousCommand = new AutonomousRight();
 		}
 		
-		auto_ = new CommandGroup();
+		
+		// override selection for testing
+		autonomousCommand = new AutonomousTestingGroup();
+		
+		
+		// start the chosen autonomous command
+		if ( autonomousCommand != null ) {
+			autonomousCommand.start();
+		}
+		
+		System.out.println("autonomousInit");
+	  
+		//autonomousCommand = new CommandGroup();
 		
 		//driveForward(2.0);
 		//turnLeft(90);
@@ -122,98 +145,102 @@ public class Robot extends TimedRobot {
 		//driveBackward(1.0);
 	//	turnTo(180);
 		
-		// schedule the autonomous command (example)
-		if (auto_ != null) {
-		  auto_.start();
-		}
+	
+	}
+	
+	
+	public void testInit() {
+		System.out.println("testInit");
 	}
 
 	
-	public void driveForward(double distance) {
-		Drive drive;
-		drive = new Drive();
-		drive.distance_ = distance;
-		auto_.addSequential(drive);
+//	public void driveForward(double distance) {
+//		Drive drive;
+//		drive = new Drive();
+//		drive.distance_ = distance;
+//		autonomousCommand.addSequential(drive);
+//	}
+//	
+//	public void driveBackward(double distance) {
+//		Drive drive;
+//		drive = new Drive();
+//		drive.speed_ = -1;
+//		drive.distance_ = distance;
+//		autonomousCommand.addSequential(drive);
+//	}
+//	
+//	public void turnLeft(double degrees) {
+//		Drive drive;
+//		drive = new Drive();
+//		drive.direction_ = -1;
+//		drive.goalAngle_ = chassis.getAngle() - degrees;
+//		autonomousCommand.addSequential(drive);
+//	}
+//	
+//	public void turnRight(double degrees) {
+//		Drive drive;
+//		drive = new Drive();
+//		//drive.direction_ = 0.6;
+//		//System.out.println( "a" + Double.toString(Robot.navx_ahrs_.getAngle()));
+//		//drive.goalAngle_ = navx_ahrs_.getAngle() + degrees;
+//		//System.out.println("goal" + Double.toString(drive.goalAngle_));
+//		drive.goalDegrees_ = degrees;
+//		autonomousCommand.addSequential(drive);
+//	}
+//	
+//	public void turnTo(double angle) {
+//		Drive drive;
+//		drive = new Drive();
+//		
+//		if (chassis.getAngle() > angle)
+//			drive.direction_ = -1;
+//		else
+//			drive.direction_ = 1;
+//		
+//		drive.goalAngle_ = angle;
+//		autonomousCommand.addSequential(drive);
+//	}
+//	
+	
+	//
+	// periodic methods
+	//
+	
+	
+	// periodic for ALL modes
+	@Override
+	public void robotPeriodic() {
+		Robot.chassis.sendInfo();
+		Robot.arm.sendInfo();
+		Robot.grabber.sendInfo();
 	}
 	
-	public void driveBackward(double distance) {
-		Drive drive;
-		drive = new Drive();
-		drive.speed_ = -1;
-		drive.distance_ = distance;
-		auto_.addSequential(drive);
+	// periodic for the TELEOP mode
+	@Override
+	public void teleopPeriodic() {
+		System.out.println("teleop periodic");
+		Scheduler.getInstance().run();
 	}
-	
-	public void turnLeft(double degrees) {
-		Drive drive;
-		drive = new Drive();
-		drive.direction_ = -1;
-		drive.goalAngle_ = chassis.getAngle() - degrees;
-		auto_.addSequential(drive);
-	}
-	
-	public void turnRight(double degrees) {
-		Drive drive;
-		drive = new Drive();
-		//drive.direction_ = 0.6;
-		//System.out.println( "a" + Double.toString(Robot.navx_ahrs_.getAngle()));
-		//drive.goalAngle_ = navx_ahrs_.getAngle() + degrees;
-		//System.out.println("goal" + Double.toString(drive.goalAngle_));
-		drive.goalDegrees_ = degrees;
-		auto_.addSequential(drive);
-	}
-	
-	public void turnTo(double angle) {
-		Drive drive;
-		drive = new Drive();
-		
-		if (chassis.getAngle() > angle)
-			drive.direction_ = -1;
-		else
-			drive.direction_ = 1;
-		
-		drive.goalAngle_ = angle;
-		auto_.addSequential(drive);
-	}
-	
-	/**
-	 * This function is called periodically during autonomous.
-	 */
+
+	// periodic for the AUTONOMOUS mode
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		Robot.chassis.sendInfo();
-		Robot.arm.putDashboard();
-		Robot.grabber.putDashboard();
 	}
-
+	
+	// periodic for the DISABLED mode
 	@Override
-	public void teleopInit() {
-		// This makes sure that the autonomous stops running when
-		// teleop starts running. If you want the autonomous to
-		// continue until interrupted by another command, remove
-		// this line or comment it out.
-		if (auto_ != null) {
-			auto_.cancel();
-		}
+	public void disabledPeriodic() {
+	   // no scheduler when disabled
 	}
 
-	/**
-	 * This function is called periodically during operator control.
-	 */
-	@Override
-	public void teleopPeriodic() {
-		Scheduler.getInstance().run();
-		Robot.chassis.sendInfo();
-		Robot.arm.putDashboard();
-		Robot.grabber.putDashboard();
-	}
-
-/**
-	 * This function is called periodically during test mode.
-	 */
+	// periodic for the TEST mode
 	@Override
 	public void testPeriodic() {
-		  //LiveWindow.run();  // deprecated
+		// no scheduler in test
 	}
+
+
+	
 }

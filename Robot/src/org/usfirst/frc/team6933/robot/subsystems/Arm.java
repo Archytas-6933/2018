@@ -13,8 +13,8 @@ public class Arm extends Subsystem {
 
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
-	Solenoid armDown = new Solenoid(0,RobotMap.Solenoid.armDown);
-	Solenoid armUp = new Solenoid(0,RobotMap.Solenoid.armUp);
+	Solenoid armDown = new Solenoid(RobotMap.Solenoid.pcmId,RobotMap.Solenoid.armDown);
+	Solenoid armUp = new Solenoid(RobotMap.Solenoid.pcmId,RobotMap.Solenoid.armUp);
 	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
@@ -36,12 +36,12 @@ public class Arm extends Subsystem {
 		armUp.set(false);
 }
     
-    public void putDashboard()
+    public void sendInfo()
 	{
-		SmartDashboard.putBoolean("Arm Up", armUp.get());
-		SmartDashboard.putBoolean("Arm Down", armDown.get());
+		SmartDashboard.putBoolean("ArmUp", armUp.get());
+		SmartDashboard.putBoolean("ArmDown", armDown.get());
 	}
-    
+  
     
 }
 

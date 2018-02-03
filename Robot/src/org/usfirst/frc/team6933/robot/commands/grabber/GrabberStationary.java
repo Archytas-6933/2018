@@ -1,4 +1,4 @@
-package org.usfirst.frc.team6933.robot.commands.basic;
+package org.usfirst.frc.team6933.robot.commands.grabber;
 
 import org.usfirst.frc.team6933.robot.Robot;
 
@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class GrabberOpen extends Command {
+public class GrabberStationary extends Command {
 
-    public GrabberOpen() {
+    public GrabberStationary() {
         requires(Robot.grabber);
     }
 
@@ -19,7 +19,7 @@ public class GrabberOpen extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    		Robot.grabber.open();
+    	Robot.grabber.stationary();
     }
 
     // Make this return true when this Command no longer needs to run execute()

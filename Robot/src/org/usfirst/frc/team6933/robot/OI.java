@@ -7,8 +7,8 @@
 
 package org.usfirst.frc.team6933.robot;
 
-import org.usfirst.frc.team6933.robot.commands.basic.GrabberOpen;
-import org.usfirst.frc.team6933.robot.commands.complex.JogTransverse;
+import org.usfirst.frc.team6933.robot.commands.drive.JogTransverse;
+import org.usfirst.frc.team6933.robot.commands.grabber.GrabberOpen;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;

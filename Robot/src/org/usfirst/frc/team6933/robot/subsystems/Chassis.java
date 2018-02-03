@@ -2,7 +2,7 @@ package org.usfirst.frc.team6933.robot.subsystems;
 
 import org.usfirst.frc.team6933.robot.Robot;
 import org.usfirst.frc.team6933.robot.RobotMap;
-import org.usfirst.frc.team6933.robot.commands.basic.ChassisDrive;
+import org.usfirst.frc.team6933.robot.commands.drive.TeleopDriveOpenLoop;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.SPI;
 
 /**
@@ -18,9 +19,6 @@ import edu.wpi.first.wpilibj.SPI;
  */
 public class Chassis extends Subsystem {
 
-
-	 
-		
 	// Define the two motors as CANTalons
 	WPI_TalonSRX leftMotorA = new WPI_TalonSRX(RobotMap.CAN.motorLeftA);
 	WPI_TalonSRX leftMotorB = new WPI_TalonSRX(RobotMap.CAN.motorLeftB);
@@ -29,7 +27,6 @@ public class Chassis extends Subsystem {
 	
 	SpeedControllerGroup leftGroup = new SpeedControllerGroup(leftMotorA, leftMotorB);
 	SpeedControllerGroup rightGroup = new SpeedControllerGroup(rightMotorA, rightMotorB);
-	
 
 	DifferentialDrive drive = new DifferentialDrive(leftGroup, rightGroup);
 	
@@ -42,17 +39,17 @@ public class Chassis extends Subsystem {
 		
 		leftEncoder.setDistancePerPulse(distancePerPulse);
 		rightEncoder.setDistancePerPulse(distancePerPulse);
-
 	}
+	
 	// Basic arcade drive
 	public void drive(double forwardAxis, double turnAxis) 
 	{
+		System.out.println("drive " + forwardAxis + " " + turnAxis);
 		drive.arcadeDrive(forwardAxis, turnAxis, false);
-		//temp disabled
 	}
 
     public void initDefaultCommand() {
-		setDefaultCommand(new ChassisDrive());
+		setDefaultCommand(new TeleopDriveOpenLoop());
     }
     
 
@@ -69,9 +66,20 @@ public class Chassis extends Subsystem {
 	}
 	
 	public void sendInfo() {
-	   	System.out.println("left  " + Double.toString(leftEncoder.getRate()));
-		System.out.println("right  " + Double.toString(rightEncoder.getRate()));
+//	   	System.out.println("left speed " + Double.toString(leftEncoder.getRate()));
+//		System.out.println("right speed  " + Double.toString(rightEncoder.getRate()));
+//		System.out.println("left distance " + Double.toString(leftEncoder.getDistance()));
+//		System.out.println("right distance  " + Double.toString(rightEncoder.getDistance()));
 	//	System.out.println(Float.toString(navx_ahrs.getDisplacementX()));  
+		
+		SmartDashboard.putNumber("AhrsDisplacementX",  navx_ahrs.getDisplacementX());
+		SmartDashboard.putNumber("AhrsDisplacementY",  navx_ahrs.getDisplacementY());
+		SmartDashboard.putNumber("AhrsDisplacementZ",  navx_ahrs.getDisplacementZ());
+		SmartDashboard.putNumber("AhrsAngle", navx_ahrs.getAngle());
+		SmartDashboard.putNumber("LeftDistance", leftEncoder.getDistance());
+		SmartDashboard.putNumber("RightDistance", rightEncoder.getDistance());
+	
+	
 	}
     
 }
