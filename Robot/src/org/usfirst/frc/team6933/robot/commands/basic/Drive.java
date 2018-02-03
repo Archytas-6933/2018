@@ -1,4 +1,4 @@
-package org.usfirst.frc.team6933.robot.commands;
+package org.usfirst.frc.team6933.robot.commands.basic;
 
 import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team6933.robot.*;
@@ -20,15 +20,17 @@ public class Drive extends Command {
 	
 	public static double SPINERROR = 60;
 	public static double GOALERROR = 2;
+	
     public Drive() {
-    	requires(Robot.chassis);
-    	speed_ =.2;
-    	distance_ = 0;
-    	direction_ = 0;
-    	goalAngle_ = 0;
-    	goalDegrees_ = 0;
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
+	    	requires(Robot.chassis);
+	    	
+	    	speed_ =.2;
+	    	distance_ = 0;
+	    	direction_ = 0;
+	    	goalAngle_ = 0;
+	    	goalDegrees_ = 0;
+	        // Use requires() here to declare subsystem dependencies
+	        // eg. requires(chassis);
     }
 
     // Called just before this Command runs the first time
@@ -38,16 +40,16 @@ public class Drive extends Command {
     	Robot.testSpeed = Robot.testSpeed - 0.01;
     	System.out.println("speed: " + Double.toString(speed_));
     	startticks_ = System.currentTimeMillis();
-    	System.out.println( "B" + Double.toString(Robot.navx_ahrs_.getAngle()));
+    	System.out.println( "B" + Double.toString(Robot.chassis.getAngle()));
     	if (goalDegrees_ != 0) {
-    		goalAngle_ = Robot.navx_ahrs_.getAngle() + goalDegrees_;
+    		goalAngle_ = Robot.chassis.getAngle() + goalDegrees_;
     	}
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	if (goalAngle_ != 0) {
-    		double difference = (goalAngle_) - (Robot.navx_ahrs_.getAngle());
+    		double difference = (goalAngle_) - (Robot.chassis.getAngle());
     		if (difference > SPINERROR) {
     			direction_ = 1;
     		}
@@ -60,11 +62,11 @@ public class Drive extends Command {
     		
     		//System.out.println("direction" + Double.toString(direction_));
     	}
-    	System.out.println("left  " + Double.toString(Robot.leftEncoder_.getRate()));
-		System.out.println("right  " + Double.toString(Robot.rightEncoder_.getRate()));
-
+ 
     	Robot.chassis.drive(speed_, direction_);
-    	//System.out.println(Float.toString(Robot.navx_ahrs_.getDisplacementX()));
+    	
+    	   Robot.chassis.sendInfo();
+    	   
     }
 
     // Make this return true when this Command no longer needs to run execute()

@@ -1,4 +1,4 @@
-package org.usfirst.frc.team6933.robot.commands;
+package org.usfirst.frc.team6933.robot.commands.basic;
 
 import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team6933.robot.*;
@@ -10,9 +10,9 @@ public class TestDrive extends Command {
 	public long startticks_;
 	
     public TestDrive() {
-    	requires(Robot.chassis);
-    	startticks_ = System.currentTimeMillis();
-        // Use requires() here to declare subsystem dependencies
+	    	requires(Robot.chassis);
+	    	startticks_ = System.currentTimeMillis();
+	        // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
 

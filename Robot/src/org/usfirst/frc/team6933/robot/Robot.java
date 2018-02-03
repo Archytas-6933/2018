@@ -10,17 +10,18 @@ package org.usfirst.frc.team6933.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 //import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+
+import org.usfirst.frc.team6933.robot.commands.basic.Drive;
+import org.usfirst.frc.team6933.robot.subsystems.Arm;
 //import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team6933.robot.subsystems.Chassis;
-import org.usfirst.frc.team6933.robot.commands.Drive;
+import org.usfirst.frc.team6933.robot.subsystems.Grabber;
+
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-import edu.wpi.first.wpilibj.SPI;
-import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.Encoder;
 
 
 /**
@@ -34,14 +35,13 @@ public class Robot extends TimedRobot {
 	
 	public static Chassis chassis;	
 	public static OI oi;
+	public static Grabber grabber;
+	public static Arm arm;
+	
 	public CommandGroup auto_;
 
-	public static AHRS navx_ahrs_;
-	public static Encoder leftEncoder_;
-	public static Encoder rightEncoder_;
-	public static double testSpeed = 0.2;
 
-	public static double WHEELCIRCUMFERENCE = 6 * 2.54 * Math.PI;
+	public static double testSpeed = 0.2;
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -49,12 +49,10 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
         chassis = new Chassis();
-		oi = new OI();		
-		navx_ahrs_ = new AHRS(SPI.Port.kMXP);
-		leftEncoder_ = new Encoder(RobotMap.DIO.dio0, RobotMap.DIO.dio1, true);
-		rightEncoder_ = new Encoder(RobotMap.DIO.dio2, RobotMap.DIO.dio3);
-		leftEncoder_.setDistancePerPulse(WHEELCIRCUMFERENCE / 360);
-		rightEncoder_.setDistancePerPulse(WHEELCIRCUMFERENCE / 360);
+		oi = new OI();
+		grabber = new Grabber();
+		arm = new Arm();
+		
 //		CameraServer.getInstance().startAutomaticCapture();
 
 		setupButtons();
@@ -84,7 +82,10 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledPeriodic() {
-		Scheduler.getInstance().run();
+		Scheduler.getInstance().run();//?
+		Robot.chassis.sendInfo();
+		Robot.arm.putDashboard();
+		Robot.grabber.putDashboard();
 	}
 
 	/**
@@ -147,7 +148,7 @@ public class Robot extends TimedRobot {
 		Drive drive;
 		drive = new Drive();
 		drive.direction_ = -1;
-		drive.goalAngle_ = navx_ahrs_.getAngle() - degrees;
+		drive.goalAngle_ = chassis.getAngle() - degrees;
 		auto_.addSequential(drive);
 	}
 	
@@ -166,7 +167,7 @@ public class Robot extends TimedRobot {
 		Drive drive;
 		drive = new Drive();
 		
-		if (navx_ahrs_.getAngle() > angle)
+		if (chassis.getAngle() > angle)
 			drive.direction_ = -1;
 		else
 			drive.direction_ = 1;
@@ -181,6 +182,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		Robot.chassis.sendInfo();
+		Robot.arm.putDashboard();
+		Robot.grabber.putDashboard();
 	}
 
 	@Override
@@ -200,6 +204,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		Robot.chassis.sendInfo();
+		Robot.arm.putDashboard();
+		Robot.grabber.putDashboard();
 	}
 
 /**
@@ -207,5 +214,6 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void testPeriodic() {
+		  //LiveWindow.run();  // deprecated
 	}
 }

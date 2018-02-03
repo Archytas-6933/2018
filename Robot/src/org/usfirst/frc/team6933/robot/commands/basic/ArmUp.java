@@ -1,4 +1,4 @@
-package org.usfirst.frc.team6933.robot.commands;
+package org.usfirst.frc.team6933.robot.commands.basic;
 
 import org.usfirst.frc.team6933.robot.Robot;
 
@@ -7,11 +7,10 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ChassisDrive extends Command {
+public class ArmUp extends Command {
 
-    public ChassisDrive() {
-        // Use requires() here to declare subsystem dependencies
-        requires(Robot.chassis);
+    public ArmUp() {
+       requires(Robot.arm);
     }
 
     // Called just before this Command runs the first time
@@ -20,17 +19,12 @@ public class ChassisDrive extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-		// get values of gamepad1 axes
-		double lxAxis = Robot.oi.gamepad1.getLXAxis();
-		double lyAxis = Robot.oi.gamepad1.getLYAxis();	
-		
-		// run the drive function given the above values		
-		Robot.chassis.drive(lyAxis, lxAxis);
+    		Robot.arm.up();
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return true;  // done instantly as this is a discrete transition
     }
 
     // Called once after isFinished returns true

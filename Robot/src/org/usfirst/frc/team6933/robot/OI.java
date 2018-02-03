@@ -7,6 +7,11 @@
 
 package org.usfirst.frc.team6933.robot;
 
+import org.usfirst.frc.team6933.robot.commands.basic.GrabberOpen;
+import org.usfirst.frc.team6933.robot.commands.complex.JogTransverse;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
@@ -16,10 +21,24 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 public class OI {
 	
 	public LogitechGamepadF310 gamepad1 = new LogitechGamepadF310(0);
+	
 	JoystickButton button1 = gamepad1.getAButton();
 	JoystickButton button2 = gamepad1.getBButton();
 	JoystickButton button3 = gamepad1.getXButton();
 	JoystickButton button4 = gamepad1.getYButton();
+	
+	
+	public OI()
+	{
+		super();
+		
+		button4.whileHeld(new GrabberOpen());
+		button3.whenPressed(new JogTransverse(.25));
+	
+	}
+	
+	
+	
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
 	//// joystick.
