@@ -1,13 +1,14 @@
 package org.usfirst.frc.team6933.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 
 /**
  *
  */
-public class AutonomousGroupC extends CommandGroup {
+public class AutonomousTestingGroup extends CommandGroup {
 
-    public AutonomousGroupC() {
+    public AutonomousTestingGroup() {
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());
@@ -24,5 +25,8 @@ public class AutonomousGroupC extends CommandGroup {
         // e.g. if Command1 requires chassis, and Command2 requires arm,
         // a CommandGroup containing them would require both the chassis and the
         // arm.
+    	System.out.println("AutonomousTesting created");
+    	System.out.println("wait 10");
+    	addSequential(new TimedCommand(10));
     }
 }
