@@ -1,3 +1,7 @@
-.*
-navx-mxp-libs
-CTRE_Phoenix_FRCLibs
+.metadata
+.recommenders
+*/build 
+*/bin 
+*/dist 
+*/.classpath
+*/.class
