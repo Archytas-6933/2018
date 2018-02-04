@@ -4,47 +4,43 @@ import org.usfirst.frc.team6933.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-/**
- *
- */
-public class TeleopDriveOpenLoop extends Command {
 
-	public TeleopDriveOpenLoop() {
+public class DriveTimedOpenLoop extends Command {
+
+	double speed = 0.0;
+	double turn = 0.0;
+
+	public DriveTimedOpenLoop(double speed, double turn, double time) {
+		super("DriveTimedOpenLoop", time);
 		requires(Robot.chassis);
-
-		System.out.println("TeleopDriveOpenLoop created");
+		this.speed = speed;
+		this.turn = turn;
 	}
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
-		System.out.println("drive init");
+		System.out.println(this.getClass().getName() + " initalize");
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		System.out.println("drive exe");
-		// get values of gamepad1 axes
-		double lxAxis = Robot.oi.operator.getLXAxis();
-		double lyAxis = Robot.oi.operator.getLYAxis();
-
-		// run the drive function given the above values
-		Robot.chassis.drive(lyAxis, lxAxis);
+		Robot.chassis.drive(speed, turn);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-		System.out.println("is finished?");
-		return false;
+	    return isTimedOut();
 	}
 
 	// Called once after isFinished returns true
 	protected void end() {
-		System.out.println("drive end");
+		System.out.println(this.getClass().getName() + " end");
 	}
 
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
 	protected void interrupted() {
-		System.out.println("drive interrrupted");
+		System.out.println(this.getClass().getName() + " interrupted");
+		
 	}
 }

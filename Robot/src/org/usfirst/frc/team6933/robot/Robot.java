@@ -28,34 +28,30 @@ import edu.wpi.first.wpilibj.command.Command;
  * creating this project, you must also update the build.properties file in the
  * project.
  */
+
 public class Robot extends TimedRobot {
 
 	//
 	// Robot initialization
 	//
-	public static OI oi;	
 	
-	public static Arm arm;
-	public static Chassis chassis;
-	public static Compressor compressor;
-	public static Grabber grabber;
-	public static Video video;
+	public static Arm arm = new Arm();
+	public static Chassis chassis = new Chassis();
+	public static Compressor compressor = new Compressor();;
+	public static Grabber grabber = new Grabber();
+	public static Video video = new Video();
+	
+	public static OI oi = new OI();	
 
 	private Command autonomousCommand;
+	private Command autonomousRight = new AutonomousRight();
+	private Command autonomousLeft = new AutonomousLeft();
+	
 	public static double testSpeed = 0.2;
 
 	@Override
 	public void robotInit() {
 		System.out.println("robotInit");
-		
-
-		// defer instantiations until robotInit, may be required to do so for OI
-		oi = new OI();
-		arm = new Arm();
-		chassis = new Chassis();
-		compressor = new Compressor();
-		grabber = new Grabber();
-		video = new Video();
 
 		// start the camera server
 		video.startAutomaticCapture();
@@ -77,14 +73,14 @@ public class Robot extends TimedRobot {
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if (gameData.charAt(0) == 'L') {
 			System.out.println("Left was read");
-			autonomousCommand = new AutonomousLeft();
+			autonomousCommand = autonomousLeft;
 		} else {
 			System.out.println("Right was read");
-			autonomousCommand = new AutonomousRight();
+			autonomousCommand = autonomousRight;
 		}
 
 		// override selection for testing purposes
-		autonomousCommand = new AutonomousTestingGroup();
+		//autonomousCommand = new AutonomousTestingGroup();
 
 		// start the chosen autonomous command
 		if (autonomousCommand != null) {
@@ -161,6 +157,8 @@ public class Robot extends TimedRobot {
 		// no scheduler in test
 	}
 
+	
+	
 	// public void driveForward(double distance) {
 	// Drive drive;
 	// drive = new Drive();

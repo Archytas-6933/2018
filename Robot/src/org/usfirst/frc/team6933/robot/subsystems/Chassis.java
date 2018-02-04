@@ -2,7 +2,7 @@ package org.usfirst.frc.team6933.robot.subsystems;
 
 import org.usfirst.frc.team6933.robot.Robot;
 import org.usfirst.frc.team6933.robot.RobotMap;
-import org.usfirst.frc.team6933.robot.commands.drive.TeleopDriveOpenLoop;
+import org.usfirst.frc.team6933.robot.commands.drive.JoystickDriveOpenLoop;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
@@ -24,63 +24,83 @@ public class Chassis extends Subsystem {
 	WPI_TalonSRX leftMotorB = new WPI_TalonSRX(RobotMap.CAN.motorLeftB);
 	WPI_TalonSRX rightMotorA = new WPI_TalonSRX(RobotMap.CAN.motorRightA);
 	WPI_TalonSRX rightMotorB = new WPI_TalonSRX(RobotMap.CAN.motorRightB);
-	
+
 	SpeedControllerGroup leftGroup = new SpeedControllerGroup(leftMotorA, leftMotorB);
 	SpeedControllerGroup rightGroup = new SpeedControllerGroup(rightMotorA, rightMotorB);
 
 	DifferentialDrive drive = new DifferentialDrive(leftGroup, rightGroup);
-	
+
 	Encoder leftEncoder = new Encoder(RobotMap.DIO.motorLeftEncoderA, RobotMap.DIO.motorLeftEncoderB, true);
 	Encoder rightEncoder = new Encoder(RobotMap.DIO.motorRightEncoderA, RobotMap.DIO.motorRightEncoderB);
 	AHRS navx_ahrs = new AHRS(SPI.Port.kMXP);
-	
+
 	public Chassis() {
-		double distancePerPulse = 6 * 2.54 * Math.PI / 100 /360 ;  // meters
-		
+		double distancePerPulse = 6 * 2.54 * Math.PI / 100 / 360; // meters
+
 		leftEncoder.setDistancePerPulse(distancePerPulse);
 		rightEncoder.setDistancePerPulse(distancePerPulse);
+
+		// System.out.println("leftA safety? " + leftMotorA.isSafetyEnabled());
+		// System.out.println("leftB safety? " + leftMotorB.isSafetyEnabled());
+		// System.out.println("rightA safety? " + rightMotorA.isSafetyEnabled());
+		// System.out.println("rightB safety? " + rightMotorB.isSafetyEnabled());
+		// leftMotorA.setSafetyEnabled(true);
+		// leftMotorB.setSafetyEnabled(true);
+		// rightMotorA.setSafetyEnabled(true);
+		// rightMotorB.setSafetyEnabled(true);
+		// System.out.println("leftA safety? " + leftMotorA.isSafetyEnabled());
+		// System.out.println("leftB safety? " + leftMotorB.isSafetyEnabled());
+		// System.out.println("rightA safety? " + rightMotorA.isSafetyEnabled());
+		// System.out.println("rightB safety? " + rightMotorB.isSafetyEnabled());
+
 	}
-	
+
 	// Basic arcade drive
-	public void drive(double forwardAxis, double turnAxis) 
-	{
-		System.out.println("drive " + forwardAxis + " " + turnAxis);
+	public void drive(double forwardAxis, double turnAxis) {
 		drive.arcadeDrive(forwardAxis, turnAxis, false);
 	}
 
-    public void initDefaultCommand() {
-		setDefaultCommand(new TeleopDriveOpenLoop());
-    }
-    
-
-	public void enableRateControl() {
-		// TODO Auto-generated method stub	
+	public void initDefaultCommand() {
+		setDefaultCommand(new JoystickDriveOpenLoop());
 	}
 
-	public void disableRateControl() {
-		// TODO Auto-generated method stub
-		
-	}
 	public double getAngle() {
 		return navx_ahrs.getAngle();
 	}
-	
+
 	public void sendInfo() {
-//	   	System.out.println("left speed " + Double.toString(leftEncoder.getRate()));
-//		System.out.println("right speed  " + Double.toString(rightEncoder.getRate()));
-//		System.out.println("left distance " + Double.toString(leftEncoder.getDistance()));
-//		System.out.println("right distance  " + Double.toString(rightEncoder.getDistance()));
-	//	System.out.println(Float.toString(navx_ahrs.getDisplacementX()));  
-		
-		SmartDashboard.putNumber("AhrsDisplacementX",  navx_ahrs.getDisplacementX());
-		SmartDashboard.putNumber("AhrsDisplacementY",  navx_ahrs.getDisplacementY());
-		SmartDashboard.putNumber("AhrsDisplacementZ",  navx_ahrs.getDisplacementZ());
+		// System.out.println("left speed " + Double.toString(leftEncoder.getRate()));
+		// System.out.println("right speed " + Double.toString(rightEncoder.getRate()));
+		// System.out.println("left distance " +
+		// Double.toString(leftEncoder.getDistance()));
+		// System.out.println("right distance " +
+		// Double.toString(rightEncoder.getDistance()));
+		// System.out.println(Float.toString(navx_ahrs.getDisplacementX()));
+
+		SmartDashboard.putNumber("AhrsDisplacementX", navx_ahrs.getDisplacementX());
+		SmartDashboard.putNumber("AhrsDisplacementY", navx_ahrs.getDisplacementY());
+		SmartDashboard.putNumber("AhrsDisplacementZ", navx_ahrs.getDisplacementZ());
 		SmartDashboard.putNumber("AhrsAngle", navx_ahrs.getAngle());
 		SmartDashboard.putNumber("EncoderLeftDistance", leftEncoder.getDistance());
 		SmartDashboard.putNumber("EncoderRightDistance", rightEncoder.getDistance());
-	
-	
-	}
-    
-}
+		SmartDashboard.putNumber("EncoderLeftSpeed", leftEncoder.getRate());
+		SmartDashboard.putNumber("EncoderRightSpeed", rightEncoder.getRate());
+		
+		
 
+	}
+
+	public void setOpenLoop() {
+		System.out.println("set chassis open loop mode - TODO");
+	}
+
+	public void setRateControl() {
+		System.out.println("set chassis rate control mode - TODO");
+	}
+
+	public void setRates(double lyAxis, double lxAxis) {
+		System.out.println("set chassis closed loop rates - TODO");
+		
+	}
+
+}

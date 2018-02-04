@@ -1,6 +1,9 @@
 package org.usfirst.frc.team6933.robot.commands.autonomous;
 
+import org.usfirst.frc.team6933.robot.commands.drive.DriveTimedOpenLoop;
+
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.PrintCommand;
 
 /**
  *
@@ -25,7 +28,10 @@ public class AutonomousLeft extends CommandGroup {
         // a CommandGroup containing them would require both the chassis and the
         // arm.
     	
-    	
-    	System.out.println("AutonomousLeft");
+    	addSequential( new PrintCommand("autonomous left group") );
+		addSequential(new DriveTimedOpenLoop(.25/* speed */, -0.5/* turn */, 2.5/* seconds */));
+		addSequential(new DriveTimedOpenLoop(.5/* speed */, +0.5/* turn */, 2.50/* seconds */));
+		addSequential(new DriveTimedOpenLoop(.25/* speed */, -0.5/* turn */, 1.50/* seconds */));
+ 
     }
 }
