@@ -39,19 +39,7 @@ public class Chassis extends Subsystem {
 
 		leftEncoder.setDistancePerPulse(distancePerPulse);
 		rightEncoder.setDistancePerPulse(distancePerPulse);
-
-		// System.out.println("leftA safety? " + leftMotorA.isSafetyEnabled());
-		// System.out.println("leftB safety? " + leftMotorB.isSafetyEnabled());
-		// System.out.println("rightA safety? " + rightMotorA.isSafetyEnabled());
-		// System.out.println("rightB safety? " + rightMotorB.isSafetyEnabled());
-		// leftMotorA.setSafetyEnabled(true);
-		// leftMotorB.setSafetyEnabled(true);
-		// rightMotorA.setSafetyEnabled(true);
-		// rightMotorB.setSafetyEnabled(true);
-		// System.out.println("leftA safety? " + leftMotorA.isSafetyEnabled());
-		// System.out.println("leftB safety? " + leftMotorB.isSafetyEnabled());
-		// System.out.println("rightA safety? " + rightMotorA.isSafetyEnabled());
-		// System.out.println("rightB safety? " + rightMotorB.isSafetyEnabled());
+		
 
 	}
 
@@ -69,13 +57,6 @@ public class Chassis extends Subsystem {
 	}
 
 	public void sendInfo() {
-		// System.out.println("left speed " + Double.toString(leftEncoder.getRate()));
-		// System.out.println("right speed " + Double.toString(rightEncoder.getRate()));
-		// System.out.println("left distance " +
-		// Double.toString(leftEncoder.getDistance()));
-		// System.out.println("right distance " +
-		// Double.toString(rightEncoder.getDistance()));
-		// System.out.println(Float.toString(navx_ahrs.getDisplacementX()));
 
 		SmartDashboard.putNumber("AhrsDisplacementX", navx_ahrs.getDisplacementX());
 		SmartDashboard.putNumber("AhrsDisplacementY", navx_ahrs.getDisplacementY());

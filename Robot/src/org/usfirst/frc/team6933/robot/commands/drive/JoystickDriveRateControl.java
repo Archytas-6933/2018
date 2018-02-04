@@ -36,7 +36,6 @@ public class JoystickDriveRateControl extends Command {
 		// set rate control goals in chassis
 		Robot.chassis.setRates(lyAxis, lxAxis);
 		
-
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

@@ -7,15 +7,13 @@
 
 package org.usfirst.frc.team6933.robot;
 
+import org.usfirst.frc.team6933.robot.commands.arm.ArmDown;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmRelease;
+import org.usfirst.frc.team6933.robot.commands.arm.ArmUp;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousTestingGroup;
 import org.usfirst.frc.team6933.robot.commands.compressor.CompressorToggle;
-import org.usfirst.frc.team6933.robot.commands.drive.JogTransverse;
+import org.usfirst.frc.team6933.robot.commands.grabber.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.grabber.GrabberOpen;
-
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -23,8 +21,8 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  */
 public class OI {
 	
-	public LogitechExtreme3D driver = new LogitechExtreme3D(1);
-	public LogitechGamepadF310 operator = new LogitechGamepadF310(0);
+	public LogitechExtreme3D driver = new LogitechExtreme3D(0);
+	public LogitechGamepadF310 operator = new LogitechGamepadF310(1);
 	
 	public OI()
 	{
@@ -34,17 +32,18 @@ public class OI {
 		operator.AButton.whenPressed(new AutonomousTestingGroup());
 		
 		// open/close the grabber
-		operator.BButton.whileHeld(new GrabberOpen());
+		operator.BButton.whenPressed(new GrabberOpen());
+		operator.XButton.whenPressed(new GrabberClose());
 		
-		// raise/lower the arm
-		
-		operator.XButton.whenPressed(new JogTransverse(.25));
+		// raise/lower and release the arm
+		operator.YButton.whenPressed(new ArmUp());
+		operator.AButton.whenPressed(new ArmDown());
+		operator.StartButton.whenPressed(new ArmRelease());
 		
 		// turn on/off the compressor - for testing and demo mostly
 		operator.AButton.toggleWhenPressed(new CompressorToggle());
 		
-		// release the arm latch
-		operator.XButton.whenPressed(new ArmRelease());
+		
 	}
 	
 	

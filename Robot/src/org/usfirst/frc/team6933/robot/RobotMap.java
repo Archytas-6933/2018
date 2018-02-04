@@ -21,10 +21,11 @@ import edu.wpi.first.wpilibj.Encoder;
 public class RobotMap {
 	
 	public static class CAN {
-		public static int motorRightA = 11;
-		public static int motorLeftA = 12;
-		public static int motorRightB = 13;
-		public static int motorLeftB = 14;
+		public static final int motorRightA = 11;
+		public static final int motorLeftA = 12;
+		public static final int motorRightB = 13;
+		public static final int motorLeftB = 14;
+		public static final int pcmId = 20;
 	}
 	
 	public static class Solenoid {
@@ -32,45 +33,43 @@ public class RobotMap {
 		public static final int armDown = 1;
 		public static final int grabberOpen = 2;
 		public static final int grabberClose = 3; 
-		public static final int armReleaseIn = 4;
-		public static final int armReleaseOut = 5;
-		public static final int pcmId = 20;
+		public static final int armRelease = 4;
 	}
 	
 	public static class PWM {
-		public static int pwm0 = 0;
-		public static int pwm1 = 1;
-		public static int pwm2 = 2;
-		public static int pwm3 = 3;
-		public static int pwm4 = 4;
-		public static int pwm5 = 5;
-		public static int pwm6 = 6;
-		public static int pwm7 = 7;
-		public static int pwm8 = 8;
-		public static int pwm9 = 9;
+		public static final int pwm0 = 0;
+		public static final int pwm1 = 1;
+		public static final int pwm2 = 2;
+		public static final int pwm3 = 3;
+		public static final int pwm4 = 4;
+		public static final int pwm5 = 5;
+		public static final int pwm6 = 6;
+		public static final int pwm7 = 7;
+		public static final int pwm8 = 8;
+		public static final int pwm9 = 9;
 	}
 	
 	public static class DIO {
-		public static int motorLeftEncoderA = 0;
-		public static int motorLeftEncoderB = 1;
-		public static int motorRightEncoderA = 2;
-		public static int motorRightEncoderB = 3;
-		public static int dio0 = 0;
-		public static int dio1 = 1;
-		public static int dio2 = 2;
-		public static int dio3 = 3;
-		public static int dio4 = 4;
-		public static int dio5 = 5;
-		public static int dio6 = 6;
-		public static int dio7 = 7;
-		public static int dio8 = 8;
-		public static int dio9 = 9;
+		public static final int motorLeftEncoderA = 0;
+		public static final int motorLeftEncoderB = 1;
+		public static final int motorRightEncoderA = 2;
+		public static final int motorRightEncoderB = 3;
+		public static final int dio0 = 0;
+		public static final int dio1 = 1;
+		public static final int dio2 = 2;
+		public static final int dio3 = 3;
+		public static final int dio4 = 4;
+		public static final int dio5 = 5;
+		public static final int dio6 = 6;
+		public static final int dio7 = 7;
+		public static final int dio8 = 8;
+		public static final int dio9 = 9;
 	}
 	
 	public static class Analog {	
-		public static int analog0 = 0;
-		public static int analog1 = 1;
-		public static int analog2 = 2;
-		public static int analog3 = 3;
+		public static final int analog0 = 0;
+		public static final int analog1 = 1;
+		public static final int analog2 = 2;
+		public static final int analog3 = 3;
 	}
 }

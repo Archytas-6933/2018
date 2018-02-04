@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ArmDown extends Command {
+public class ArmOff extends Command {
 
-	public ArmDown() {
+	public ArmOff() {
 		requires(Robot.arm);
 	}
 
@@ -21,7 +21,7 @@ public class ArmDown extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		Robot.arm.armDown();
+		Robot.arm.armOff();
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

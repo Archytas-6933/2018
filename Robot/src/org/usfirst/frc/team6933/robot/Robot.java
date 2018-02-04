@@ -7,19 +7,19 @@
 
 package org.usfirst.frc.team6933.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousRight;
-import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousTestingGroup;
 import org.usfirst.frc.team6933.robot.subsystems.Arm;
 import org.usfirst.frc.team6933.robot.subsystems.Chassis;
-import org.usfirst.frc.team6933.robot.subsystems.Grabber;
 import org.usfirst.frc.team6933.robot.subsystems.Compressor;
+import org.usfirst.frc.team6933.robot.subsystems.Grabber;
 import org.usfirst.frc.team6933.robot.subsystems.Video;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
 	
 	public static OI oi = new OI();	
 
-	private Command autonomousCommand;
+	private Command autonomousCommand = null;
 	private Command autonomousRight = new AutonomousRight();
 	private Command autonomousLeft = new AutonomousLeft();
 	
@@ -100,8 +100,6 @@ public class Robot extends TimedRobot {
 	public void teleopInit() {
 		System.out.println("teleopInit");
 
-	
-
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
@@ -131,24 +129,25 @@ public class Robot extends TimedRobot {
 		compressor.sendInfo();
 		grabber.sendInfo();
 		video.sendInfo();
+		Scheduler.getInstance().run();
 	}
 
 	// periodic for the AUTONOMOUS mode
 	@Override
 	public void autonomousPeriodic() {
-		Scheduler.getInstance().run();
+		
 	}
 
 	// periodic for the DISABLED mode
 	@Override
 	public void disabledPeriodic() {
-		Scheduler.getInstance().run();
+//		Scheduler.getInstance().run();
 	}
 
 	// periodic for the TELEOP mode
 	@Override
 	public void teleopPeriodic() {
-		Scheduler.getInstance().run();
+//		Scheduler.getInstance().run();
 	}
 
 	// periodic for the TEST mode

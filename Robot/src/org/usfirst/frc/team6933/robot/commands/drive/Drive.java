@@ -35,7 +35,7 @@ public class Drive extends Command {
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
-		System.out.println("Drive Initializing...");
+		System.out.println(this.getClass().getName() + " initalize");
 		speed_ = Robot.testSpeed;
 		Robot.testSpeed = Robot.testSpeed - 0.01;
 		System.out.println("speed: " + Double.toString(speed_));
@@ -85,12 +85,14 @@ public class Drive extends Command {
 
 	// Called once after isFinished returns true
 	protected void end() {
-		System.out.println("Drive Ending...");
+		System.out.println(this.getClass().getName() + " end");
 
 	}
 
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
 	protected void interrupted() {
+		System.out.println(this.getClass().getName() + " interrupted");
+
 	}
 }
