@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class Video extends Subsystem {
-
 	
 	CameraServer server = CameraServer.getInstance();
 	
@@ -16,6 +15,11 @@ public class Video extends Subsystem {
     public void startAutomaticCapture() {
     		server.startAutomaticCapture();
     }
+
+	public void sendInfo() {
+		// TODO Auto-generated method stub
+		
+	}
    
 }
 

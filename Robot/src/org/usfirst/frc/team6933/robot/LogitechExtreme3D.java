@@ -122,49 +122,7 @@ public class LogitechExtreme3D extends Joystick
 		return DPadAxis;
 	}
 
-	public JoystickButton getSidePickle() {
-		return SidePickle;
-	}
 
-	public JoystickButton getThumbButtonLowerLeft() {
-		return ThumbButtonLowerLeft;
-	}
-
-	public JoystickButton getThumbButtonLowerRight() {
-		return ThumbButtonLowerRight;
-	}
-
-	public JoystickButton getThumbButtonUpperLeft() {
-		return ThumbButtonUpperLeft;
-	}
-
-	public JoystickButton getThumbButtonUpperRight() {
-		return ThumbButtonUpperRight;
-	}
-
-	public JoystickButton getBaseButtonUpperLeft() {
-		return BaseButtonUpperLeft;
-	}
-
-	public JoystickButton getBaseButtonUpperRight() {
-		return BaseButtonUpperRight;
-	}
-
-	public JoystickButton getBaseButtonMiddleLeft() {
-		return BaseButtonMiddleLeft;
-	}
-
-	public JoystickButton getBaseButtonMiddleRight() {
-		return BaseButtonMiddleRight;
-	}
-
-	public JoystickButton getBaseButtonBottomLeft() {
-		return BaseButtonBottomLeft;
-	}
-
-	public JoystickButton getBaseButtonBottomRight() {
-		return BaseButtonBottomRight;
-	}
 	
 	
 }

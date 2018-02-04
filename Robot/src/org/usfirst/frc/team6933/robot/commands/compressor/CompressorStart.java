@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class CompressorToggle extends Command {
+public class CompressorStart extends Command {
 
-    public CompressorToggle() {
+    public CompressorStart() {
         // Use requires() here to declare subsystem dependencies
         requires(Robot.compressor);
     }
@@ -20,12 +20,12 @@ public class CompressorToggle extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    		Robot.compressor.toggleRun();
+    		Robot.compressor.start();
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return true;   // one shot tasking
+        return false;   // used as a default command by the compressor so it should never finish
     }
 
     // Called once after isFinished returns true

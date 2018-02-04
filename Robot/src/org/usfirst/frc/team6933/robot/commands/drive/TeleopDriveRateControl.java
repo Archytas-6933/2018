@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team6933.robot.Robot;
 
 /**
- * An example command.  You can replace me with your own command.
+ * An example command. You can replace me with your own command.
  */
 public class TeleopDriveRateControl extends Command {
-	
+
 	public TeleopDriveRateControl() {
 		requires(Robot.chassis);
 	}

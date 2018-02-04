@@ -23,31 +23,28 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  */
 public class OI {
 	
-	public LogitechGamepadF310 gamepad1 = new LogitechGamepadF310(0);
-	
-	JoystickButton button1 = gamepad1.getAButton();
-	JoystickButton button2 = gamepad1.getBButton();
-	JoystickButton button3 = gamepad1.getXButton();
-	JoystickButton button4 = gamepad1.getYButton();
-	
-	JoystickButton compressorButton = gamepad1.getStartButton();
-	JoystickButton armRelease = gamepad1.getXButton(); 
+	public LogitechExtreme3D driver = new LogitechExtreme3D(1);
+	public LogitechGamepadF310 operator = new LogitechGamepadF310(0);
 	
 	public OI()
 	{
 		super();
 		
-	
-		button1.whenPressed(new AutonomousTestingGroup());
+		// start the autonomous testing group
+		operator.AButton.whenPressed(new AutonomousTestingGroup());
 		
-		button4.whileHeld(new GrabberOpen());
-		button3.whenPressed(new JogTransverse(.25));
+		// open/close the grabber
+		operator.BButton.whileHeld(new GrabberOpen());
+		
+		// raise/lower the arm
+		
+		operator.XButton.whenPressed(new JogTransverse(.25));
 		
 		// turn on/off the compressor - for testing and demo mostly
-		compressorButton.toggleWhenPressed(new CompressorToggle());
+		operator.AButton.toggleWhenPressed(new CompressorToggle());
 		
 		// release the arm latch
-		armRelease.whenPressed(new ArmRelease());
+		operator.XButton.whenPressed(new ArmRelease());
 	}
 	
 	
