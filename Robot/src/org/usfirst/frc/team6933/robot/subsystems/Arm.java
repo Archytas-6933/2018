@@ -16,6 +16,10 @@ public class Arm extends Subsystem {
 	Solenoid armDown = new Solenoid(RobotMap.Solenoid.pcmId,RobotMap.Solenoid.armDown);
 	Solenoid armUp = new Solenoid(RobotMap.Solenoid.pcmId,RobotMap.Solenoid.armUp);
 	
+	Solenoid armReleaseIn = new Solenoid(RobotMap.Solenoid.pcmId,RobotMap.Solenoid.armReleaseIn);
+	Solenoid armReleaseOut = new Solenoid(RobotMap.Solenoid.pcmId,RobotMap.Solenoid.armReleaseOut);
+	
+	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
@@ -34,12 +38,24 @@ public class Arm extends Subsystem {
     public void stationary() {
 		armDown.set(false);
 		armUp.set(false);
-}
+    }
+    
+    public void releaseIn() {
+    		armReleaseIn.set(true);;
+    		armReleaseOut.set(false);;
+    }
+    
+    public void releaseOut() {
+		armReleaseIn.set(false);;
+		armReleaseOut.set(true);;
+    }
     
     public void sendInfo()
 	{
 		SmartDashboard.putBoolean("ArmUp", armUp.get());
 		SmartDashboard.putBoolean("ArmDown", armDown.get());
+		SmartDashboard.putBoolean("ArmReleaseIn", armReleaseIn.get());
+		SmartDashboard.putBoolean("ArmReleaseOut", armReleaseOut.get());
 	}
   
     

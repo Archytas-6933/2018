@@ -5,13 +5,17 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class Video extends Subsystem {
 
+	
+	CameraServer server = CameraServer.getInstance();
+	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
     }
     
-    public Video() {
-		CameraServer.getInstance().startAutomaticCapture();
+    public void startAutomaticCapture() {
+    		server.startAutomaticCapture();
     }
+   
 }
 

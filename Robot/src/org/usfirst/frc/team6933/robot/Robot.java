@@ -7,27 +7,19 @@
 
 package org.usfirst.frc.team6933.robot;
 
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
-//import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousRight;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousTestingGroup;
 import org.usfirst.frc.team6933.robot.subsystems.Arm;
-//import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team6933.robot.subsystems.Chassis;
 import org.usfirst.frc.team6933.robot.subsystems.Grabber;
+import org.usfirst.frc.team6933.robot.subsystems.Compressor;
 import org.usfirst.frc.team6933.robot.subsystems.Video;
-
 import edu.wpi.first.wpilibj.command.Command;
-
-
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -38,81 +30,40 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class Robot extends TimedRobot {
 	
+	//
+	// Robot initialization 
+	//
+	
 	public static Chassis chassis = new Chassis();	
 	public static OI oi = new OI();
 	public static Grabber grabber = new Grabber();
 	public static Arm arm = new Arm();
 	public static Video video = new Video();
-	
+	public static Compressor compressor = new Compressor();
 	private Command autonomousCommand;
-
 	public static double testSpeed = 0.2;
 	
-	
-	/**
-	 * This function is run when the robot is first started up and should be
-	 * used for any initialization code.
-	 */
 	@Override
 	public void robotInit() {
-		
-		//SmartDashboard.putData(Scheduler.getInstance());
 		System.out.println("robotInit");
-	
+		compressor.start();
 	}
 
+	//
+	// mode init methods
+	//
 	
-//	public void setupButtons() 
-//	{
-//		autonomousCommand = new CommandGroup();
-// 		//turnRight(90);
-//		//turnLeft(45);
-//		driveForward(1.0);
-//		//driveBackward(.5);
-//		oi.button1.whenPressed(autonomousCommand);
-//	}
-	
-
-	/**
-	 * This function is called once each time the robot enters Disabled mode.
-	 * You can use it to reset any subsystem information you want to clear when
-	 * the robot is disabled.
-	 */
-	@Override
-	public void disabledInit() {
-		System.out.println("disabledInit");
-	}
-
-
-
-	@Override
-	public void teleopInit() {
-		// This makes sure that the autonomous stops running when
-		// teleop starts running. If you want the autonomous to
-		// continue until interrupted by another command, remove
-		// this line or comment it out.
-		if (autonomousCommand != null) {
-			autonomousCommand.cancel();
-		}
-		System.out.println("teleopInit");
-	}
-	
-	/**
-	 * This autonomous (along with the chooser code above) shows how to select
-	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the
-	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-	 * getString code to get the auto name from the text box below the Gyro
-	 *
-	 * <p>You can add additional auto modes by adding additional commands to the
-	 * chooser code above (like the commented example) or additional comparisons
-	 * to the switch structure below with additional strings & commands.
-	 */
+	// enter AUTONOMOUS mode
 	@Override
 	public void autonomousInit() {
+		
+		System.out.println("autonomousInit");
+		
+		// enable the compressor
+		compressor.start();
 				
-		//Read game data from the Driver Station and select the Autonomous Mode
-		// by setting the autonomousCommand();
+		// Read game data from the Driver Station and select the Autonomous Mode
+		// by setting the autonomousCommand;
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if(gameData.charAt(0) == 'L')
@@ -124,35 +75,91 @@ public class Robot extends TimedRobot {
 			autonomousCommand = new AutonomousRight();
 		}
 		
-		
-		// override selection for testing
+		// override selection for testing purposes
 		autonomousCommand = new AutonomousTestingGroup();
-		
 		
 		// start the chosen autonomous command
 		if ( autonomousCommand != null ) {
 			autonomousCommand.start();
 		}
-		
-		System.out.println("autonomousInit");
-	  
-		//autonomousCommand = new CommandGroup();
-		
-		//driveForward(2.0);
-		//turnLeft(90);
-		//driveForward(2.0);
-		//turnRight(90);
-		//driveBackward(1.0);
-	//	turnTo(180);
-		
 	
 	}
+		
+	// enter DISABLED mode
+	@Override
+	public void disabledInit() {
+		System.out.println("disabledInit");
+	}
+
+	// enter TELEOP mode
+	@Override
+	public void teleopInit() {
+		System.out.println("teleopInit");
 	
+		// This makes sure that the autonomous stops running when
+		// teleop starts running. If you want the autonomous to
+		// continue until interrupted by another command, remove
+		// this line or comment it out.
+		if (autonomousCommand != null) {
+			autonomousCommand.cancel();
+		}
 	
+		// make sure the compressor is turned on
+		compressor.start();
+		
+		// start the camera server
+		video.startAutomaticCapture();
+		
+	}
+	
+	// enter TEST mode
+	@Override
 	public void testInit() {
 		System.out.println("testInit");
 	}
 
+	
+	//
+	// periodic execution methods
+	//
+	
+	// periodic for ALL modes
+	@Override
+	public void robotPeriodic() {
+		SmartDashboard.putData(Scheduler.getInstance());
+		Robot.chassis.sendInfo();
+		Robot.arm.sendInfo();
+		Robot.grabber.sendInfo();
+	}
+	
+	// periodic for the AUTONOMOUS mode
+	@Override
+	public void autonomousPeriodic() {
+		Scheduler.getInstance().run();
+		Robot.chassis.sendInfo();
+	}
+	
+	// periodic for the DISABLED mode
+	@Override
+	public void disabledPeriodic() {
+	   // no scheduler when disabled
+	}
+	
+	// periodic for the TELEOP mode
+	@Override
+	public void teleopPeriodic() {
+		System.out.println("teleop periodic");
+		Scheduler.getInstance().run();
+	}
+
+	// periodic for the TEST mode
+	@Override
+	public void testPeriodic() {
+		// no scheduler in test
+	}
+
+	
+	
 	
 //	public void driveForward(double distance) {
 //		Drive drive;
@@ -201,45 +208,6 @@ public class Robot extends TimedRobot {
 //		autonomousCommand.addSequential(drive);
 //	}
 //	
-	
-	//
-	// periodic methods
-	//
-	
-	
-	// periodic for ALL modes
-	@Override
-	public void robotPeriodic() {
-		Robot.chassis.sendInfo();
-		Robot.arm.sendInfo();
-		Robot.grabber.sendInfo();
-	}
-	
-	// periodic for the TELEOP mode
-	@Override
-	public void teleopPeriodic() {
-		System.out.println("teleop periodic");
-		Scheduler.getInstance().run();
-	}
-
-	// periodic for the AUTONOMOUS mode
-	@Override
-	public void autonomousPeriodic() {
-		Scheduler.getInstance().run();
-		Robot.chassis.sendInfo();
-	}
-	
-	// periodic for the DISABLED mode
-	@Override
-	public void disabledPeriodic() {
-	   // no scheduler when disabled
-	}
-
-	// periodic for the TEST mode
-	@Override
-	public void testPeriodic() {
-		// no scheduler in test
-	}
 
 
 	

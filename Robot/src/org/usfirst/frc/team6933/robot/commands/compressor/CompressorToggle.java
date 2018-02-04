@@ -1,4 +1,4 @@
-package org.usfirst.frc.team6933.robot.commands.drive;
+package org.usfirst.frc.team6933.robot.commands.compressor;
 
 import org.usfirst.frc.team6933.robot.Robot;
 
@@ -7,15 +7,11 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class DriveForward extends Command {
+public class CompressorToggle extends Command {
 
-	double speed = 0.0;
-	double distance = 0.0;
-	
-    public DriveForward(double speed, double distance) {
-    	    requires(Robot.chassis);
-    	    this.speed = speed;
-    	    this.distance = distance;
+    public CompressorToggle() {
+        // Use requires() here to declare subsystem dependencies
+        requires(Robot.compressor);
     }
 
     // Called just before this Command runs the first time
@@ -24,11 +20,16 @@ public class DriveForward extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    		if ( Robot.compressor.isRunning() ) {
+    			Robot.compressor.stop();
+    		} else {
+    			Robot.compressor.start();
+    		}
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return true;   // one shot tasking
     }
 
     // Called once after isFinished returns true

@@ -31,7 +31,9 @@ public class RobotMap {
 		public static final int armUp = 0;
 		public static final int armDown = 1;
 		public static final int grabberOpen = 2;
-		public static final int grabberClose = 3;
+		public static final int grabberClose = 3; 
+		public static final int armReleaseIn = 4;
+		public static final int armReleaseOut = 5;
 		public static final int pcmId = 20;
 	}
 	

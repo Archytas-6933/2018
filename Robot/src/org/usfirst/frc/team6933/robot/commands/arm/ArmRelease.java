@@ -1,4 +1,4 @@
-package org.usfirst.frc.team6933.robot.commands.drive;
+package org.usfirst.frc.team6933.robot.commands.arm;
 
 import org.usfirst.frc.team6933.robot.Robot;
 
@@ -7,15 +7,10 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class DriveForward extends Command {
+public class ArmRelease extends Command {
 
-	double speed = 0.0;
-	double distance = 0.0;
-	
-    public DriveForward(double speed, double distance) {
-    	    requires(Robot.chassis);
-    	    this.speed = speed;
-    	    this.distance = distance;
+    public ArmRelease() {
+        requires(Robot.arm);
     }
 
     // Called just before this Command runs the first time

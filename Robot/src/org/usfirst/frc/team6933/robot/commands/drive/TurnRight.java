@@ -1,5 +1,7 @@
 package org.usfirst.frc.team6933.robot.commands.drive;
 
+import org.usfirst.frc.team6933.robot.Robot;
+
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -7,9 +9,13 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class TurnRight extends Command {
 
-    public TurnRight() {
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
+	double percent = 0.0;
+	int degrees = 0;
+	
+    public TurnRight(double percent, int degrees) {
+        requires(Robot.chassis);
+        this.percent = percent;
+        this.degrees = degrees;
     }
 
     // Called just before this Command runs the first time

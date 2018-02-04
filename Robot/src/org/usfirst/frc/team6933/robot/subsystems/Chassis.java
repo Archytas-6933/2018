@@ -76,8 +76,8 @@ public class Chassis extends Subsystem {
 		SmartDashboard.putNumber("AhrsDisplacementY",  navx_ahrs.getDisplacementY());
 		SmartDashboard.putNumber("AhrsDisplacementZ",  navx_ahrs.getDisplacementZ());
 		SmartDashboard.putNumber("AhrsAngle", navx_ahrs.getAngle());
-		SmartDashboard.putNumber("LeftDistance", leftEncoder.getDistance());
-		SmartDashboard.putNumber("RightDistance", rightEncoder.getDistance());
+		SmartDashboard.putNumber("EncoderLeftDistance", leftEncoder.getDistance());
+		SmartDashboard.putNumber("EncoderRightDistance", rightEncoder.getDistance());
 	
 	
 	}

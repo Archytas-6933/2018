@@ -1,5 +1,10 @@
 package org.usfirst.frc.team6933.robot.commands.autonomous;
 
+import org.usfirst.frc.team6933.robot.commands.drive.DriveBackward;
+import org.usfirst.frc.team6933.robot.commands.drive.DriveForward;
+import org.usfirst.frc.team6933.robot.commands.drive.TurnLeft;
+import org.usfirst.frc.team6933.robot.commands.drive.TurnRight;
+
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.TimedCommand;
 
@@ -28,5 +33,12 @@ public class AutonomousTestingGroup extends CommandGroup {
     	System.out.println("AutonomousTesting created");
     	System.out.println("wait 10");
     	addSequential(new TimedCommand(10));
+    	
+    addSequential(new TurnRight(.5 /*percent*/, 90 /*degrees*/));
+    addSequential(new TurnLeft(.5 /*percent*/, 45 /*degrees*/));
+    	addSequential(new DriveForward(.5 /*percent*/, 1.0 /*meters*/));
+    	addSequential(new DriveBackward(.5 /*percent*/, 1.0 /*meters*/));
+     	
+    	
     }
 }

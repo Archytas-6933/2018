@@ -7,6 +7,9 @@
 
 package org.usfirst.frc.team6933.robot;
 
+import org.usfirst.frc.team6933.robot.commands.arm.ArmRelease;
+import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousTestingGroup;
+import org.usfirst.frc.team6933.robot.commands.compressor.CompressorToggle;
 import org.usfirst.frc.team6933.robot.commands.drive.JogTransverse;
 import org.usfirst.frc.team6933.robot.commands.grabber.GrabberOpen;
 
@@ -27,14 +30,24 @@ public class OI {
 	JoystickButton button3 = gamepad1.getXButton();
 	JoystickButton button4 = gamepad1.getYButton();
 	
+	JoystickButton compressorButton = gamepad1.getStartButton();
+	JoystickButton armRelease = gamepad1.getXButton(); 
 	
 	public OI()
 	{
 		super();
 		
+	
+		button1.whenPressed(new AutonomousTestingGroup());
+		
 		button4.whileHeld(new GrabberOpen());
 		button3.whenPressed(new JogTransverse(.25));
-	
+		
+		// turn on/off the compressor - for testing and demo mostly
+		compressorButton.toggleWhenPressed(new CompressorToggle());
+		
+		// release the arm latch
+		armRelease.whenPressed(new ArmRelease());
 	}
 	
 	
