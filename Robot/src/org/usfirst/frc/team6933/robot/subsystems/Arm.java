@@ -1,7 +1,7 @@
 package org.usfirst.frc.team6933.robot.subsystems;
 
 import org.usfirst.frc.team6933.robot.RobotMap;
-import org.usfirst.frc.team6933.robot.commands.arm.ArmOff;
+import org.usfirst.frc.team6933.robot.commands.arm.ArmDefaultOff;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -20,7 +20,7 @@ public class Arm extends Subsystem {
 
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
-		setDefaultCommand(new ArmOff());
+		setDefaultCommand(new ArmDefaultOff());
 	}
 
 	public void armUp() {
@@ -36,6 +36,7 @@ public class Arm extends Subsystem {
 	}
 	
 	public void release() {
+		System.out.println("arm release");
 		releaseSolenoid.setPulseDuration(2.0);
 		releaseSolenoid.startPulse();
 	}

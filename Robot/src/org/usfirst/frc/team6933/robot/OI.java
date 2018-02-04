@@ -10,7 +10,8 @@ package org.usfirst.frc.team6933.robot;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmDown;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmRelease;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmUp;
-import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousTestingGroup;
+import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
+import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousRight;
 import org.usfirst.frc.team6933.robot.commands.compressor.CompressorToggle;
 import org.usfirst.frc.team6933.robot.commands.grabber.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.grabber.GrabberOpen;
@@ -29,7 +30,8 @@ public class OI {
 		super();
 		
 		// start the autonomous testing group
-		operator.AButton.whenPressed(new AutonomousTestingGroup());
+		operator.LeftJoyClick.whenPressed(new AutonomousLeft());
+		operator.RightJoyClick.whenPressed(new AutonomousRight());
 		
 		// open/close the grabber
 		operator.BButton.whenPressed(new GrabberOpen());

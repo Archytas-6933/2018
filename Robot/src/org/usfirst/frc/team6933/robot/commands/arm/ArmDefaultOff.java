@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ArmOff extends Command {
+public class ArmDefaultOff extends Command {
 
-	public ArmOff() {
+	public ArmDefaultOff() {
 		requires(Robot.arm);
 	}
 
@@ -26,7 +26,7 @@ public class ArmOff extends Command {
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-		return true; // done instantly as this is a discrete transition
+		return false; // default command - never finish
 	}
 
 	// Called once after isFinished returns true

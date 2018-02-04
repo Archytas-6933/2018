@@ -79,9 +79,6 @@ public class Robot extends TimedRobot {
 			autonomousCommand = autonomousRight;
 		}
 
-		// override selection for testing purposes
-		//autonomousCommand = new AutonomousTestingGroup();
-
 		// start the chosen autonomous command
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
