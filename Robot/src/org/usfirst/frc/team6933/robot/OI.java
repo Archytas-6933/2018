@@ -21,35 +21,39 @@ import org.usfirst.frc.team6933.robot.commands.grabber.GrabberOpen;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-	
+
 	public LogitechExtreme3D driver = new LogitechExtreme3D(0);
 	public LogitechGamepadF310 operator = new LogitechGamepadF310(1);
-	
-	public OI()
-	{
+
+	public OI() {
 		super();
-		
+
 		// start the autonomous testing group
 		operator.LeftJoyClick.whenPressed(new AutonomousLeft());
 		operator.RightJoyClick.whenPressed(new AutonomousRight());
-		
+
 		// open/close the grabber
 		operator.BButton.whenPressed(new GrabberOpen());
 		operator.XButton.whenPressed(new GrabberClose());
-		
+
 		// raise/lower and release the arm
 		operator.YButton.whenPressed(new ArmUp());
 		operator.AButton.whenPressed(new ArmDown());
 		operator.StartButton.whenPressed(new ArmRelease());
-		
+
 		// turn on/off the compressor - for testing and demo mostly
 		operator.AButton.toggleWhenPressed(new CompressorToggle());
-		
-		
+
 	}
-	
-	
-	
+
+	public double getXSpeed() {
+		return driver.getYAxis();
+	}
+
+	public double getZRotation() {
+		return driver.getZAxis();
+	}
+
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
 	//// joystick.
@@ -76,5 +80,5 @@ public class OI {
 
 	// Start the command when the button is released and let it run the command
 	// until it is finished as determined by it's isFinished method.
-	// button.whenReleased(new ExampleCommand());	
+	// button.whenReleased(new ExampleCommand());
 }

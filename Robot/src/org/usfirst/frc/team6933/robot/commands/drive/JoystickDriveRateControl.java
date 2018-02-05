@@ -29,13 +29,7 @@ public class JoystickDriveRateControl extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		// get values of gamepad1 axes
-		double lxAxis = Robot.oi.operator.getLXAxis();
-		double lyAxis = Robot.oi.operator.getLYAxis();
-
-		// set rate control goals in chassis
-		Robot.chassis.setRates(lyAxis, lxAxis);
-		
+		Robot.chassis.setRates(Robot.oi.getXSpeed(), Robot.oi.getZRotation());
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

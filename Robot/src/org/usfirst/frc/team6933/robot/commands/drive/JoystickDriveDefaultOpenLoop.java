@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class JoystickDriveOpenLoop extends Command {
+public class JoystickDriveDefaultOpenLoop extends Command {
 
-	public JoystickDriveOpenLoop() {
+	public JoystickDriveDefaultOpenLoop() {
 		requires(Robot.chassis);
 	}
 
@@ -21,12 +21,7 @@ public class JoystickDriveOpenLoop extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		// get values of gamepad1 axes
-		double lxAxis = Robot.oi.operator.getLXAxis();
-		double lyAxis = Robot.oi.operator.getLYAxis();
-		
-		// run the drive function given the above values
-		Robot.chassis.drive(lyAxis, lxAxis);
+		Robot.chassis.drive(Robot.oi.getXSpeed(), Robot.oi.getZRotation());
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

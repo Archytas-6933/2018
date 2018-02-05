@@ -2,7 +2,7 @@ package org.usfirst.frc.team6933.robot.subsystems;
 
 import org.usfirst.frc.team6933.robot.Robot;
 import org.usfirst.frc.team6933.robot.RobotMap;
-import org.usfirst.frc.team6933.robot.commands.drive.JoystickDriveOpenLoop;
+import org.usfirst.frc.team6933.robot.commands.drive.JoystickDriveDefaultOpenLoop;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
@@ -45,11 +45,11 @@ public class Chassis extends Subsystem {
 
 	// Basic arcade drive
 	public void drive(double forwardAxis, double turnAxis) {
-		drive.arcadeDrive(forwardAxis, turnAxis, false);
+		drive.arcadeDrive(forwardAxis/2, turnAxis/2, false);
 	}
 
 	public void initDefaultCommand() {
-		setDefaultCommand(new JoystickDriveOpenLoop());
+		setDefaultCommand(new JoystickDriveDefaultOpenLoop());
 	}
 
 	public double getAngle() {
