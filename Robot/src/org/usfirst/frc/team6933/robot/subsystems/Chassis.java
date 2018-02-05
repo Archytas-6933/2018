@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -28,12 +29,18 @@ public class Chassis extends Subsystem {
 	SpeedControllerGroup leftGroup = new SpeedControllerGroup(leftMotorA, leftMotorB);
 	SpeedControllerGroup rightGroup = new SpeedControllerGroup(rightMotorA, rightMotorB);
 
-	DifferentialDrive drive = new DifferentialDrive(leftGroup, rightGroup);
-
 	Encoder leftEncoder = new Encoder(RobotMap.DIO.motorLeftEncoderA, RobotMap.DIO.motorLeftEncoderB, true);
 	Encoder rightEncoder = new Encoder(RobotMap.DIO.motorRightEncoderA, RobotMap.DIO.motorRightEncoderB);
 	AHRS navx_ahrs = new AHRS(SPI.Port.kMXP);
 
+	PIDController leftPID = new PIDController(1.0, 0, 0, leftEncoder, leftGroup);
+	PIDController rightPID = new PIDController(1.0, 0, 0, rightEncoder, rightGroup);
+			
+	DifferentialDrive drive = new DifferentialDrive(leftGroup, rightGroup);
+//	DifferentialDrive drive = new DifferentialDrive()
+
+	
+	
 	public Chassis() {
 		double distancePerPulse = 6 * 2.54 * Math.PI / 100 / 360; // meters
 
@@ -45,7 +52,7 @@ public class Chassis extends Subsystem {
 
 	// Basic arcade drive
 	public void drive(double forwardAxis, double turnAxis) {
-		drive.arcadeDrive(forwardAxis/2, turnAxis/2, false);
+		drive.arcadeDrive(forwardAxis/2, turnAxis/2, false); // decimator - temporary
 	}
 
 	public void initDefaultCommand() {

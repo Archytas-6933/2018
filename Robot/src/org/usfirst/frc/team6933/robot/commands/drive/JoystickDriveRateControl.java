@@ -29,7 +29,7 @@ public class JoystickDriveRateControl extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.chassis.setRates(Robot.oi.getXSpeed(), Robot.oi.getZRotation());
+		Robot.chassis.setRates(Robot.oi.getYSpeed(), Robot.oi.getZRotation());
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

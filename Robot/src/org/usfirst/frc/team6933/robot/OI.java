@@ -46,7 +46,7 @@ public class OI {
 
 	}
 
-	public double getXSpeed() {
+	public double getYSpeed() {
 		return driver.getYAxis();
 	}
 

@@ -44,8 +44,6 @@ public class Robot extends TimedRobot {
 	public static OI oi = new OI();	
 
 	private Command autonomousCommand = null;
-	private Command autonomousRight = new AutonomousRight();
-	private Command autonomousLeft = new AutonomousLeft();
 	
 	public static double testSpeed = 0.2;
 
@@ -73,10 +71,10 @@ public class Robot extends TimedRobot {
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if (gameData.charAt(0) == 'L') {
 			System.out.println("Left was read");
-			autonomousCommand = autonomousLeft;
+			autonomousCommand = new AutonomousLeft();
 		} else {
 			System.out.println("Right was read");
-			autonomousCommand = autonomousRight;
+			autonomousCommand = new AutonomousRight();
 		}
 
 		// start the chosen autonomous command
@@ -132,25 +130,21 @@ public class Robot extends TimedRobot {
 	// periodic for the AUTONOMOUS mode
 	@Override
 	public void autonomousPeriodic() {
-		
 	}
 
 	// periodic for the DISABLED mode
 	@Override
 	public void disabledPeriodic() {
-//		Scheduler.getInstance().run();
 	}
 
 	// periodic for the TELEOP mode
 	@Override
 	public void teleopPeriodic() {
-//		Scheduler.getInstance().run();
 	}
 
 	// periodic for the TEST mode
 	@Override
 	public void testPeriodic() {
-		// no scheduler in test
 	}
 
 	
