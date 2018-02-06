@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Arm extends Subsystem {
 
-	final double solenoidPulseWidth = 1.0;  // seconds
+	final double solenoidPulseWidth = 0.5;  // seconds
 	
 	// Put methods for controlling this subsystem
 	DoubleSolenoid armSolenoid = new DoubleSolenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.armUp,

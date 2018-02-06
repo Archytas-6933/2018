@@ -15,13 +15,13 @@ public class WheelPIDSubsystem extends PIDSubsystem {
 	SpeedController wheel;
 	
     // Initialize your subsystem here
-    public WheelPIDSubsystem(String name, double kP, double kI, double kD, Encoder encoder, SpeedController wheel) {
+    public WheelPIDSubsystem(String name, double kP, double kI, double kD, Encoder encoder, SpeedController wheel, double decimator) {
     		super(name,kP,kI,kD);
     	
     		this.encoder = encoder;
     		this.wheel = wheel;
     		
-    		setInputRange(-1.0,+1.0);
+    		setInputRange(-decimator,+decimator);
     	    setSetpoint(0.0);  // initialize setpoint to zero
     	
         // Use these to get going:
@@ -40,7 +40,7 @@ public class WheelPIDSubsystem extends PIDSubsystem {
         // Return your input value for the PID loop
         // e.g. a sensor, like a potentiometer:
         // yourPot.getAverageVoltage() / kYourMaxVoltage;
-        return encoder.getRate();
+        return encoder.getRate();  // TODO wrong comparison
     }
 
     @Override

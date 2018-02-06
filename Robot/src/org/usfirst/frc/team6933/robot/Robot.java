@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
 
 	private Command autonomousCommand = null;
 	
-	public static double testSpeed = 0.2;
+	public static double testSpeed = 2.2;
 
 	@Override
 	public void robotInit() {

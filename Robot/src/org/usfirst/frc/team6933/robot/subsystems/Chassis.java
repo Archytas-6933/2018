@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Chassis extends Subsystem {
@@ -30,9 +29,7 @@ public class Chassis extends Subsystem {
 	Encoder rightEncoder = new Encoder(RobotMap.DIO.motorRightEncoderA, RobotMap.DIO.motorRightEncoderB);
 	AHRS ahrs = new AHRS(SPI.Port.kMXP);
 
-	DifferentialDrive drive = new DifferentialDrive(leftGroup, rightGroup);
-
-	AhrsPIDSubsystem ahrsPIDSubsystem;
+	// AhrsPIDSubsystem ahrsPIDSubsystem;
 	WheelPIDSubsystem leftWheelPIDSubsystem;
 	WheelPIDSubsystem rightWheelPIDSubsystem;
 
@@ -47,11 +44,11 @@ public class Chassis extends Subsystem {
 		rightEncoder.setDistancePerPulse(distancePerPulse);
 
 		// initialize PIDSubsystems as a way to encapsulate the PID behavior
-		rightWheelPIDSubsystem = new WheelPIDSubsystem("LeftWheelPID", 1.0, 0, 0, leftEncoder, leftGroup);
-		leftWheelPIDSubsystem = new WheelPIDSubsystem("RightWheelPID", 1.0, 0, 0, rightEncoder, rightGroup);
-		ahrsPIDSubsystem = new AhrsPIDSubsystem("Ahrs", 0.04, 0.0, 0.0, ahrs, 
-				leftWheelPIDSubsystem, rightWheelPIDSubsystem);
-
+		rightWheelPIDSubsystem = new WheelPIDSubsystem("LeftWheelPID", 1.0, 0, 0, leftEncoder, leftGroup, decimator);
+		leftWheelPIDSubsystem = new WheelPIDSubsystem("RightWheelPID", 1.0, 0, 0, rightEncoder, rightGroup, decimator);
+		// ahrsPIDSubsystem = new AhrsPIDSubsystem("Ahrs", 0.04, 0.0, 0.0, ahrs,
+		// leftWheelPIDSubsystem, rightWheelPIDSubsystem);
+		enableOpenLoopDrive();
 	}
 
 	public void initDefaultCommand() {
@@ -73,24 +70,21 @@ public class Chassis extends Subsystem {
 	}
 
 	public void drive(double forwardAxis, double turnAxis) {
-		if (openLoop) {
-			arcadeDriveOpenLoop(forwardAxis * decimator, turnAxis * decimator, squaredInputs);
-		} else {
-			arcadeDriveClosedLoop(forwardAxis * decimator, turnAxis * decimator, squaredInputs);
-		}
+
+		arcadeDrive(forwardAxis * decimator, turnAxis * decimator, squaredInputs);
+
 	}
 
-
 	public void enableAhrsDriveClosedLoop() {
-		this.ahrsPIDSubsystem.enable();
+		// this.ahrsPIDSubsystem.enable();
 	}
 
 	public void disableAhrsDriveClosedLoop() {
-		this.ahrsPIDSubsystem.disable();
+		// this.ahrsPIDSubsystem.disable();
 	}
 
 	public void ahrsDrive(double speed, double angle) {
-		//this.ahrsPIDSubsystem.setSetpoint(degrees);
+		// this.ahrsPIDSubsystem.setSetpoint(degrees);
 	}
 
 	public double getAngle() {
@@ -99,28 +93,24 @@ public class Chassis extends Subsystem {
 
 	public void sendInfo() {
 
-		SmartDashboard.putNumber("AhrsDisplacementX", ahrs.getDisplacementX());
-		SmartDashboard.putNumber("AhrsDisplacementY", ahrs.getDisplacementY());
-		SmartDashboard.putNumber("AhrsDisplacementZ", ahrs.getDisplacementZ());
-		SmartDashboard.putNumber("AhrsAngle", ahrs.getAngle());
-		SmartDashboard.putNumber("EncoderLeftDistance", leftEncoder.getDistance());
-		SmartDashboard.putNumber("EncoderRightDistance", rightEncoder.getDistance());
-		SmartDashboard.putNumber("EncoderLeftSpeed", leftEncoder.getRate());
-		SmartDashboard.putNumber("EncoderRightSpeed", rightEncoder.getRate());
+//		SmartDashboard.putNumber("AhrsDisplacementX", ahrs.getDisplacementX());
+//		SmartDashboard.putNumber("AhrsDisplacementY", ahrs.getDisplacementY());
+//		SmartDashboard.putNumber("AhrsDisplacementZ", ahrs.getDisplacementZ());
+//		SmartDashboard.putNumber("AhrsAngle", ahrs.getAngle());
+//		SmartDashboard.putNumber("EncoderLeftDistance", leftEncoder.getDistance());
+//		SmartDashboard.putNumber("EncoderRightDistance", rightEncoder.getDistance());
+//		SmartDashboard.putNumber("EncoderLeftSpeed", leftEncoder.getRate());
+//		SmartDashboard.putNumber("EncoderRightSpeed", rightEncoder.getRate());
 		SmartDashboard.putData(this);
 
 		leftWheelPIDSubsystem.sendInfo();
 		rightWheelPIDSubsystem.sendInfo();
-		ahrsPIDSubsystem.sendInfo();
-	}
-
-	public void arcadeDriveOpenLoop(double xSpeed, double zRotation, boolean squaredInputs) {
-		drive.arcadeDrive(xSpeed, zRotation, squaredInputs);
+		// ahrsPIDSubsystem.sendInfo();
 	}
 
 	// arcadeDrive code from wpilib modified to set setpoints on the wheel pid
 	// controllers
-	public void arcadeDriveClosedLoop(double xSpeed, double zRotation, boolean squaredInputs) {
+	public void arcadeDrive(double xSpeed, double zRotation, boolean squaredInputs) {
 
 		// Square the inputs (while preserving the sign) to increase fine control
 		// while permitting full power.
@@ -154,21 +144,23 @@ public class Chassis extends Subsystem {
 			}
 		}
 
-		leftWheelPIDSubsystem.setSetpoint(leftMotorOutput);
-		rightWheelPIDSubsystem.setSetpoint(rightMotorOutput);
-
+		if (openLoop) {
+			leftGroup.set(leftMotorOutput);
+			rightGroup.set(rightMotorOutput);
+		} else {
+			leftWheelPIDSubsystem.setSetpoint(leftMotorOutput);
+			rightWheelPIDSubsystem.setSetpoint(rightMotorOutput);
+		}
 	}
 
 	public void resetTraveled() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public double getTraveled() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
-
 
 }

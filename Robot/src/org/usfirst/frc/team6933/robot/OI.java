@@ -44,7 +44,8 @@ public class OI {
 		operator.StartButton.whenPressed(new ArmRelease());
 
 		// turn on/off the compressor - for testing and demo mostly
-		operator.AButton.toggleWhenPressed(new CompressorToggle());
+		//operator.AButton.toggleWhenPressed(new CompressorToggle());
+		
 		// select open/close loop drive
 		driver.ThumbButtonUpperLeft.whenPressed(new SelectChassisOpenLoop());
 		driver.ThumbButtonUpperRight.whenPressed(new SelectChassisClosedLoop());

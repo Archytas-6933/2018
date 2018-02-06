@@ -3,13 +3,15 @@ package org.usfirst.frc.team6933.robot.commands.grabber;
 import org.usfirst.frc.team6933.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 
 /**
  *
  */
-public class GrabberClose extends Command {
+public class GrabberClose extends TimedCommand {
 
 	public GrabberClose() {
+		super(Robot.arm.getSolenoidPulseWidth());
 		requires(Robot.grabber);
 	}
 
@@ -21,11 +23,6 @@ public class GrabberClose extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
 		Robot.grabber.close();
-	}
-
-	// Make this return true when this Command no longer needs to run execute()
-	protected boolean isFinished() {
-		return true; // done instantly as this is a discrete transition
 	}
 
 	// Called once after isFinished returns true
