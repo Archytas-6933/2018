@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Arm extends Subsystem {
 
+	final double solenoidPulseWidth = 1.0;  // seconds
+	
 	// Put methods for controlling this subsystem
 	DoubleSolenoid armSolenoid = new DoubleSolenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.armUp,
 			RobotMap.Solenoid.armDown);
@@ -37,10 +39,14 @@ public class Arm extends Subsystem {
 	
 	public void release() {
 		System.out.println("arm release");
-		releaseSolenoid.setPulseDuration(2.0);
+		releaseSolenoid.setPulseDuration(solenoidPulseWidth);
 		releaseSolenoid.startPulse();
 	}
 
+	public double getSolenoidPulseWidth() {
+		return solenoidPulseWidth;
+	}
+	
 	public void sendInfo() {
 		SmartDashboard.putData(this);
 	}
