@@ -23,13 +23,13 @@ public class NavxDriveClosedLoop extends Command {
 	@Override
 	protected void initialize() {
 		System.out.println(this.getClass().getName() + " initialize");
-		Robot.chassis.enableNavxDriveClosedLoop(); // needs values for rate control
+		Robot.chassis.enableAhrsDriveClosedLoop(); // needs values for rate control
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.chassis.navxDriveClosedLoop(Robot.oi.getYSpeed(), Robot.oi.getZRotation());
+		Robot.chassis.ahrsDriveClosedLoop(Robot.oi.getYSpeed(), Robot.oi.getZRotation());
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
@@ -42,7 +42,7 @@ public class NavxDriveClosedLoop extends Command {
 	@Override
 	protected void end() {
 		System.out.println(this.getClass().getName() + " end");
-		Robot.chassis.disableNavxDriveClosedLoop(); // restore open loop when done
+		Robot.chassis.disableAhrsDriveClosedLoop(); // restore open loop when done
 	}
 
 	// Called when another command which requires one or more of the same
