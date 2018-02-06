@@ -11,35 +11,35 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Compressor extends Subsystem {
 
-	//edu.wpi.first.wpilibj.Compressor compressor = new edu.wpi.first.wpilibj.Compressor();
+	// edu.wpi.first.wpilibj.Compressor compressor = new
+	// edu.wpi.first.wpilibj.Compressor();
 
 	public void initDefaultCommand() {
-		//setDefaultCommand(new CompressorStart());
+		// setDefaultCommand(new CompressorStart());
 	}
 
 	public void start() {
-//		if (!compressor.getClosedLoopControl()) {
-//		//	compressor.start();
-//		}
+		// if (!compressor.getClosedLoopControl()) {
+		// // compressor.start();
+		// }
 	}
 
 	public void stop() {
-//		if (compressor.getClosedLoopControl()) {
-//		//	compressor.stop();
-//		}
+		// if (compressor.getClosedLoopControl()) {
+		// // compressor.stop();
+		// }
 	}
 
 	public void toggleRun() {
-//		if (compressor.getClosedLoopControl()) {
-//		//	compressor.stop();
-//		} else {
-//		//	compressor.start();
-//		}
+		// if (compressor.getClosedLoopControl()) {
+		// // compressor.stop();
+		// } else {
+		// // compressor.start();
+		// }
 	}
 
 	public void sendInfo() {
-	//	SmartDashboard.putBoolean("CompressorStarted", compressor.getClosedLoopControl());
-	//	SmartDashboard.putBoolean("CompressorRunning", compressor.enabled());
+		SmartDashboard.putData(this);
 	}
 
 }

@@ -13,9 +13,9 @@ import org.usfirst.frc.team6933.robot.Robot;
 /**
  * An example command. You can replace me with your own command.
  */
-public class JoystickDriveRateControl extends Command {
+public class NavxDriveClosedLoop extends Command {
 
-	public JoystickDriveRateControl() {
+	public NavxDriveClosedLoop() {
 		requires(Robot.chassis);
 	}
 
@@ -23,13 +23,13 @@ public class JoystickDriveRateControl extends Command {
 	@Override
 	protected void initialize() {
 		System.out.println(this.getClass().getName() + " initialize");
-		Robot.chassis.enableClosedLoopDrive(); // needs values for rate control
+		Robot.chassis.enableNavxDriveClosedLoop(); // needs values for rate control
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.chassis.driveClosedLoop(Robot.oi.getYSpeed(), Robot.oi.getZRotation());
+		Robot.chassis.navxDriveClosedLoop(Robot.oi.getYSpeed(), Robot.oi.getZRotation());
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
@@ -42,7 +42,7 @@ public class JoystickDriveRateControl extends Command {
 	@Override
 	protected void end() {
 		System.out.println(this.getClass().getName() + " end");
-		Robot.chassis.disableClosedLoopDrive(); 
+		Robot.chassis.disableNavxDriveClosedLoop(); // restore open loop when done
 	}
 
 	// Called when another command which requires one or more of the same
