@@ -30,10 +30,12 @@ public class WheelPIDSubsystem extends PIDSubsystem {
         // enable() - Enables the PID controller.
     }
 
+    @Override
     public void initDefaultCommand() {
         // n/a
     }
 
+    @Override
     protected double returnPIDInput() {
         // Return your input value for the PID loop
         // e.g. a sensor, like a potentiometer:
@@ -41,6 +43,7 @@ public class WheelPIDSubsystem extends PIDSubsystem {
         return encoder.getRate();
     }
 
+    @Override
     protected void usePIDOutput(double output) {
         // Use output to drive your system, like a motor
         // e.g. yourMotor.set(output);

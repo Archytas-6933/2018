@@ -15,17 +15,17 @@ public class AhrsPIDSubsystem extends PIDSubsystem {
 	final double heading_Kp = 0.8;
 	final double headingTolerance = 2.0f; // Heading will read as "on target" if + or - this many degrees
 
-	SpeedController left;
-	SpeedController right;
+	PIDSubsystem left;
+	PIDSubsystem right;
 	AHRS ahrs;
 
 	// Initialize your subsystem here
-	public AhrsPIDSubsystem(String name, double kP, double kI, double kD, AHRS ahrs, SpeedControllerGroup left,
-			SpeedControllerGroup right) {
+	public AhrsPIDSubsystem(String name, double kP, double kI, double kD, AHRS ahrs,
+			WheelPIDSubsystem leftWheelPIDSubsystem, WheelPIDSubsystem rightWheelPIDSubsystem) {
 		super(name, kP, kI, kD);
 
-		this.left = left;
-		this.right = right;
+		this.left = leftWheelPIDSubsystem;
+		this.right = rightWheelPIDSubsystem;
 
 		setSetpoint(0.0); // initialize to zero
 		setInputRange(-180.0f, 180.0f);
@@ -35,10 +35,12 @@ public class AhrsPIDSubsystem extends PIDSubsystem {
 		// setContinuous(true);
 	}
 
+	@Override
 	public void initDefaultCommand() {
 		// n/a
 	}
 
+	@Override
 	protected double returnPIDInput() {
 		// Return your input value for the PID loop
 		// e.g. a sensor, like a potentiometer:
@@ -46,13 +48,22 @@ public class AhrsPIDSubsystem extends PIDSubsystem {
 		return ahrs.getAngle();
 	}
 
+	@Override
 	protected void usePIDOutput(double output) {
 		// Use output to drive your system, like a motor
 		// e.g. yourMotor.set(output);
-		right.set(output);
-		left.set(output);
+		right.setSetpoint(output);
+		left.setSetpoint(-output);
 	}
 
+	public void setSetpoint(double degrees) {
+		setSetpoint(degrees);
+	}
+	
+	public boolean getOnTarget() {
+		// TODO
+		return false;
+	}
 	public void sendInfo() {
 		SmartDashboard.putData(this);
 	}

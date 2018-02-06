@@ -4,45 +4,38 @@ import org.usfirst.frc.team6933.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 
+/**
+ *
+ */
+public class JoystickDriveDefault extends Command {
 
-public class DriveTimedOpenLoop extends Command {
-
-	double speed = 0.0;
-	double turn = 0.0;
-
-	public DriveTimedOpenLoop(double speed, double turn, double time) {
-		super("DriveTimedOpenLoop", time);
+	public JoystickDriveDefault() {
 		requires(Robot.chassis);
-		this.speed = speed;
-		this.turn = turn;
 	}
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
 		System.out.println(this.getClass().getName() + " initalize");
-		Robot.chassis.enableOpenLoopDrive();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		Robot.chassis.driveOpenLoop(speed, turn);
+		Robot.chassis.drive(Robot.oi.getYSpeed(), Robot.oi.getZRotation());
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-	    return isTimedOut();
+		return false; // default command never finish
 	}
 
 	// Called once after isFinished returns true
 	protected void end() {
 		System.out.println(this.getClass().getName() + " end");
-		Robot.chassis.disableOpenLoopDrive();
 	}
 
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
 	protected void interrupted() {
 		System.out.println(this.getClass().getName() + " interrupted");
-		
 	}
 }

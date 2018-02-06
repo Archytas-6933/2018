@@ -13,29 +13,42 @@ import org.usfirst.frc.team6933.robot.Robot;
 /**
  * An example command. You can replace me with your own command.
  */
-public class NavxDriveClosedLoop extends Command {
+public class AhrsDrive extends Command {
 
-	public NavxDriveClosedLoop() {
+	double speed;
+	double angle;
+	double distance;
+	
+	public AhrsDrive(double speed, double angle, double distance, double timeout) {
+		super("AhrsDrive", timeout);
 		requires(Robot.chassis);
+		
+		this.speed=speed;
+		this.angle = angle;
+		this.distance = distance;
+		
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
 		System.out.println(this.getClass().getName() + " initialize");
+		Robot.chassis.resetTraveled();
 		Robot.chassis.enableAhrsDriveClosedLoop(); // needs values for rate control
+		
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.chassis.ahrsDriveClosedLoop(Robot.oi.getYSpeed(), Robot.oi.getZRotation());
+		Robot.chassis.ahrsDrive(speed,angle);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return false; // never finished - may be preempted
+		double traveled = Robot.chassis.getTraveled();
+		return isTimedOut() || traveled >= distance; 
 	}
 
 	// Called once after isFinished returns true

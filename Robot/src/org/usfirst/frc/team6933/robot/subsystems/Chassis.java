@@ -1,7 +1,7 @@
 package org.usfirst.frc.team6933.robot.subsystems;
 
 import org.usfirst.frc.team6933.robot.RobotMap;
-import org.usfirst.frc.team6933.robot.commands.drive.JoystickDriveDefaultOpenLoop;
+import org.usfirst.frc.team6933.robot.commands.drive.JoystickDriveDefault;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
@@ -38,6 +38,7 @@ public class Chassis extends Subsystem {
 
 	boolean squaredInputs = false;
 	double decimator = 0.5;
+	boolean openLoop = true;
 
 	public Chassis() {
 
@@ -46,61 +47,50 @@ public class Chassis extends Subsystem {
 		rightEncoder.setDistancePerPulse(distancePerPulse);
 
 		// initialize PIDSubsystems as a way to encapsulate the PID behavior
-		ahrsPIDSubsystem = new AhrsPIDSubsystem("Ahrs", 0.04,0.0,0.0,ahrs,leftGroup,rightGroup);
 		rightWheelPIDSubsystem = new WheelPIDSubsystem("LeftWheelPID", 1.0, 0, 0, leftEncoder, leftGroup);
 		leftWheelPIDSubsystem = new WheelPIDSubsystem("RightWheelPID", 1.0, 0, 0, rightEncoder, rightGroup);
+		ahrsPIDSubsystem = new AhrsPIDSubsystem("Ahrs", 0.04, 0.0, 0.0, ahrs, 
+				leftWheelPIDSubsystem, rightWheelPIDSubsystem);
 
 	}
 
 	public void initDefaultCommand() {
-		setDefaultCommand(new JoystickDriveDefaultOpenLoop());
+		setDefaultCommand(new JoystickDriveDefault());
 	}
 
 	// open loop arcade drive
 	public void enableOpenLoopDrive() {
+		openLoop = true;
 		leftWheelPIDSubsystem.disable();
 		rightWheelPIDSubsystem.disable();
-	}
-
-	public void disableOpenLoopDrive() {
-		// seriously, not a thing
-		// this method is provided for symmetry
-	}
-
-	public void driveOpenLoop(double forwardAxis, double turnAxis) {
-		arcadeDriveOpenLoop(forwardAxis * decimator, turnAxis * decimator, squaredInputs);
 	}
 
 	// closed loop arcade drive
 	public void enableClosedLoopDrive() {
+		openLoop = false;
 		leftWheelPIDSubsystem.enable();
 		rightWheelPIDSubsystem.enable();
 	}
 
-	public void disableClosedLoopDrive() {
-		leftWheelPIDSubsystem.disable();
-		rightWheelPIDSubsystem.disable();
+	public void drive(double forwardAxis, double turnAxis) {
+		if (openLoop) {
+			arcadeDriveOpenLoop(forwardAxis * decimator, turnAxis * decimator, squaredInputs);
+		} else {
+			arcadeDriveClosedLoop(forwardAxis * decimator, turnAxis * decimator, squaredInputs);
+		}
 	}
 
-	public void driveClosedLoop(double forwardAxis, double turnAxis) {
-		arcadeDriveClosedLoop(forwardAxis * decimator, turnAxis * decimator, squaredInputs);
-	}
 
 	public void enableAhrsDriveClosedLoop() {
-		this.leftWheelPIDSubsystem.enable();
-		this.rightWheelPIDSubsystem.enable();
 		this.ahrsPIDSubsystem.enable();
 	}
 
 	public void disableAhrsDriveClosedLoop() {
-		this.leftWheelPIDSubsystem.disable();
-		this.rightWheelPIDSubsystem.disable();
 		this.ahrsPIDSubsystem.disable();
 	}
 
-	public void ahrsDriveClosedLoop(double ySpeed, double zRotation) {
-		// TODO Auto-generated method stub
-
+	public void ahrsDrive(double speed, double angle) {
+		//this.ahrsPIDSubsystem.setSetpoint(degrees);
 	}
 
 	public double getAngle() {
@@ -168,5 +158,17 @@ public class Chassis extends Subsystem {
 		rightWheelPIDSubsystem.setSetpoint(rightMotorOutput);
 
 	}
+
+	public void resetTraveled() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public double getTraveled() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
 
 }
