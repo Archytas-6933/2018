@@ -4,35 +4,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.PrintCommand;
 
-/**
- * A Joystick definition for the Logitech Gamepad F310
- * 
- * Use this class instead of Joystick when you are using a Logitech F310. This
- * class has definitions for every button and axis on the controller
- * 
- * @author vtleavs
- *
- */
 public class LogitechExtreme3D extends Joystick {
-
-	public static final int DPAD_OFF = -1;
-	public static final int DPAD_N = 0;
-	public static final int DPAD_NE = 45;
-	public static final int DPAD_E = 90;
-	public static final int DPAD_SE = 135;
-	public static final int DPAD_S = 180;
-	public static final int DPAD_SW = 225;
-	public static final int DPAD_W = 270;
-	public static final int DPAD_NW = 315;
 
 	int XAxis = 0;
 	int YAxis = 1;
 	int ZAxis = 2;
-
 	int throttleAxis = 3;
-
-	int DPadAxis = 4;
-
+	
 	JoystickButton Trigger = new JoystickButton(this, 1);
 	JoystickButton SidePickle = new JoystickButton(this, 2);
 	JoystickButton ThumbButtonLowerLeft = new JoystickButton(this, 3);
@@ -45,6 +23,15 @@ public class LogitechExtreme3D extends Joystick {
 	JoystickButton BaseButtonMiddleRight = new JoystickButton(this, 10);
 	JoystickButton BaseButtonBottomLeft = new JoystickButton(this, 11);
 	JoystickButton BaseButtonBottomRight = new JoystickButton(this, 12);
+
+	PovButton DPadButtonN = new PovButton(this, 0);
+	PovButton DPadButtonNE = new PovButton(this, 45);
+	PovButton DPadButtonE = new PovButton(this, 90);
+	PovButton DPadButtonSE = new PovButton(this, 135);
+	PovButton DPadButtonS = new PovButton(this, 180);
+	PovButton DPadButtonSW = new PovButton(this, 225);
+	PovButton DPadButtonW = new PovButton(this, 270);
+	PovButton DPadButtonNW = new PovButton(this, 315);
 
 	public LogitechExtreme3D(int port) {
 		super(port);
@@ -63,72 +50,25 @@ public class LogitechExtreme3D extends Joystick {
 		BaseButtonBottomLeft.whenPressed(new PrintCommand("BaseButtonBottomLeft"));
 		BaseButtonBottomRight.whenPressed(new PrintCommand("BaseButtonBottomRight"));
 
+		DPadButtonN.whenPressed(new PrintCommand("DPadButtonN"));
+		DPadButtonNE.whenPressed(new PrintCommand("DPadButtonNE"));
+		DPadButtonE.whenPressed(new PrintCommand("DPadButtonE"));
+		DPadButtonSE.whenPressed(new PrintCommand("DPadButtonE"));
+		DPadButtonS.whenPressed(new PrintCommand("DPadButtonE"));
+		DPadButtonSW.whenPressed(new PrintCommand("DPadButtonSW"));
+		DPadButtonW.whenPressed(new PrintCommand("DPadButtonW"));
+		DPadButtonNW.whenPressed(new PrintCommand("DPadButtonNW"));
 	}
+	
 
-	/**
-	 * Gets the current value of the Extreme 3D Pro DPad
-	 * 
-	 * @return An integer 0-8 where:
-	 *         <ul>
-	 *         <li>0 = OFF</li>
-	 *         <li>1 = N,</li>
-	 *         <li>2 = NE,</li>
-	 *         <li>3 = E,</li>
-	 *         <li>4 = SE,</li>
-	 *         <li>5 = S,</li>
-	 *         <li>6 = SW,</li>
-	 *         <li>7 = W,</li>
-	 *         <li>8 = NW</li>
-	 *         </ul>
-	 */
-	public int getDPad() {
-		int pov = this.getPOV(0);
-		switch (pov) {
-		case DPAD_OFF:
-			return 0;
-		case DPAD_N:
-			return 1;
-		case DPAD_NE:
-			return 2;
-		case DPAD_E:
-			return 3;
-		case DPAD_SE:
-			return 4;
-		case DPAD_S:
-			return 5;
-		case DPAD_SW:
-			return 6;
-		case DPAD_W:
-			return 7;
-		case DPAD_NW:
-			return 8;
-		}
-		return -1;
-	}
-
-	/**
-	 * Gets the x-axis
-	 * 
-	 * @return The double value of the axis
-	 */
 	public double getXAxis() {
 		return this.getRawAxis(XAxis);
 	}
 
-	/**
-	 * Gets the y-axis
-	 * 
-	 * @return The double value of the axis
-	 */
 	public double getYAxis() {
 		return -this.getRawAxis(YAxis);
 	}
 
-	/**
-	 * Gets the x-axis
-	 * 
-	 * @return The double value of the axis
-	 */
 	public double getZAxis() {
 		return this.getRawAxis(ZAxis);
 	}
@@ -137,8 +77,6 @@ public class LogitechExtreme3D extends Joystick {
 		return throttleAxis;
 	}
 
-	public int getDPadAxis() {
-		return DPadAxis;
-	}
+
 
 }

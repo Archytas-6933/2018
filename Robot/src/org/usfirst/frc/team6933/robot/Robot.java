@@ -85,8 +85,6 @@ public class Robot extends TimedRobot {
 			autonomousCommand.start();
 		}
 
-		// start the compressor
-		compressor.start();
 	}
 
 	// enter DISABLED mode
@@ -108,8 +106,6 @@ public class Robot extends TimedRobot {
 			autonomousCommand.cancel();
 		}
 
-		// start the compressor
-		compressor.start();
 	}
 
 	// enter TEST mode

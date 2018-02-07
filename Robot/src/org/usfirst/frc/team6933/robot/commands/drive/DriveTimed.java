@@ -11,8 +11,8 @@ public class DriveTimed extends TimedCommand {
 	double speed = 0.0;
 	double turn = 0.0;
 
-	public DriveTimed(double speed, double turn, double time) {
-		super(time);
+	public DriveTimed(double speed, double turn, double timeout) {
+		super(timeout);
 		requires(Robot.chassis);
 		this.speed = speed;
 		this.turn = turn;

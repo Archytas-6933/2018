@@ -13,10 +13,13 @@ import org.usfirst.frc.team6933.robot.commands.arm.ArmUp;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousRight;
 import org.usfirst.frc.team6933.robot.commands.compressor.CompressorToggle;
+import org.usfirst.frc.team6933.robot.commands.drive.JogCommand;
 import org.usfirst.frc.team6933.robot.commands.drive.SelectChassisClosedLoop;
 import org.usfirst.frc.team6933.robot.commands.drive.SelectChassisOpenLoop;
 import org.usfirst.frc.team6933.robot.commands.grabber.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.grabber.GrabberOpen;
+
+import edu.wpi.first.wpilibj.command.PrintCommand;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -30,6 +33,12 @@ public class OI {
 	public OI() {
 		super();
 
+		
+		// select open/close loop drive
+		driver.ThumbButtonUpperLeft.whenPressed(new SelectChassisOpenLoop());
+		driver.ThumbButtonUpperRight.whenPressed(new SelectChassisClosedLoop());
+		
+		
 		// start the autonomous testing group
 //		operator.LeftJoyClick.whenPressed(new AutonomousLeft());
 //		operator.RightJoyClick.whenPressed(new AutonomousRight());
@@ -45,11 +54,16 @@ public class OI {
 
 		// toggle compressor on/off - for testing and demo mostly
 		operator.RightJoyClick.toggleWhenPressed(new CompressorToggle());
-		
-		// select open/close loop drive
-		driver.ThumbButtonUpperLeft.whenPressed(new SelectChassisOpenLoop());
-		driver.ThumbButtonUpperRight.whenPressed(new SelectChassisClosedLoop());
-		
+	
+		// jog commands
+		driver.DPadButtonN.whenPressed(new JogCommand(driver.DPadButtonN));
+		driver.DPadButtonNE.whenPressed(new JogCommand(driver.DPadButtonNE));
+		driver.DPadButtonE.whenPressed(new JogCommand(driver.DPadButtonE));
+		driver.DPadButtonSE.whenPressed(new JogCommand(driver.DPadButtonSE));
+		driver.DPadButtonS.whenPressed(new JogCommand(driver.DPadButtonS));
+		driver.DPadButtonSW.whenPressed(new JogCommand(driver.DPadButtonSW));
+		driver.DPadButtonW.whenPressed(new JogCommand(driver.DPadButtonW));
+		driver.DPadButtonNW.whenPressed(new JogCommand(driver.DPadButtonW));
 	}
 
 	public double getYSpeed() {
@@ -59,6 +73,8 @@ public class OI {
 	public double getZRotation() {
 		return driver.getZAxis();
 	}
+
+	
 
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a

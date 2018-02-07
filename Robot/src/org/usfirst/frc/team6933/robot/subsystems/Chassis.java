@@ -46,8 +46,7 @@ public class Chassis extends Subsystem {
 		// initialize PIDSubsystems as a way to encapsulate the PID behavior
 		rightWheelPIDSubsystem = new WheelPIDSubsystem("LeftWheelPID", 1.0, 0, 0, leftEncoder, leftGroup);
 		leftWheelPIDSubsystem = new WheelPIDSubsystem("RightWheelPID", 1.0, 0, 0, rightEncoder, rightGroup);
-		// ahrsPIDSubsystem = new AhrsPIDSubsystem("Ahrs", 0.04, 0.0, 0.0, ahrs,
-		// leftWheelPIDSubsystem, rightWheelPIDSubsystem);
+		// ahrsPIDSubsystem = new AhrsPIDSubsystem(0.04, 0.0, 0.0, ahrs, leftWheelPIDSubsystem, rightWheelPIDSubsystem);
 		enableOpenLoopDrive();
 	}
 
@@ -70,9 +69,7 @@ public class Chassis extends Subsystem {
 	}
 
 	public void drive(double forwardAxis, double turnAxis) {
-
 		arcadeDrive(forwardAxis * decimator, turnAxis * decimator, squaredInputs);
-
 	}
 
 	public void enableAhrsDriveClosedLoop() {
