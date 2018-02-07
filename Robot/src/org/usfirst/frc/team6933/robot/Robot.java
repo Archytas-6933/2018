@@ -34,17 +34,17 @@ public class Robot extends TimedRobot {
 	//
 	// Robot initialization
 	//
-	
+
 	public static Arm arm = new Arm();
 	public static Chassis chassis = new Chassis();
 	public static Compressor compressor = new Compressor();;
 	public static Grabber grabber = new Grabber();
 	public static Video video = new Video();
-	
-	public static OI oi = new OI();	
+
+	public static OI oi = new OI();
 
 	private Command autonomousCommand = null;
-	
+
 	public static double testSpeed = 2.2;
 
 	@Override
@@ -53,6 +53,9 @@ public class Robot extends TimedRobot {
 
 		// start the camera server
 		video.startAutomaticCapture();
+
+		// start the compressor
+		compressor.start();
 	}
 
 	//
@@ -82,6 +85,8 @@ public class Robot extends TimedRobot {
 			autonomousCommand.start();
 		}
 
+		// start the compressor
+		compressor.start();
 	}
 
 	// enter DISABLED mode
@@ -103,6 +108,8 @@ public class Robot extends TimedRobot {
 			autonomousCommand.cancel();
 		}
 
+		// start the compressor
+		compressor.start();
 	}
 
 	// enter TEST mode
@@ -147,8 +154,6 @@ public class Robot extends TimedRobot {
 	public void testPeriodic() {
 	}
 
-	
-	
 	// public void driveForward(double distance) {
 	// Drive drive;
 	// drive = new Drive();

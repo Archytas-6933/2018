@@ -31,8 +31,8 @@ public class OI {
 		super();
 
 		// start the autonomous testing group
-		operator.LeftJoyClick.whenPressed(new AutonomousLeft());
-		operator.RightJoyClick.whenPressed(new AutonomousRight());
+//		operator.LeftJoyClick.whenPressed(new AutonomousLeft());
+//		operator.RightJoyClick.whenPressed(new AutonomousRight());
 
 		// open/close the grabber
 		operator.BButton.whenPressed(new GrabberOpen());
@@ -43,8 +43,8 @@ public class OI {
 		operator.AButton.whenPressed(new ArmDown());
 		operator.StartButton.whenPressed(new ArmRelease());
 
-		// turn on/off the compressor - for testing and demo mostly
-		//operator.AButton.toggleWhenPressed(new CompressorToggle());
+		// toggle compressor on/off - for testing and demo mostly
+		operator.RightJoyClick.toggleWhenPressed(new CompressorToggle());
 		
 		// select open/close loop drive
 		driver.ThumbButtonUpperLeft.whenPressed(new SelectChassisOpenLoop());

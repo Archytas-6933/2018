@@ -44,8 +44,8 @@ public class Chassis extends Subsystem {
 		rightEncoder.setDistancePerPulse(distancePerPulse);
 
 		// initialize PIDSubsystems as a way to encapsulate the PID behavior
-		rightWheelPIDSubsystem = new WheelPIDSubsystem("LeftWheelPID", 1.0, 0, 0, leftEncoder, leftGroup, decimator);
-		leftWheelPIDSubsystem = new WheelPIDSubsystem("RightWheelPID", 1.0, 0, 0, rightEncoder, rightGroup, decimator);
+		rightWheelPIDSubsystem = new WheelPIDSubsystem("LeftWheelPID", 1.0, 0, 0, leftEncoder, leftGroup);
+		leftWheelPIDSubsystem = new WheelPIDSubsystem("RightWheelPID", 1.0, 0, 0, rightEncoder, rightGroup);
 		// ahrsPIDSubsystem = new AhrsPIDSubsystem("Ahrs", 0.04, 0.0, 0.0, ahrs,
 		// leftWheelPIDSubsystem, rightWheelPIDSubsystem);
 		enableOpenLoopDrive();

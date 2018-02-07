@@ -2,7 +2,6 @@ package org.usfirst.frc.team6933.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -23,14 +22,13 @@ public class WheelPIDSubsystem extends PIDSubsystem {
 	
 
 	// Initialize your subsystem here
-	public WheelPIDSubsystem(String name, double kP, double kI, double kD, Encoder encoder, SpeedController wheel,
-			double decimator) {
+	public WheelPIDSubsystem(String name, double kP, double kI, double kD, Encoder encoder, SpeedController wheel) {
 		super(name, kP, kI, kD);
 
 		this.encoder = encoder;
 		this.wheel = wheel;
 
-		setInputRange(-decimator, +decimator);
+		setInputRange(-1.0, +1.0);
 		setSetpoint(0.0); // initialize setpoint to zero
 
 
