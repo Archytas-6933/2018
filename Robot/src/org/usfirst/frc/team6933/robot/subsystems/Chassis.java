@@ -141,6 +141,7 @@ public class Chassis extends Subsystem {
 			}
 		}
 
+		leftMotorOutput *= -1.0;
 		if (openLoop) {
 			leftGroup.set(leftMotorOutput);
 			rightGroup.set(rightMotorOutput);

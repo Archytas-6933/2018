@@ -62,8 +62,8 @@ public class LogitechGamepadF310 extends Joystick {
 		DPadButtonN.whenPressed(new PrintCommand("DPadButtonN"));
 		DPadButtonNE.whenPressed(new PrintCommand("DPadButtonNE"));
 		DPadButtonE.whenPressed(new PrintCommand("DPadButtonE"));
-		DPadButtonSE.whenPressed(new PrintCommand("DPadButtonE"));
-		DPadButtonS.whenPressed(new PrintCommand("DPadButtonE"));
+		DPadButtonSE.whenPressed(new PrintCommand("DPadButtonSE"));
+		DPadButtonS.whenPressed(new PrintCommand("DPadButtonS"));
 		DPadButtonSW.whenPressed(new PrintCommand("DPadButtonSW"));
 		DPadButtonW.whenPressed(new PrintCommand("DPadButtonW"));
 		DPadButtonNW.whenPressed(new PrintCommand("DPadButtonNW"));
