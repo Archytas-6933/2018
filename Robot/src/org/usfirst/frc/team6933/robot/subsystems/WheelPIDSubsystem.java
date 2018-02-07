@@ -14,46 +14,58 @@ public class WheelPIDSubsystem extends PIDSubsystem {
 	Encoder encoder;
 	SpeedController wheel;
 	
-    // Initialize your subsystem here
-    public WheelPIDSubsystem(String name, double kP, double kI, double kD, Encoder encoder, SpeedController wheel, double decimator) {
-    		super(name,kP,kI,kD);
-    	
-    		this.encoder = encoder;
-    		this.wheel = wheel;
-    		
-    		setInputRange(-decimator,+decimator);
-    	    setSetpoint(0.0);  // initialize setpoint to zero
-    	
-        // Use these to get going:
-        // setSetpoint() -  Sets where the PID controller should move the system
-        //                  to
-        // enable() - Enables the PID controller.
-    }
+	// determine max speed 
+	int cimNoLoadRpm = 5310;  // 2.5" CIM Motor (am-0255)
+	double toughBoxMiniRatio = 10.71; // ToughBox Mini for KoP Chassis (am-14u3), 10.71:1 Ratio (am-2598_107)
+	double toughBoxMiniOutputRpm = cimNoLoadRpm / toughBoxMiniRatio;
+	double wheelCircumfrenceMeters = 6 * 2.54 * Math.PI /100;
+	double chassisNoLoadMps = toughBoxMiniOutputRpm * wheelCircumfrenceMeters;
+	
 
-    @Override
-    public void initDefaultCommand() {
-        // n/a
-    }
+	// Initialize your subsystem here
+	public WheelPIDSubsystem(String name, double kP, double kI, double kD, Encoder encoder, SpeedController wheel,
+			double decimator) {
+		super(name, kP, kI, kD);
 
-    @Override
-    protected double returnPIDInput() {
-        // Return your input value for the PID loop
-        // e.g. a sensor, like a potentiometer:
-        // yourPot.getAverageVoltage() / kYourMaxVoltage;
-        return encoder.getRate();  // TODO wrong comparison
-    }
+		this.encoder = encoder;
+		this.wheel = wheel;
 
-    @Override
-    protected void usePIDOutput(double output) {
-        // Use output to drive your system, like a motor
-        // e.g. yourMotor.set(output);
-    		wheel.set(output);
-    }
-    
-    public void updateSetpoint(double setpoint) {
-    		setSetpoint(setpoint);
-    }
-    
+		setInputRange(-decimator, +decimator);
+		setSetpoint(0.0); // initialize setpoint to zero
+
+
+		
+		// Use these to get going:
+		// setSetpoint() - Sets where the PID controller should move the system
+		// to
+		// enable() - Enables the PID controller.
+	}
+
+	@Override
+	public void initDefaultCommand() {
+		// n/a
+	}
+
+	@Override
+	protected double returnPIDInput() {
+		// Return your input value for the PID loop
+		// e.g. a sensor, like a potentiometer:
+		// yourPot.getAverageVoltage() / kYourMaxVoltage;
+
+		return encoder.getRate()/chassisNoLoadMps; 
+	}
+
+	@Override
+	protected void usePIDOutput(double output) {
+		// Use output to drive your system, like a motor
+		// e.g. yourMotor.set(output);
+		wheel.set(output);
+	}
+
+	public void updateSetpoint(double setpoint) {
+		setSetpoint(setpoint);
+	}
+
 	public void sendInfo() {
 		SmartDashboard.putData(this);
 	}
