@@ -71,7 +71,7 @@ public class OI {
 	}
 
 	public double getZRotation() {
-		return driver.getZAxis();
+		return driver.getXAxis();
 	}
 
 	

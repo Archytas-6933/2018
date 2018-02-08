@@ -34,7 +34,7 @@ public class Chassis extends Subsystem {
 	WheelPIDSubsystem rightWheelPIDSubsystem;
 
 	boolean squaredInputs = false;
-	double decimator = 0.5;
+	double decimator = 1.0;
 	boolean openLoop = true;
 
 	public Chassis() {
@@ -42,10 +42,14 @@ public class Chassis extends Subsystem {
 		// initialize encoders before passing into PID controllers
 		leftEncoder.setDistancePerPulse(distancePerPulse);
 		rightEncoder.setDistancePerPulse(distancePerPulse);
-
+		leftEncoder.setName("leftEncoder");
+		rightEncoder.setName("rightEncoder");
+		
+		rightGroup.setInverted(true);
+		
 		// initialize PIDSubsystems as a way to encapsulate the PID behavior
-		rightWheelPIDSubsystem = new WheelPIDSubsystem("LeftWheelPID", 1.0, 0, 0, leftEncoder, leftGroup);
-		leftWheelPIDSubsystem = new WheelPIDSubsystem("RightWheelPID", 1.0, 0, 0, rightEncoder, rightGroup);
+		leftWheelPIDSubsystem = new WheelPIDSubsystem("LeftWheelPID", .5, .05, 0, leftEncoder, leftGroup);
+		rightWheelPIDSubsystem = new WheelPIDSubsystem("RightWheelPID", .5, .05, 0, rightEncoder, rightGroup);
 		// ahrsPIDSubsystem = new AhrsPIDSubsystem(0.04, 0.0, 0.0, ahrs, leftWheelPIDSubsystem, rightWheelPIDSubsystem);
 		enableOpenLoopDrive();
 	}
@@ -109,6 +113,9 @@ public class Chassis extends Subsystem {
 	// controllers
 	public void arcadeDrive(double xSpeed, double zRotation, boolean squaredInputs) {
 
+		SmartDashboard.putNumber("A - xSpeed", xSpeed);
+		SmartDashboard.putNumber("A - zRotation", zRotation);
+		
 		// Square the inputs (while preserving the sign) to increase fine control
 		// while permitting full power.
 		if (squaredInputs) {
@@ -141,7 +148,9 @@ public class Chassis extends Subsystem {
 			}
 		}
 
-		leftMotorOutput *= -1.0;
+		SmartDashboard.putNumber("A - leftOutput", leftMotorOutput);
+		SmartDashboard.putNumber("A - rightOutput", rightMotorOutput);
+
 		if (openLoop) {
 			leftGroup.set(leftMotorOutput);
 			rightGroup.set(rightMotorOutput);

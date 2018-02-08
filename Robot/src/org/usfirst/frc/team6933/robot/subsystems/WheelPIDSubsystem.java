@@ -49,14 +49,16 @@ public class WheelPIDSubsystem extends PIDSubsystem {
 		// Return your input value for the PID loop
 		// e.g. a sensor, like a potentiometer:
 		// yourPot.getAverageVoltage() / kYourMaxVoltage;
-
-		return encoder.getRate()/chassisNoLoadMps; 
+		double input = encoder.getRate()/chassisNoLoadMps;
+		SmartDashboard.putNumber("A - PIDInput - " + getName(), input);
+		return input; 
 	}
 
 	@Override
 	protected void usePIDOutput(double output) {
 		// Use output to drive your system, like a motor
-		// e.g. yourMotor.set(output);
+		// e.g. yourMotor.set(output)
+		SmartDashboard.putNumber("A - PIDOutput - " + getName(), output);
 		wheel.set(output);
 	}
 
