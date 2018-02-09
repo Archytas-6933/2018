@@ -22,8 +22,8 @@ public class WheelPIDSubsystem extends PIDSubsystem {
 	
 
 	// Initialize your subsystem here
-	public WheelPIDSubsystem(String name, double kP, double kI, double kD, Encoder encoder, SpeedController wheel) {
-		super(name, kP, kI, kD);
+	public WheelPIDSubsystem(String name, double kP, double kI, double kD, double kF, Encoder encoder, SpeedController wheel) {
+		super(name, kP, kI, kD, kF);
 
 		this.encoder = encoder;
 		this.wheel = wheel;
@@ -49,7 +49,7 @@ public class WheelPIDSubsystem extends PIDSubsystem {
 		// Return your input value for the PID loop
 		// e.g. a sensor, like a potentiometer:
 		// yourPot.getAverageVoltage() / kYourMaxVoltage;
-		double input = encoder.getRate()/chassisNoLoadMps;
+		double input = encoder.getRate()/8;///chassisNoLoadMps;
 		SmartDashboard.putNumber("A - PIDInput - " + getName(), input);
 		return input; 
 	}

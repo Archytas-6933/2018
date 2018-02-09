@@ -35,7 +35,7 @@ public class LogitechGamepadF310 extends Joystick {
 	JoystickButton LeftJoyClick = new JoystickButton(this, 9);
 	JoystickButton RightJoyClick = new JoystickButton(this, 10);
 
-	PovButton DPadButtonN = new PovButton(this, 0); 
+	PovButton DPadButtonN = new PovButton(this, 0);
 	PovButton DPadButtonNE = new PovButton(this, 45);
 	PovButton DPadButtonE = new PovButton(this, 90);
 	PovButton DPadButtonSE = new PovButton(this, 135);
@@ -46,6 +46,11 @@ public class LogitechGamepadF310 extends Joystick {
 
 	public LogitechGamepadF310(int port) {
 		super(port);
+		// addButtonDebugPrintCommands();
+	}
+
+	@SuppressWarnings("unused")
+	private void addButtonDebugPrintCommands() {
 
 		// add button debug print commands
 		AButton.whenPressed(new PrintCommand("AButton"));
@@ -59,6 +64,7 @@ public class LogitechGamepadF310 extends Joystick {
 		LeftJoyClick.whenPressed(new PrintCommand("LeftJoyClick"));
 		RightJoyClick.whenPressed(new PrintCommand("RightJoyClick"));
 
+		// add pov button debug print commands
 		DPadButtonN.whenPressed(new PrintCommand("DPadButtonN"));
 		DPadButtonNE.whenPressed(new PrintCommand("DPadButtonNE"));
 		DPadButtonE.whenPressed(new PrintCommand("DPadButtonE"));
@@ -67,7 +73,6 @@ public class LogitechGamepadF310 extends Joystick {
 		DPadButtonSW.whenPressed(new PrintCommand("DPadButtonSW"));
 		DPadButtonW.whenPressed(new PrintCommand("DPadButtonW"));
 		DPadButtonNW.whenPressed(new PrintCommand("DPadButtonNW"));
-
 	}
 
 	public double getLXAxis() {
@@ -75,7 +80,7 @@ public class LogitechGamepadF310 extends Joystick {
 	}
 
 	public double getLYAxis() {
-		return -this.getRawAxis(LYAxis);
+		return - this.getRawAxis(LYAxis);  // note negation on Y-axis values here, so +Y is forward
 	}
 
 	public double getRXAxis() {
@@ -83,7 +88,7 @@ public class LogitechGamepadF310 extends Joystick {
 	}
 
 	public double getRYAxis() {
-		return this.getRawAxis(RYAxis);
+		return - this.getRawAxis(RYAxis); // note negation on Y-axis values here, so +Y is forward
 	}
 
 }

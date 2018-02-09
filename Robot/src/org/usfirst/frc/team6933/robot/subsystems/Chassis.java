@@ -49,10 +49,10 @@ public class Chassis extends Subsystem {
 		rightGroup.setInverted(true);
 		
 		// initialize PIDSubsystems as a way to encapsulate the PID behavior
-		leftWheelPIDSubsystem = new WheelPIDSubsystem("LeftWheelPID", .5, .05, 0, leftEncoder, leftGroup);
-		rightWheelPIDSubsystem = new WheelPIDSubsystem("RightWheelPID", .5, .05, 0, rightEncoder, rightGroup);
+		leftWheelPIDSubsystem = new WheelPIDSubsystem("LeftWheelPID", 1, 0, .3, 0, leftEncoder, leftGroup);
+		rightWheelPIDSubsystem = new WheelPIDSubsystem("RightWheelPID", 1, 0, .3, 0, rightEncoder, rightGroup);
 		// ahrsPIDSubsystem = new AhrsPIDSubsystem(0.04, 0.0, 0.0, ahrs, leftWheelPIDSubsystem, rightWheelPIDSubsystem);
-		
+//	LiveWindow.updateValues();
 		enableOpenLoopDrive();
 	}
 

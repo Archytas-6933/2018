@@ -10,7 +10,8 @@ public class LogitechExtreme3D extends Joystick {
 	int YAxis = 1;
 	int ZAxis = 2;
 	int throttleAxis = 3;
-	
+
+	// create JoystickButtons
 	JoystickButton Trigger = new JoystickButton(this, 1);
 	JoystickButton SidePickle = new JoystickButton(this, 2);
 	JoystickButton ThumbButtonLowerLeft = new JoystickButton(this, 3);
@@ -24,6 +25,7 @@ public class LogitechExtreme3D extends Joystick {
 	JoystickButton BaseButtonBottomLeft = new JoystickButton(this, 11);
 	JoystickButton BaseButtonBottomRight = new JoystickButton(this, 12);
 
+	// create PovButtons for the POV rocker axis
 	PovButton DPadButtonN = new PovButton(this, 0);
 	PovButton DPadButtonNE = new PovButton(this, 45);
 	PovButton DPadButtonE = new PovButton(this, 90);
@@ -35,7 +37,12 @@ public class LogitechExtreme3D extends Joystick {
 
 	public LogitechExtreme3D(int port) {
 		super(port);
+		// addButtonDebugPrintCommands();
+	}
 
+	@SuppressWarnings("unused")
+	private void addButtonDebugPrintCommands() {
+		
 		// add button debug print commands
 		Trigger.whenPressed(new PrintCommand("Trigger"));
 		SidePickle.whenPressed(new PrintCommand("SidePickle"));
@@ -50,6 +57,7 @@ public class LogitechExtreme3D extends Joystick {
 		BaseButtonBottomLeft.whenPressed(new PrintCommand("BaseButtonBottomLeft"));
 		BaseButtonBottomRight.whenPressed(new PrintCommand("BaseButtonBottomRight"));
 
+		// add pov button debug print commands
 		DPadButtonN.whenPressed(new PrintCommand("DPadButtonN"));
 		DPadButtonNE.whenPressed(new PrintCommand("DPadButtonNE"));
 		DPadButtonE.whenPressed(new PrintCommand("DPadButtonE"));
@@ -59,14 +67,13 @@ public class LogitechExtreme3D extends Joystick {
 		DPadButtonW.whenPressed(new PrintCommand("DPadButtonW"));
 		DPadButtonNW.whenPressed(new PrintCommand("DPadButtonNW"));
 	}
-	
 
 	public double getXAxis() {
 		return this.getRawAxis(XAxis);
 	}
 
 	public double getYAxis() {
-		return -this.getRawAxis(YAxis);
+		return - this.getRawAxis(YAxis);   // note negation on Y-axis values here, so +Y is forward
 	}
 
 	public double getZAxis() {
@@ -76,7 +83,5 @@ public class LogitechExtreme3D extends Joystick {
 	public int getThrottleAxis() {
 		return throttleAxis;
 	}
-
-
 
 }

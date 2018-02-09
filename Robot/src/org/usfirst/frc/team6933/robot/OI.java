@@ -13,6 +13,7 @@ import org.usfirst.frc.team6933.robot.commands.arm.ArmUp;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousRight;
 import org.usfirst.frc.team6933.robot.commands.compressor.CompressorToggle;
+import org.usfirst.frc.team6933.robot.commands.drive.DriveTimed;
 import org.usfirst.frc.team6933.robot.commands.drive.JogCommand;
 import org.usfirst.frc.team6933.robot.commands.drive.SelectChassisClosedLoop;
 import org.usfirst.frc.team6933.robot.commands.drive.SelectChassisOpenLoop;
@@ -60,6 +61,8 @@ public class OI {
 		driver.DPadButtonE.whenPressed(new JogCommand(driver.DPadButtonE));
 		driver.DPadButtonS.whenPressed(new JogCommand(driver.DPadButtonS));
 		driver.DPadButtonW.whenPressed(new JogCommand(driver.DPadButtonW));
+		
+		driver.BaseButtonBottomLeft.whileHeld(new DriveTimed(.5,0,10));
 	}
 
 	public double getYSpeed() {
