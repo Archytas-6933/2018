@@ -20,6 +20,7 @@ public class Arm extends Subsystem {
 			RobotMap.Solenoid.armDown);
 	Solenoid releaseSolenoid = new Solenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.armRelease);
 
+	@Override
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
 		setDefaultCommand(new ArmDefaultOff());

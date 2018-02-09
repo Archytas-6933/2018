@@ -4,7 +4,6 @@ import org.usfirst.frc.team6933.robot.RobotMap;
 import org.usfirst.frc.team6933.robot.commands.grabber.GrabberOff;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -17,6 +16,7 @@ public class Grabber extends Subsystem {
 	// here. Call these from Command
 	DoubleSolenoid grabberSolenoid = new DoubleSolenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.grabberOpen, RobotMap.Solenoid.grabberClose);
 	
+	@Override
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
 		setDefaultCommand(new GrabberOff());

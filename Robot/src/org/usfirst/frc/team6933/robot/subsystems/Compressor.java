@@ -1,7 +1,6 @@
 package org.usfirst.frc.team6933.robot.subsystems;
 
 import org.usfirst.frc.team6933.robot.RobotMap;
-import org.usfirst.frc.team6933.robot.commands.compressor.CompressorStart;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,6 +12,7 @@ public class Compressor extends Subsystem {
 
 	edu.wpi.first.wpilibj.Compressor compressor = new edu.wpi.first.wpilibj.Compressor(RobotMap.CAN.pcmId);
 
+	@Override
 	public void initDefaultCommand() {
 		// no default command
 	}

@@ -19,23 +19,27 @@ public class DriveTimed extends TimedCommand {
 	}
 
 	// Called just before this Command runs the first time
+	@Override
 	protected void initialize() {
 		System.out.println(this.getClass().getName() + " initalize");
 	}
 
 	// Called repeatedly when this Command is scheduled to run
+	@Override
 	protected void execute() {
 		Robot.chassis.drive(speed, turn);
 	}
 
 	// Called once after isFinished returns true
+	@Override
 	protected void end() {
-		System.out.println(this.getClass().getName() + " end");
+//		System.out.println(this.getClass().getName() + " end");
 	}
 
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
+	@Override
 	protected void interrupted() {
-		System.out.println(this.getClass().getName() + " interrupted");	
+//		System.out.println(this.getClass().getName() + " interrupted");	
 	}
 }

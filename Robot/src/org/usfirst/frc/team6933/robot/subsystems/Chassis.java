@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Chassis extends Subsystem {
@@ -38,7 +39,7 @@ public class Chassis extends Subsystem {
 	boolean openLoop = true;
 
 	public Chassis() {
-
+		
 		// initialize encoders before passing into PID controllers
 		leftEncoder.setDistancePerPulse(distancePerPulse);
 		rightEncoder.setDistancePerPulse(distancePerPulse);
@@ -51,9 +52,11 @@ public class Chassis extends Subsystem {
 		leftWheelPIDSubsystem = new WheelPIDSubsystem("LeftWheelPID", .5, .05, 0, leftEncoder, leftGroup);
 		rightWheelPIDSubsystem = new WheelPIDSubsystem("RightWheelPID", .5, .05, 0, rightEncoder, rightGroup);
 		// ahrsPIDSubsystem = new AhrsPIDSubsystem(0.04, 0.0, 0.0, ahrs, leftWheelPIDSubsystem, rightWheelPIDSubsystem);
+		
 		enableOpenLoopDrive();
 	}
 
+	@Override
 	public void initDefaultCommand() {
 		setDefaultCommand(new JoystickDriveDefault());
 	}

@@ -56,6 +56,7 @@ public class AhrsPIDSubsystem extends PIDSubsystem {
 		left.setSetpoint(-output);
 	}
 
+	@Override
 	public void setSetpoint(double degrees) {
 		setSetpoint(degrees);
 	}

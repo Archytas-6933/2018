@@ -55,14 +55,14 @@ public class AhrsDrive extends Command {
 	@Override
 	protected void end() {
 		System.out.println(this.getClass().getName() + " end");
-		Robot.chassis.disableAhrsDriveClosedLoop(); // restore open loop when done
+//		Robot.chassis.disableAhrsDriveClosedLoop(); // restore open loop when done
 	}
 
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
 	@Override
 	protected void interrupted() {
-		System.out.println(this.getClass().getName() + " interrupted");
+//		System.out.println(this.getClass().getName() + " interrupted");
 	}
 
 }

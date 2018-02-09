@@ -10,14 +10,14 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
  */
 public class SelectChassisClosedLoop extends InstantCommand {
 
-    public SelectChassisClosedLoop() {
-        requires(Robot.chassis);
-    }
+	public SelectChassisClosedLoop() {
+		requires(Robot.chassis);
+	}
 
-    // Called just before this Command runs the first time
-    protected void initialize() {
-    	Robot.chassis.enableClosedLoopDrive();
-    }
-
+	// Called just before this Command runs the first time
+	@Override
+	protected void initialize() {
+		Robot.chassis.enableClosedLoopDrive();
+	}
 
 }

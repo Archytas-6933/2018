@@ -57,13 +57,9 @@ public class OI {
 	
 		// jog commands
 		driver.DPadButtonN.whenPressed(new JogCommand(driver.DPadButtonN));
-		driver.DPadButtonNE.whenPressed(new JogCommand(driver.DPadButtonNE));
 		driver.DPadButtonE.whenPressed(new JogCommand(driver.DPadButtonE));
-		driver.DPadButtonSE.whenPressed(new JogCommand(driver.DPadButtonSE));
 		driver.DPadButtonS.whenPressed(new JogCommand(driver.DPadButtonS));
-		driver.DPadButtonSW.whenPressed(new JogCommand(driver.DPadButtonSW));
 		driver.DPadButtonW.whenPressed(new JogCommand(driver.DPadButtonW));
-		driver.DPadButtonNW.whenPressed(new JogCommand(driver.DPadButtonW));
 	}
 
 	public double getYSpeed() {
