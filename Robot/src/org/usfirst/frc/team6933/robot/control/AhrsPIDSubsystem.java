@@ -1,9 +1,9 @@
-package org.usfirst.frc.team6933.robot.subsystems;
+package org.usfirst.frc.team6933.robot.control;
+
+import org.usfirst.frc.team6933.robot.subsystems.Chassis;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -15,25 +15,26 @@ public class AhrsPIDSubsystem extends PIDSubsystem {
 	final double heading_Kp = 0.8;
 	final double headingTolerance = 2.0f; // Heading will read as "on target" if + or - this many degrees
 
-	PIDSubsystem left;
-	PIDSubsystem right;
+	Chassis.VelocityControl velocityControl;
+	
 	AHRS ahrs;
 
 	// Initialize your subsystem here
-	public AhrsPIDSubsystem(String name, double kP, double kI, double kD, AHRS ahrs,
-			WheelPIDSubsystem leftWheelPIDSubsystem, WheelPIDSubsystem rightWheelPIDSubsystem) {
+	public AhrsPIDSubsystem(String name, double kP, double kI, double kD, AHRS ahrs, Chassis.VelocityControl velocityControl ) {
 		super(name, kP, kI, kD);
 
-		this.left = leftWheelPIDSubsystem;
-		this.right = rightWheelPIDSubsystem;
-
+		this.velocityControl = velocityControl;
+		
 		setSetpoint(0.0); // initialize to zero
 		setInputRange(-180.0f, 180.0f);
 		setOutputRange(-heading_Kp, heading_Kp);
 		setAbsoluteTolerance(headingTolerance);
-		enable();
 		// setContinuous(true);
+		
+		//should work best if velocity control is enabled!
+		velocityControl.enable();
 	}
+
 
 	@Override
 	public void initDefaultCommand() {
@@ -52,8 +53,7 @@ public class AhrsPIDSubsystem extends PIDSubsystem {
 	protected void usePIDOutput(double output) {
 		// Use output to drive your system, like a motor
 		// e.g. yourMotor.set(output);
-		right.setSetpoint(output);
-		left.setSetpoint(-output);
+		velocityControl.setSetpointsSymmetrical(output);
 	}
 
 	@Override
@@ -62,10 +62,15 @@ public class AhrsPIDSubsystem extends PIDSubsystem {
 	}
 	
 	public boolean getOnTarget() {
-		// TODO
-		return false;
+		return this.onTarget();
 	}
+	
 	public void sendInfo() {
 		SmartDashboard.putData(this);
 	}
+
+	public void resetTraveled() {
+		ahrs.resetDisplacement();
+	}
+	
 }

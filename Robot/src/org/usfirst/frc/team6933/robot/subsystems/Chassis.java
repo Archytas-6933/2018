@@ -1,7 +1,14 @@
 package org.usfirst.frc.team6933.robot.subsystems;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.usfirst.frc.team6933.robot.RobotMap;
 import org.usfirst.frc.team6933.robot.commands.drive.JoystickDriveDefault;
+import org.usfirst.frc.team6933.robot.control.AhrsPIDSubsystem;
+import org.usfirst.frc.team6933.robot.control.OpenLoopControlSubsystem;
+import org.usfirst.frc.team6933.robot.control.PositionControlPIDSubsystem;
+import org.usfirst.frc.team6933.robot.control.VelocityControlPIDSubsystem;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
@@ -10,50 +17,67 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Chassis extends Subsystem {
 
+	public static final int L = 0;
+	public static final int R = 1;
+
+	public enum ControlType {
+		Velocity, Position, Ahrs, OpenLoop
+	};
+
 	final double distancePerPulse = 6 * 2.54 * Math.PI / 100 / 360; // meters
 
-	// Define the two motors as CANTalons
+	// define AHRS
+	AHRS ahrs = new AHRS(SPI.Port.kMXP);
+
+	// define motors controllers
 	WPI_TalonSRX leftMotorA = new WPI_TalonSRX(RobotMap.CAN.motorLeftA);
 	WPI_TalonSRX leftMotorB = new WPI_TalonSRX(RobotMap.CAN.motorLeftB);
 	WPI_TalonSRX rightMotorA = new WPI_TalonSRX(RobotMap.CAN.motorRightA);
 	WPI_TalonSRX rightMotorB = new WPI_TalonSRX(RobotMap.CAN.motorRightB);
 
-	SpeedControllerGroup leftGroup = new SpeedControllerGroup(leftMotorA, leftMotorB);
-	SpeedControllerGroup rightGroup = new SpeedControllerGroup(rightMotorA, rightMotorB);
-
-	Encoder leftEncoder = new Encoder(RobotMap.DIO.motorLeftEncoderA, RobotMap.DIO.motorLeftEncoderB, true);
-	Encoder rightEncoder = new Encoder(RobotMap.DIO.motorRightEncoderA, RobotMap.DIO.motorRightEncoderB);
-	AHRS ahrs = new AHRS(SPI.Port.kMXP);
-
-	// AhrsPIDSubsystem ahrsPIDSubsystem;
-	WheelPIDSubsystem leftWheelPIDSubsystem;
-	WheelPIDSubsystem rightWheelPIDSubsystem;
+	SpeedControllerGroup[] motor;
+	Encoder[] encoder;
 
 	boolean squaredInputs = false;
 	double decimator = 1.0;
 	boolean openLoop = true;
 
+	Map<ControlType, IChassisControl> allControls = new HashMap<ControlType, IChassisControl>();
+	ControlType currentControlMode;
+
 	public Chassis() {
-		
+
 		// initialize encoders before passing into PID controllers
-		leftEncoder.setDistancePerPulse(distancePerPulse);
-		rightEncoder.setDistancePerPulse(distancePerPulse);
-		leftEncoder.setName("leftEncoder");
-		rightEncoder.setName("rightEncoder");
+		encoder[L] = new Encoder(RobotMap.DIO.motorLeftEncoderA, RobotMap.DIO.motorLeftEncoderB, true);
+		encoder[L].setDistancePerPulse(distancePerPulse);
+		encoder[L].setName("leftEncoder");
+
+		encoder[R] = new Encoder(RobotMap.DIO.motorRightEncoderA, RobotMap.DIO.motorRightEncoderB);
+		encoder[R].setDistancePerPulse(distancePerPulse);
+		encoder[R].setName("rightEncoder");
+
+		// initialize motor speed controller groups
+		motor[L] = new SpeedControllerGroup(leftMotorA, leftMotorB);
+
+		motor[R] = new SpeedControllerGroup(rightMotorA, rightMotorB);
+		motor[R].setInverted(true);
+
+		// initialize control subsystems to encapsulate the PID behavior
+		VelocityControl velocityControl = new VelocityControl(encoder, motor);
+		PositionControl positionControl = new PositionControl(encoder,motor);
+		OpenLoopControl openLoopControl = new OpenLoopControl(encoder,motor);
+		AhrsControl ahrsControl = new AhrsControl(ahrs, velocityControl); // this one uses the velocity control for more precise driving
 		
-		rightGroup.setInverted(true);
+		// add controls to map
+		allControls.put(ControlType.OpenLoop, openLoopControl);
+		allControls.put(ControlType.Velocity, velocityControl);
+		allControls.put(ControlType.Position, positionControl);
+		allControls.put(ControlType.Ahrs, ahrsControl);
 		
-		// initialize PIDSubsystems as a way to encapsulate the PID behavior
-		leftWheelPIDSubsystem = new WheelPIDSubsystem("LeftWheelPID", .5, .05, 0, leftEncoder, leftGroup);
-		rightWheelPIDSubsystem = new WheelPIDSubsystem("RightWheelPID", .5, .05, 0, rightEncoder, rightGroup);
-		// ahrsPIDSubsystem = new AhrsPIDSubsystem(0.04, 0.0, 0.0, ahrs, leftWheelPIDSubsystem, rightWheelPIDSubsystem);
-		
-		enableOpenLoopDrive();
 	}
 
 	@Override
@@ -62,29 +86,27 @@ public class Chassis extends Subsystem {
 	}
 
 	// open loop arcade drive
-	public void enableOpenLoopDrive() {
-		openLoop = true;
-		leftWheelPIDSubsystem.disable();
-		rightWheelPIDSubsystem.disable();
+	public void setOpenLoopDrive() {
+		setCurrentControlMode(ControlType.OpenLoop);
 	}
 
-	// closed loop arcade drive
-	public void enableClosedLoopDrive() {
-		openLoop = false;
-		leftWheelPIDSubsystem.enable();
-		rightWheelPIDSubsystem.enable();
+	// open loop arcade drive
+	public void setAhrsControlDrive() {
+		setCurrentControlMode(ControlType.Ahrs);
+	}
+
+	// open loop arcade drive
+	public void setPositionControlDrive() {
+		setCurrentControlMode(ControlType.Position);
+	}
+
+	// open loop arcade drive
+	public void setVelocityControlDrive() {
+		setCurrentControlMode(ControlType.Velocity);
 	}
 
 	public void drive(double forwardAxis, double turnAxis) {
 		arcadeDrive(forwardAxis * decimator, turnAxis * decimator, squaredInputs);
-	}
-
-	public void enableAhrsDriveClosedLoop() {
-		// this.ahrsPIDSubsystem.enable();
-	}
-
-	public void disableAhrsDriveClosedLoop() {
-		// this.ahrsPIDSubsystem.disable();
 	}
 
 	public void ahrsDrive(double speed, double angle) {
@@ -96,29 +118,17 @@ public class Chassis extends Subsystem {
 	}
 
 	public void sendInfo() {
-
-//		SmartDashboard.putNumber("AhrsDisplacementX", ahrs.getDisplacementX());
-//		SmartDashboard.putNumber("AhrsDisplacementY", ahrs.getDisplacementY());
-//		SmartDashboard.putNumber("AhrsDisplacementZ", ahrs.getDisplacementZ());
-//		SmartDashboard.putNumber("AhrsAngle", ahrs.getAngle());
-//		SmartDashboard.putNumber("EncoderLeftDistance", leftEncoder.getDistance());
-//		SmartDashboard.putNumber("EncoderRightDistance", rightEncoder.getDistance());
-//		SmartDashboard.putNumber("EncoderLeftSpeed", leftEncoder.getRate());
-//		SmartDashboard.putNumber("EncoderRightSpeed", rightEncoder.getRate());
 		SmartDashboard.putData(this);
-
-		leftWheelPIDSubsystem.sendInfo();
-		rightWheelPIDSubsystem.sendInfo();
-		// ahrsPIDSubsystem.sendInfo();
+		allControls.get(currentControlMode).sendInfo();
 	}
 
 	// arcadeDrive code from wpilib modified to set setpoints on the wheel pid
 	// controllers
-	public void arcadeDrive(double xSpeed, double zRotation, boolean squaredInputs) {
+	private void arcadeDrive(double xSpeed, double zRotation, boolean squaredInputs) {
 
 		SmartDashboard.putNumber("A - xSpeed", xSpeed);
 		SmartDashboard.putNumber("A - zRotation", zRotation);
-		
+
 		// Square the inputs (while preserving the sign) to increase fine control
 		// while permitting full power.
 		if (squaredInputs) {
@@ -154,23 +164,183 @@ public class Chassis extends Subsystem {
 		SmartDashboard.putNumber("A - leftOutput", leftMotorOutput);
 		SmartDashboard.putNumber("A - rightOutput", rightMotorOutput);
 
-		if (openLoop) {
-			leftGroup.set(leftMotorOutput);
-			rightGroup.set(rightMotorOutput);
-		} else {
-			leftWheelPIDSubsystem.setSetpoint(leftMotorOutput);
-			rightWheelPIDSubsystem.setSetpoint(rightMotorOutput);
+		// send to any control mode, if in appropriate for that mode they are just stub
+		// functions
+		this.allControls.get(currentControlMode).setMotorOutput(leftMotorOutput, rightMotorOutput);
+
+	}
+
+	
+	private void setCurrentControlMode(ControlType mode) {
+
+		System.out.print("Switching from " + currentControlMode.toString() + " to " + mode.toString());
+
+		// disable all
+		for (Map.Entry<ControlType, IChassisControl> entry : allControls.entrySet()) {
+			entry.getValue().disable();
 		}
+		// enable given mode
+		allControls.get(mode).enable();
+		this.currentControlMode = mode;
 	}
 
-	public void resetTraveled() {
-		// TODO Auto-generated method stub
+
+	private interface IChassisControl {
+
+		public abstract void sendInfo();
+
+		public abstract void enable();
+
+		public abstract void disable();
+
+		public abstract void setMotorOutput(double leftMotorOutput, double rightMotorOutput);
 
 	}
 
-	public double getTraveled() {
-		// TODO Auto-generated method stub
-		return 0;
+	private class AhrsControl implements IChassisControl {
+
+		AhrsPIDSubsystem controller;
+
+		public AhrsControl(AHRS ahrs, VelocityControl velocityControls) {
+			controller = new AhrsPIDSubsystem("Ahrs", 0.04, 0.0, 0.0, ahrs, velocityControls);
+		}
+
+		@Override
+		public void sendInfo() {
+			controller.sendInfo();
+		}
+
+		@Override
+
+		public void enable() {
+			controller.resetTraveled(); // reset every time we enable to all measurements are relative to that instant
+			controller.enable();
+		}
+
+		@Override
+		public void disable() {
+			controller.disable();
+		}
+
+		@Override
+		public void setMotorOutput(double leftMotorOutput, double rightMotorOutput) {
+			// n/a
+		}
+
+	}
+
+	public class VelocityControl implements IChassisControl {
+
+		VelocityControlPIDSubsystem[] controller;
+
+		public VelocityControl(Encoder[] encoder, SpeedControllerGroup[] motor) {
+			controller[L] = new VelocityControlPIDSubsystem("Left", .5, .05, 0, encoder[L], motor[L]);
+			controller[R] = new VelocityControlPIDSubsystem("Right", .5, .05, 0, encoder[R], motor[R]);
+		}
+
+		public void setSetpoints(double leftMotorOutput, double rightMotorOutput) {
+			controller[L].setSetpoint(leftMotorOutput);
+			controller[R].setSetpoint(rightMotorOutput);
+		}
+
+		public void setSetpointsSymmetrical(double output) {
+			controller[L].setSetpoint(output);
+			controller[R].setSetpoint(-output);
+		}
+
+		@Override
+		public void sendInfo() {
+			controller[L].sendInfo();
+			controller[R].sendInfo();
+		}
+
+		@Override
+		public void enable() {
+			controller[L].enable();
+			controller[R].enable();
+		}
+
+		@Override
+		public void disable() {
+			controller[L].disable();
+			controller[R].enable();
+		}
+
+		@Override
+		public void setMotorOutput(double leftMotorOutput, double rightMotorOutput) {
+			setSetpoints(leftMotorOutput, rightMotorOutput);
+		}
+
+	}
+
+	private class PositionControl implements IChassisControl {
+
+		PositionControlPIDSubsystem[] controller;
+
+		public PositionControl(Encoder[] encoder, SpeedControllerGroup[] motor) {
+			controller[L] = new PositionControlPIDSubsystem("Left", .5, .05, 0, encoder[L], motor[L]);
+			controller[R] = new PositionControlPIDSubsystem("Right", .5, .05, 0, encoder[R], motor[R]);
+		}
+
+		@Override
+		public void disable() {
+			controller[L].disable();
+			controller[R].disable();
+		}
+
+		@Override
+		public void enable() {
+			controller[L].enable();
+			controller[R].enable();
+		}
+
+		@Override
+		public void sendInfo() {
+			controller[L].sendInfo();
+			controller[R].sendInfo();
+		}
+
+		@Override
+		public void setMotorOutput(double leftMotorOutput, double rightMotorOutput) {
+			// n/a
+		}
+
+	}
+
+	private class OpenLoopControl implements IChassisControl {
+
+		OpenLoopControlSubsystem[] controller;
+
+		public OpenLoopControl(Encoder[] encoder, SpeedControllerGroup[] motor) {
+			controller[L] = new OpenLoopControlSubsystem("Left", encoder[L], motor[L]);
+			controller[R] = new OpenLoopControlSubsystem("Right", encoder[R], motor[R]);
+		}
+
+		@Override
+		public void sendInfo() {
+			controller[L].sendInfo();
+			controller[R].sendInfo();
+		}
+
+		@Override
+		public void enable() {
+			controller[L].enable();
+			controller[R].enable();
+		}
+
+		@Override
+		public void disable() {
+			controller[L].disable();
+			controller[R].disable();
+		}
+
+		@Override
+		public void setMotorOutput(double leftMotorOutput, double rightMotorOutput) {
+			controller[L].setMotorOutput(leftMotorOutput);
+			controller[R].setMotorOutput(rightMotorOutput);
+
+		}
+
 	}
 
 }

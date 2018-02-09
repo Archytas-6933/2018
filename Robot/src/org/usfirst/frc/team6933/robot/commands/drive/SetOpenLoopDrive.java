@@ -8,16 +8,16 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 /**
  *
  */
-public class SelectChassisClosedLoop extends InstantCommand {
+public class SetOpenLoopDrive extends InstantCommand {
 
-	public SelectChassisClosedLoop() {
+	public SetOpenLoopDrive() {
 		requires(Robot.chassis);
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		Robot.chassis.enableClosedLoopDrive();
+		Robot.chassis.setOpenLoopDrive();
 	}
 
 }

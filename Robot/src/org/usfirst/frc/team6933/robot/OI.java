@@ -14,8 +14,8 @@ import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousRight;
 import org.usfirst.frc.team6933.robot.commands.compressor.CompressorToggle;
 import org.usfirst.frc.team6933.robot.commands.drive.JogCommand;
-import org.usfirst.frc.team6933.robot.commands.drive.SelectChassisClosedLoop;
-import org.usfirst.frc.team6933.robot.commands.drive.SelectChassisOpenLoop;
+import org.usfirst.frc.team6933.robot.commands.drive.SetVelocityControlDrive;
+import org.usfirst.frc.team6933.robot.commands.drive.SetOpenLoopDrive;
 import org.usfirst.frc.team6933.robot.commands.grabber.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.grabber.GrabberOpen;
 
@@ -35,8 +35,8 @@ public class OI {
 
 		
 		// select open/close loop drive
-		driver.ThumbButtonUpperLeft.whenPressed(new SelectChassisOpenLoop());
-		driver.ThumbButtonUpperRight.whenPressed(new SelectChassisClosedLoop());
+		driver.ThumbButtonUpperLeft.whenPressed(new SetOpenLoopDrive());
+		driver.ThumbButtonUpperRight.whenPressed(new SetVelocityControlDrive());
 		
 		
 		// start the autonomous testing group
