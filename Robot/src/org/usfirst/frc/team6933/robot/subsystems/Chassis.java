@@ -1,5 +1,6 @@
 package org.usfirst.frc.team6933.robot.subsystems;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,8 +40,8 @@ public class Chassis extends Subsystem {
 	WPI_TalonSRX rightMotorA = new WPI_TalonSRX(RobotMap.CAN.motorRightA);
 	WPI_TalonSRX rightMotorB = new WPI_TalonSRX(RobotMap.CAN.motorRightB);
 
-	SpeedControllerGroup[] motor;
-	Encoder[] encoder;
+	SpeedControllerGroup[] motor = new SpeedControllerGroup[2];
+	Encoder[] encoder = new Encoder[2];
 
 	boolean squaredInputs = false;
 	double decimator = 1.0;
@@ -231,7 +232,7 @@ public class Chassis extends Subsystem {
 
 	public class VelocityControl implements IChassisControl {
 
-		VelocityControlPIDSubsystem[] controller;
+		VelocityControlPIDSubsystem[] controller = new VelocityControlPIDSubsystem[2];
 
 		public VelocityControl(Encoder[] encoder, SpeedControllerGroup[] motor) {
 			controller[L] = new VelocityControlPIDSubsystem("Left", .5, .05, 0, encoder[L], motor[L]);
@@ -260,6 +261,7 @@ public class Chassis extends Subsystem {
 			controller[R].enable();
 		}
 
+	
 		@Override
 		public void disable() {
 			controller[L].disable();
@@ -275,7 +277,7 @@ public class Chassis extends Subsystem {
 
 	private class PositionControl implements IChassisControl {
 
-		PositionControlPIDSubsystem[] controller;
+		PositionControlPIDSubsystem[] controller = new PositionControlPIDSubsystem[2];
 
 		public PositionControl(Encoder[] encoder, SpeedControllerGroup[] motor) {
 			controller[L] = new PositionControlPIDSubsystem("Left", .5, .05, 0, encoder[L], motor[L]);
@@ -309,7 +311,7 @@ public class Chassis extends Subsystem {
 
 	private class OpenLoopControl implements IChassisControl {
 
-		OpenLoopControlSubsystem[] controller;
+		OpenLoopControlSubsystem[] controller = new OpenLoopControlSubsystem[2];
 
 		public OpenLoopControl(Encoder[] encoder, SpeedControllerGroup[] motor) {
 			controller[L] = new OpenLoopControlSubsystem("Left", encoder[L], motor[L]);
