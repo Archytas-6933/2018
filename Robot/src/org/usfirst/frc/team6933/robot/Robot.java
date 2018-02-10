@@ -50,6 +50,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		System.out.println("robotInit");
+		
+		
+		
 
 		// start the camera server
 		video.startAutomaticCapture();

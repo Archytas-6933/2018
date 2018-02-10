@@ -79,6 +79,8 @@ public class Chassis extends Subsystem {
 		allControls.put(ControlType.Position, positionControl);
 		allControls.put(ControlType.Ahrs, ahrsControl);
 		
+		this.currentControlMode = ControlType.OpenLoop;
+		
 	}
 
 	@Override
@@ -174,12 +176,13 @@ public class Chassis extends Subsystem {
 	
 	private void setCurrentControlMode(ControlType mode) {
 
-		System.out.print("Switching from " + currentControlMode.toString() + " to " + mode.toString());
+		System.out.println("Switching from " + currentControlMode.toString() + " to " + mode.toString());
 
 		// disable all
 		for (Map.Entry<ControlType, IChassisControl> entry : allControls.entrySet()) {
 			entry.getValue().disable();
 		}
+		
 		// enable given mode
 		allControls.get(mode).enable();
 		this.currentControlMode = mode;
@@ -235,8 +238,8 @@ public class Chassis extends Subsystem {
 		VelocityControlPIDSubsystem[] controller = new VelocityControlPIDSubsystem[2];
 
 		public VelocityControl(Encoder[] encoder, SpeedControllerGroup[] motor) {
-			controller[L] = new VelocityControlPIDSubsystem("Left", .5, .05, 0, encoder[L], motor[L]);
-			controller[R] = new VelocityControlPIDSubsystem("Right", .5, .05, 0, encoder[R], motor[R]);
+			controller[L] = new VelocityControlPIDSubsystem("Left", 1, 0, 0.3, encoder[L], motor[L]);
+			controller[R] = new VelocityControlPIDSubsystem("Right", 1, 0, 0.3, encoder[R], motor[R]);
 		}
 
 		public void setSetpoints(double leftMotorOutput, double rightMotorOutput) {
@@ -245,8 +248,8 @@ public class Chassis extends Subsystem {
 		}
 
 		public void setSetpointsSymmetrical(double output) {
-			controller[L].setSetpoint(output);
-			controller[R].setSetpoint(-output);
+			controller[L].setSetpoint(-output);
+			controller[R].setSetpoint(output);
 		}
 
 		@Override

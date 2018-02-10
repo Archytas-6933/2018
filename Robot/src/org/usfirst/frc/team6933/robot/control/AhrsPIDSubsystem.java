@@ -23,6 +23,7 @@ public class AhrsPIDSubsystem extends PIDSubsystem {
 	public AhrsPIDSubsystem(String name, double kP, double kI, double kD, AHRS ahrs, Chassis.VelocityControl velocityControl ) {
 		super(name, kP, kI, kD);
 
+		this.ahrs = ahrs;
 		this.velocityControl = velocityControl;
 		
 		setSetpoint(0.0); // initialize to zero
@@ -56,11 +57,6 @@ public class AhrsPIDSubsystem extends PIDSubsystem {
 		velocityControl.setSetpointsSymmetrical(output);
 	}
 
-	@Override
-	public void setSetpoint(double degrees) {
-		setSetpoint(degrees);
-	}
-	
 	public boolean getOnTarget() {
 		return this.onTarget();
 	}

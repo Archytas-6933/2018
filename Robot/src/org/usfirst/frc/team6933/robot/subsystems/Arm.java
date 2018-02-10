@@ -18,8 +18,9 @@ public class Arm extends Subsystem {
 	// Put methods for controlling this subsystem
 	DoubleSolenoid armSolenoid = new DoubleSolenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.armUp,
 			RobotMap.Solenoid.armDown);
-	Solenoid releaseSolenoid = new Solenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.armRelease);
-
+	Solenoid releaseSolenoid = new Solenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.armLatch);
+// TODO - armLatch/unlatch
+	
 	@Override
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.

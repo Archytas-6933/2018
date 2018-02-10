@@ -38,11 +38,11 @@ public class OpenLoopControlSubsystem extends Subsystem {
 	}
 
 	public void enable() {
-		enable();
+		// n/a
 	}
 
 	public void disable() {
-		disable();
+		// n/a
 	}
 
 	public void setMotorOutput(double speed) {

@@ -31,9 +31,10 @@ public class RobotMap {
 	public static class Solenoid {
 		public static final int armUp = 0;
 		public static final int armDown = 1;
-		public static final int grabberOpen = 2;
-		public static final int grabberClose = 3; 
-		public static final int armRelease = 4;
+		public static final int grabberClose = 2;
+		public static final int grabberOpen = 3; 
+		public static final int armLatch = 4;
+		public static final int armUnlatch = 4;
 	}
 	
 	public static class PWM {

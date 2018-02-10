@@ -18,8 +18,9 @@ public class VelocityControlPIDSubsystem extends PIDSubsystem {
 	double toughBoxMiniRatio = 10.71; // ToughBox Mini for KoP Chassis (am-14u3), 10.71:1 Ratio (am-2598_107)
 	double toughBoxMiniOutputRpm = cimNoLoadRpm / toughBoxMiniRatio;
 	double wheelCircumfrenceMeters = 6 * 2.54 * Math.PI / 100;
-	double chassisNoLoadMps = toughBoxMiniOutputRpm * wheelCircumfrenceMeters;
+	double chassisNoLoadMps = toughBoxMiniOutputRpm * wheelCircumfrenceMeters /60 ;  // 3.95
 
+	
 	// Initialize your subsystem here
 	public VelocityControlPIDSubsystem(String name, double kP, double kI, double kD, Encoder encoder,
 			SpeedController wheel) {
@@ -30,6 +31,8 @@ public class VelocityControlPIDSubsystem extends PIDSubsystem {
 
 		setInputRange(-1.0, +1.0);
 		setSetpoint(0.0); // initialize setpoint to zero
+		
+		SmartDashboard.putNumber("A - ChassisNoLoadMps",chassisNoLoadMps);
 	}
 
 	@Override
@@ -55,19 +58,9 @@ public class VelocityControlPIDSubsystem extends PIDSubsystem {
 		wheel.set(output);
 	}
 
-	public void updateSetpoint(double setpoint) {
-		setSetpoint(setpoint);
-	}
-
 	public void sendInfo() {
 		SmartDashboard.putData(this);
 	}
 
-	public void setEnabled(boolean state) {
-		if (state) {
-			this.enable();
-		} else {
-			this.disable();
-		}
-	}
+	
 }

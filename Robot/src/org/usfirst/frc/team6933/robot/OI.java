@@ -10,16 +10,13 @@ package org.usfirst.frc.team6933.robot;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmDown;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmRelease;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmUp;
-import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
-import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousRight;
 import org.usfirst.frc.team6933.robot.commands.compressor.CompressorToggle;
+import org.usfirst.frc.team6933.robot.commands.drive.DriveTimed;
 import org.usfirst.frc.team6933.robot.commands.drive.JogCommand;
-import org.usfirst.frc.team6933.robot.commands.drive.SetVelocityControlDrive;
 import org.usfirst.frc.team6933.robot.commands.drive.SetOpenLoopDrive;
+import org.usfirst.frc.team6933.robot.commands.drive.SetVelocityControlDrive;
 import org.usfirst.frc.team6933.robot.commands.grabber.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.grabber.GrabberOpen;
-
-import edu.wpi.first.wpilibj.command.PrintCommand;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -37,7 +34,6 @@ public class OI {
 		// select open/close loop drive
 		driver.ThumbButtonUpperLeft.whenPressed(new SetOpenLoopDrive());
 		driver.ThumbButtonUpperRight.whenPressed(new SetVelocityControlDrive());
-		
 		
 		// start the autonomous testing group
 //		operator.LeftJoyClick.whenPressed(new AutonomousLeft());
@@ -60,6 +56,10 @@ public class OI {
 		driver.DPadButtonE.whenPressed(new JogCommand(driver.DPadButtonE));
 		driver.DPadButtonS.whenPressed(new JogCommand(driver.DPadButtonS));
 		driver.DPadButtonW.whenPressed(new JogCommand(driver.DPadButtonW));
+		
+		// button to drive forward Y direction only for testing
+		driver.BaseButtonBottomLeft.whileHeld(new DriveTimed(.5,0,10));
+		
 	}
 
 	public double getYSpeed() {
