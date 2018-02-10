@@ -2,14 +2,15 @@ package org.usfirst.frc.team6933.robot.commands.arm;
 
 import org.usfirst.frc.team6933.robot.Robot;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 
 /**
  *
  */
-public class ArmRelease extends Command {
+public class ArmLatch extends TimedCommand {
 
-	public ArmRelease() {
+	public ArmLatch() {
+		super("ArmLatchCommand", Robot.arm.solenoidPulseWidth);
 		requires(Robot.arm);
 	}
 
@@ -22,25 +23,19 @@ public class ArmRelease extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.arm.release();
-	}
-
-	// Make this return true when this Command no longer needs to run execute()
-	@Override
-	protected boolean isFinished() {
-		return true;
+		Robot.arm.armLatch();
 	}
 
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-//		System.out.println(this.getClass().getSimpleName() + " end");
+		//System.out.println(this.getClass().getSimpleName() + " end");
 	}
 
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
 	@Override
 	protected void interrupted() {
-//		System.out.println(this.getClass().getSimpleName() + " interrupted");
+		//System.out.println(this.getClass().getSimpleName() + " interrupted");
 	}
 }

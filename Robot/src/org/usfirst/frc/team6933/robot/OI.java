@@ -8,7 +8,7 @@
 package org.usfirst.frc.team6933.robot;
 
 import org.usfirst.frc.team6933.robot.commands.arm.ArmDown;
-import org.usfirst.frc.team6933.robot.commands.arm.ArmRelease;
+import org.usfirst.frc.team6933.robot.commands.arm.ArmUnlatch;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmUp;
 import org.usfirst.frc.team6933.robot.commands.compressor.CompressorToggle;
 import org.usfirst.frc.team6933.robot.commands.drive.DriveTimed;
@@ -46,7 +46,7 @@ public class OI {
 		// raise/lower and release the arm
 		operator.YButton.whenPressed(new ArmUp());
 		operator.AButton.whenPressed(new ArmDown());
-		operator.StartButton.whenPressed(new ArmRelease());
+		operator.StartButton.whenPressed(new ArmUnlatch());
 
 		// toggle compressor on/off - for testing and demo mostly
 		operator.RightJoyClick.toggleWhenPressed(new CompressorToggle());

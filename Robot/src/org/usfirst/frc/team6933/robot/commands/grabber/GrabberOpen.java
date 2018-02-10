@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.TimedCommand;
 public class GrabberOpen extends TimedCommand {
 
 	public GrabberOpen() {
-		super(Robot.arm.getSolenoidPulseWidth());
+		super(Robot.arm.solenoidPulseWidth);
 		requires(Robot.grabber);
 	}
 

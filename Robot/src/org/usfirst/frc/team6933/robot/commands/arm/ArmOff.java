@@ -2,15 +2,14 @@ package org.usfirst.frc.team6933.robot.commands.arm;
 
 import org.usfirst.frc.team6933.robot.Robot;
 
-import edu.wpi.first.wpilibj.command.TimedCommand;
+import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class ArmUp extends TimedCommand {
+public class ArmOff extends Command {
 
-	public ArmUp() {
-		super("ArmUpCommand", Robot.arm.solenoidPulseWidth);
+	public ArmOff() {
 		requires(Robot.arm);
 	}
 
@@ -23,13 +22,19 @@ public class ArmUp extends TimedCommand {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.arm.armUp();
+		Robot.arm.armOff();
+	}
+
+	// Make this return true when this Command no longer needs to run execute()
+	@Override
+	protected boolean isFinished() {
+		return false; // default command - never finish
 	}
 
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-//		System.out.println(this.getClass().getSimpleName() + " end");
+		//System.out.println(this.getClass().getSimpleName() + " end");
 	}
 
 	// Called when another command which requires one or more of the same

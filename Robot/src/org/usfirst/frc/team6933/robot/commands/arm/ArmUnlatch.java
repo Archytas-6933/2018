@@ -2,14 +2,15 @@ package org.usfirst.frc.team6933.robot.commands.arm;
 
 import org.usfirst.frc.team6933.robot.Robot;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 
 /**
  *
  */
-public class ArmDefaultOff extends Command {
+public class ArmUnlatch extends TimedCommand {
 
-	public ArmDefaultOff() {
+	public ArmUnlatch() {
+		super("ArmUnlatchCommand", Robot.arm.solenoidPulseWidth);
 		requires(Robot.arm);
 	}
 
@@ -22,13 +23,7 @@ public class ArmDefaultOff extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.arm.armOff();
-	}
-
-	// Make this return true when this Command no longer needs to run execute()
-	@Override
-	protected boolean isFinished() {
-		return false; // default command - never finish
+		Robot.arm.armUnlatch();
 	}
 
 	// Called once after isFinished returns true
@@ -41,6 +36,6 @@ public class ArmDefaultOff extends Command {
 	// subsystems is scheduled to run
 	@Override
 	protected void interrupted() {
-//		System.out.println(this.getClass().getSimpleName() + " interrupted");
+		//System.out.println(this.getClass().getSimpleName() + " interrupted");
 	}
 }

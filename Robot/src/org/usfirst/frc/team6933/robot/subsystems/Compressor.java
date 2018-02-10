@@ -18,15 +18,15 @@ public class Compressor extends Subsystem {
 	}
 
 	public void start() {
-		//if (!compressor.getClosedLoopControl()) {
+		if (!compressor.getClosedLoopControl()) {
 			compressor.start();
-	//	}
+		}
 	}
 
 	public void stop() {
-		//if (compressor.getClosedLoopControl()) {
+		if (compressor.getClosedLoopControl()) {
 			compressor.stop();
-	//	}
+		}
 	}
 
 	public void toggleRun() {

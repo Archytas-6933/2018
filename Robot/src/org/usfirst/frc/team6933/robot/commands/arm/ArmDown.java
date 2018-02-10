@@ -2,7 +2,6 @@ package org.usfirst.frc.team6933.robot.commands.arm;
 
 import org.usfirst.frc.team6933.robot.Robot;
 
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.TimedCommand;
 
 /**
@@ -11,7 +10,7 @@ import edu.wpi.first.wpilibj.command.TimedCommand;
 public class ArmDown extends TimedCommand {
 
 	public ArmDown() {
-		super("ArmDownCommand", Robot.arm.getSolenoidPulseWidth());
+		super("ArmDownCommand", Robot.arm.solenoidPulseWidth);
 		requires(Robot.arm);
 	}
 

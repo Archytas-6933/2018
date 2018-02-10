@@ -7,8 +7,11 @@
 
 package org.usfirst.frc.team6933.robot;
 
+import org.usfirst.frc.team6933.robot.commands.arm.ArmLatch;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousRight;
+import org.usfirst.frc.team6933.robot.commands.compressor.CompressorStart;
+import org.usfirst.frc.team6933.robot.commands.video.VideoStart;
 import org.usfirst.frc.team6933.robot.subsystems.Arm;
 import org.usfirst.frc.team6933.robot.subsystems.Chassis;
 import org.usfirst.frc.team6933.robot.subsystems.Compressor;
@@ -51,14 +54,14 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		System.out.println("robotInit");
 		
-		
-		
-
 		// start the camera server
-		video.startAutomaticCapture();
+		new VideoStart().start();
 
 		// start the compressor
-		compressor.start();
+		new CompressorStart().start();
+		
+		// latch the arm
+		new ArmLatch().start();
 	}
 
 	//
@@ -152,53 +155,5 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testPeriodic() {
 	}
-
-	// public void driveForward(double distance) {
-	// Drive drive;
-	// drive = new Drive();
-	// drive.distance_ = distance;
-	// autonomousCommand.addSequential(drive);
-	// }
-	//
-	// public void driveBackward(double distance) {
-	// Drive drive;
-	// drive = new Drive();
-	// drive.speed_ = -1;
-	// drive.distance_ = distance;
-	// autonomousCommand.addSequential(drive);
-	// }
-	//
-	// public void turnLeft(double degrees) {
-	// Drive drive;
-	// drive = new Drive();
-	// drive.direction_ = -1;
-	// drive.goalAngle_ = chassis.getAngle() - degrees;
-	// autonomousCommand.addSequential(drive);
-	// }
-	//
-	// public void turnRight(double degrees) {
-	// Drive drive;
-	// drive = new Drive();
-	// //drive.direction_ = 0.6;
-	// //System.out.println( "a" + Double.toString(Robot.navx_ahrs_.getAngle()));
-	// //drive.goalAngle_ = navx_ahrs_.getAngle() + degrees;
-	// //System.out.println("goal" + Double.toString(drive.goalAngle_));
-	// drive.goalDegrees_ = degrees;
-	// autonomousCommand.addSequential(drive);
-	// }
-	//
-	// public void turnTo(double angle) {
-	// Drive drive;
-	// drive = new Drive();
-	//
-	// if (chassis.getAngle() > angle)
-	// drive.direction_ = -1;
-	// else
-	// drive.direction_ = 1;
-	//
-	// drive.goalAngle_ = angle;
-	// autonomousCommand.addSequential(drive);
-	// }
-	//
 
 }
