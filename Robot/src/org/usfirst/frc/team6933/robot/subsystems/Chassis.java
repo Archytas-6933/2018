@@ -43,6 +43,11 @@ public class Chassis extends Subsystem {
 	SpeedControllerGroup[] motor = new SpeedControllerGroup[2];
 	Encoder[] encoder = new Encoder[2];
 
+	VelocityControl velocityControl;
+	PositionControl positionControl;
+	OpenLoopControl openLoopControl;
+	AhrsControl ahrsControl;
+	
 	boolean squaredInputs = false;
 	double decimator = 1.0;
 	boolean openLoop = true;
@@ -68,10 +73,10 @@ public class Chassis extends Subsystem {
 		motor[R].setInverted(true);
 
 		// initialize control subsystems to encapsulate the PID behavior
-		VelocityControl velocityControl = new VelocityControl(encoder, motor);
-		PositionControl positionControl = new PositionControl(encoder,velocityControl);
-		OpenLoopControl openLoopControl = new OpenLoopControl(encoder,motor);
-		AhrsControl ahrsControl = new AhrsControl(ahrs, velocityControl); // this one uses the velocity control for more precise driving
+		velocityControl = new VelocityControl(encoder, motor);
+		positionControl = new PositionControl(encoder,velocityControl);
+		openLoopControl = new OpenLoopControl(encoder,motor);
+		ahrsControl = new AhrsControl(ahrs, velocityControl); // this one uses the velocity control for more precise driving
 		
 		// add controls to map
 		allControls.put(ControlType.OpenLoop, openLoopControl);
@@ -96,38 +101,38 @@ public class Chassis extends Subsystem {
 	// open loop arcade drive
 	public void setAhrsControlDrive() {
 		setCurrentControlMode(ControlType.Ahrs);
-		((VelocityControl)(allControls.get(ControlType.Velocity))).enable();
+		velocityControl.enable();
 	}
 	
 	public void setAhrsTarget(double angle) {
-		((AhrsControl)(allControls.get(ControlType.Ahrs))).controller.setTargetAngle(angle);
+		ahrsControl.controller.setTargetAngle(angle);
 	}
 	
 	public boolean isAtTargetAngle() {
-		return ((AhrsControl)(allControls.get(ControlType.Ahrs))).controller.onTarget();
+		return ahrsControl.controller.onTarget();
 	}
 	
 	public void stopAhrsPID() {
-		((AhrsControl)(allControls.get(ControlType.Ahrs))).controller.disable();	
+		ahrsControl.controller.disable();	
 	}
 	
 	public void setDistanceTarget(double distance) {
-		((PositionControl)(allControls.get(ControlType.Position))).setTargetDistance(distance);		
+		positionControl.setTargetDistance(distance);		
 	}
 	
 	public boolean isAtTargetDistance() {
-		return ((PositionControl)(allControls.get(ControlType.Position))).onTarget();
+		return positionControl.onTarget();
 	}
 	
 	public void stopDistancePID() {
-		((PositionControl)(allControls.get(ControlType.Position))).controller[L].disable();				
-		((PositionControl)(allControls.get(ControlType.Position))).controller[R].disable();				
+		positionControl.controller[L].disable();				
+		positionControl.controller[R].disable();				
 	}
 
 	// open loop arcade drive
 	public void setPositionControlDrive() {
 		setCurrentControlMode(ControlType.Position);
-		((VelocityControl)(allControls.get(ControlType.Velocity))).enable();
+		velocityControl.enable();
 	}
 
 	// open loop arcade drive
