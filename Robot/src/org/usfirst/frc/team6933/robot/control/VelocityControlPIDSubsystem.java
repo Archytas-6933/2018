@@ -54,6 +54,9 @@ public class VelocityControlPIDSubsystem extends PIDSubsystem {
 	protected void usePIDOutput(double output) {
 		// Use output to drive your system, like a motor
 		// e.g. yourMotor.set(output)
+//		if (getSetpoint() != 0)
+//			System.out.println(getName() + " output at " + Double.toString(output) + 
+//					" goal: " + Double.toString(getSetpoint()));
 		SmartDashboard.putNumber("A - PIDOutput - " + getName(), output);
 		wheel.set(output);
 	}

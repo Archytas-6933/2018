@@ -8,15 +8,20 @@
 package org.usfirst.frc.team6933.robot;
 
 import org.usfirst.frc.team6933.robot.commands.arm.ArmDown;
+import org.usfirst.frc.team6933.robot.commands.arm.ArmLatch;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmUnlatch;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmUp;
 import org.usfirst.frc.team6933.robot.commands.compressor.CompressorToggle;
+import org.usfirst.frc.team6933.robot.commands.drive.DriveDistance;
 import org.usfirst.frc.team6933.robot.commands.drive.DriveTimed;
 import org.usfirst.frc.team6933.robot.commands.drive.JogCommand;
 import org.usfirst.frc.team6933.robot.commands.drive.SetOpenLoopDrive;
 import org.usfirst.frc.team6933.robot.commands.drive.SetVelocityControlDrive;
+import org.usfirst.frc.team6933.robot.commands.drive.TurnDegrees;
 import org.usfirst.frc.team6933.robot.commands.grabber.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.grabber.GrabberOpen;
+
+import edu.wpi.first.wpilibj.command.CommandGroup;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -47,6 +52,7 @@ public class OI {
 		operator.YButton.whenPressed(new ArmUp());
 		operator.AButton.whenPressed(new ArmDown());
 		operator.StartButton.whenPressed(new ArmUnlatch());
+		operator.BackButton.whenPressed(new ArmLatch());
 
 		// toggle compressor on/off - for testing and demo mostly
 		operator.RightJoyClick.toggleWhenPressed(new CompressorToggle());
@@ -58,7 +64,15 @@ public class OI {
 		driver.DPadButtonW.whenPressed(new JogCommand(driver.DPadButtonW));
 		
 		// button to drive forward Y direction only for testing
-		driver.BaseButtonBottomLeft.whileHeld(new DriveTimed(.5,0,10));
+//		driver.BaseButtonBottomLeft.whileHeld(new DriveTimed(.5,0,10));
+		
+		CommandGroup testauto = new CommandGroup();
+		testauto.addSequential(new TurnDegrees(45));
+		testauto.addSequential(new DriveDistance(1.0));
+		testauto.addSequential(new DriveDistance(-1.0));
+		testauto.addSequential(new TurnDegrees(-45));
+		
+		driver.BaseButtonBottomLeft.whenPressed(testauto);
 		
 	}
 

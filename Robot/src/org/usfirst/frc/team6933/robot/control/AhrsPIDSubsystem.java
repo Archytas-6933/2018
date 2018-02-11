@@ -1,5 +1,6 @@
 package org.usfirst.frc.team6933.robot.control;
 
+import org.usfirst.frc.team6933.robot.Robot;
 import org.usfirst.frc.team6933.robot.subsystems.Chassis;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -47,13 +48,17 @@ public class AhrsPIDSubsystem extends PIDSubsystem {
 		// Return your input value for the PID loop
 		// e.g. a sensor, like a potentiometer:
 		// yourPot.getAverageVoltage() / kYourMaxVoltage;
-		return ahrs.getAngle();
+		double input = ahrs.getAngle();
+		SmartDashboard.putNumber("A - PIDInput - " + getName(), input);
+		return input;
 	}
 
 	@Override
 	protected void usePIDOutput(double output) {
 		// Use output to drive your system, like a motor
 		// e.g. yourMotor.set(output);
+		output /= 2;
+		SmartDashboard.putNumber("A - PIDoutput - " + getName(), output);
 		velocityControl.setSetpointsSymmetrical(output);
 	}
 
@@ -67,6 +72,14 @@ public class AhrsPIDSubsystem extends PIDSubsystem {
 
 	public void resetTraveled() {
 		ahrs.resetDisplacement();
+	}
+	
+	public void resetAngle() {
+		ahrs.reset();
+	}
+	
+	public void setTargetAngle(double angle) {
+		setSetpoint(angle);
 	}
 	
 }

@@ -11,6 +11,7 @@ import org.usfirst.frc.team6933.robot.commands.arm.ArmLatch;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousRight;
 import org.usfirst.frc.team6933.robot.commands.compressor.CompressorStart;
+import org.usfirst.frc.team6933.robot.commands.grabber.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.video.VideoStart;
 import org.usfirst.frc.team6933.robot.subsystems.Arm;
 import org.usfirst.frc.team6933.robot.subsystems.Chassis;
@@ -50,18 +51,12 @@ public class Robot extends TimedRobot {
 
 	public static double testSpeed = 2.2;
 
+	boolean initialized = false;
+	
 	@Override
 	public void robotInit() {
 		System.out.println("robotInit");
-		
-		// start the camera server
-		new VideoStart().start();
 
-		// start the compressor
-		new CompressorStart().start();
-		
-		// latch the arm
-		new ArmLatch().start();
 	}
 
 	//
@@ -97,6 +92,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 		System.out.println("disabledInit");
+	
 	}
 
 	// enter TELEOP mode
@@ -134,6 +130,24 @@ public class Robot extends TimedRobot {
 		grabber.sendInfo();
 		video.sendInfo();
 		Scheduler.getInstance().run();
+		
+		// run initialization commands only while we have the scheduler running
+		if ( !initialized && this.isEnabled() ) {
+			
+			// start the camera server
+			new VideoStart().start();
+
+			// start the compressor
+			new CompressorStart().start();
+
+			// latch the arm
+			new ArmLatch().start();
+
+			// close the grabber
+			new GrabberClose().start();
+			
+			initialized = true;
+		}
 	}
 
 	// periodic for the AUTONOMOUS mode

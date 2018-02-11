@@ -16,6 +16,7 @@ public class VideoStart extends InstantCommand {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
+		System.out.println(this.getClass().getSimpleName() + " initalize");
 		Robot.video.startAutomaticCapture();
 	}
 

@@ -10,6 +10,7 @@ import org.usfirst.frc.team6933.robot.control.OpenLoopControlSubsystem;
 import org.usfirst.frc.team6933.robot.control.PositionControlPIDSubsystem;
 import org.usfirst.frc.team6933.robot.control.VelocityControlPIDSubsystem;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -68,7 +69,7 @@ public class Chassis extends Subsystem {
 
 		// initialize control subsystems to encapsulate the PID behavior
 		VelocityControl velocityControl = new VelocityControl(encoder, motor);
-		PositionControl positionControl = new PositionControl(encoder,motor);
+		PositionControl positionControl = new PositionControl(encoder,velocityControl);
 		OpenLoopControl openLoopControl = new OpenLoopControl(encoder,motor);
 		AhrsControl ahrsControl = new AhrsControl(ahrs, velocityControl); // this one uses the velocity control for more precise driving
 		
@@ -95,11 +96,38 @@ public class Chassis extends Subsystem {
 	// open loop arcade drive
 	public void setAhrsControlDrive() {
 		setCurrentControlMode(ControlType.Ahrs);
+		((VelocityControl)(allControls.get(ControlType.Velocity))).enable();
+	}
+	
+	public void setAhrsTarget(double angle) {
+		((AhrsControl)(allControls.get(ControlType.Ahrs))).controller.setTargetAngle(angle);
+	}
+	
+	public boolean isAtTargetAngle() {
+		return ((AhrsControl)(allControls.get(ControlType.Ahrs))).controller.onTarget();
+	}
+	
+	public void stopAhrsPID() {
+		((AhrsControl)(allControls.get(ControlType.Ahrs))).controller.disable();	
+	}
+	
+	public void setDistanceTarget(double distance) {
+		((PositionControl)(allControls.get(ControlType.Position))).setTargetDistance(distance);		
+	}
+	
+	public boolean isAtTargetDistance() {
+		return ((PositionControl)(allControls.get(ControlType.Position))).onTarget();
+	}
+	
+	public void stopDistancePID() {
+		((PositionControl)(allControls.get(ControlType.Position))).controller[L].disable();				
+		((PositionControl)(allControls.get(ControlType.Position))).controller[R].disable();				
 	}
 
 	// open loop arcade drive
 	public void setPositionControlDrive() {
 		setCurrentControlMode(ControlType.Position);
+		((VelocityControl)(allControls.get(ControlType.Velocity))).enable();
 	}
 
 	// open loop arcade drive
@@ -175,7 +203,9 @@ public class Chassis extends Subsystem {
 	
 	private void setCurrentControlMode(ControlType mode) {
 
-		System.out.println("Switching from " + currentControlMode.toString() + " to " + mode.toString());
+		if ( mode != currentControlMode ) {
+			System.out.println("Switching from " + currentControlMode.toString() + " to " + mode.toString());
+		}
 
 		// disable all
 		for (Map.Entry<ControlType, IChassisControl> entry : allControls.entrySet()) {
@@ -205,7 +235,7 @@ public class Chassis extends Subsystem {
 		AhrsPIDSubsystem controller;
 
 		public AhrsControl(AHRS ahrs, VelocityControl velocityControls) {
-			controller = new AhrsPIDSubsystem("Ahrs", 0.04, 0.0, 0.0, ahrs, velocityControls);
+			controller = new AhrsPIDSubsystem("Ahrs", 1.0, 0.1, 3.0, ahrs, velocityControls);
 		}
 
 		@Override
@@ -217,6 +247,7 @@ public class Chassis extends Subsystem {
 
 		public void enable() {
 			controller.resetTraveled(); // reset every time we enable to all measurements are relative to that instant
+			controller.resetAngle();
 			controller.enable();
 		}
 
@@ -247,8 +278,8 @@ public class Chassis extends Subsystem {
 		}
 
 		public void setSetpointsSymmetrical(double output) {
-			controller[L].setSetpoint(-output);
-			controller[R].setSetpoint(output);
+			controller[L].setSetpoint(output);
+			controller[R].setSetpoint(-output);
 		}
 
 		@Override
@@ -267,7 +298,7 @@ public class Chassis extends Subsystem {
 		@Override
 		public void disable() {
 			controller[L].disable();
-			controller[R].enable();
+			controller[R].disable();
 		}
 
 		@Override
@@ -281,9 +312,9 @@ public class Chassis extends Subsystem {
 
 		PositionControlPIDSubsystem[] controller = new PositionControlPIDSubsystem[2];
 
-		public PositionControl(Encoder[] encoder, SpeedControllerGroup[] motor) {
-			controller[L] = new PositionControlPIDSubsystem("Left", .5, .05, 0, encoder[L], motor[L]);
-			controller[R] = new PositionControlPIDSubsystem("Right", .5, .05, 0, encoder[R], motor[R]);
+		public PositionControl(Encoder[] encoder, VelocityControl velocityControl) {
+			controller[L] = new PositionControlPIDSubsystem("Left", 1.0, 0.1, 0.3, encoder[L], velocityControl.controller[L]);
+			controller[R] = new PositionControlPIDSubsystem("Right", 1.0, 0.1, 0.3, encoder[R], velocityControl.controller[R]);
 		}
 
 		@Override
@@ -309,6 +340,16 @@ public class Chassis extends Subsystem {
 			// n/a
 		}
 
+		public void setTargetDistance(double distance) {
+			encoder[L].reset();
+			encoder[R].reset();
+			controller[L].setSetpoint(distance);
+			controller[R].setSetpoint(distance);
+		}
+		
+		public boolean onTarget() {
+			return controller[L].onTarget() && controller[R].onTarget();
+		}
 	}
 
 	private class OpenLoopControl implements IChassisControl {
