@@ -16,12 +16,12 @@ public class AhrsPIDSubsystem extends PIDSubsystem {
 	final double heading_Kp = 0.8;
 	final double headingTolerance = 2.0f; // Heading will read as "on target" if + or - this many degrees
 
-	Chassis.VelocityControl velocityControl;
+	VelocityControl velocityControl;
 	
 	AHRS ahrs;
 
 	// Initialize your subsystem here
-	public AhrsPIDSubsystem(String name, double kP, double kI, double kD, AHRS ahrs, Chassis.VelocityControl velocityControl ) {
+	public AhrsPIDSubsystem(String name, double kP, double kI, double kD, AHRS ahrs, VelocityControl velocityControl ) {
 		super(name, kP, kI, kD);
 
 		this.ahrs = ahrs;

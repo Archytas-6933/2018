@@ -1,5 +1,7 @@
 package org.usfirst.frc.team6933.robot.control;
 
+import org.usfirst.frc.team6933.robot.Robot;
+
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
@@ -13,13 +15,6 @@ public class VelocityControlPIDSubsystem extends PIDSubsystem {
 	Encoder encoder;
 	SpeedController wheel;
 
-	// determine max speed
-	int cimNoLoadRpm = 5310; // 2.5" CIM Motor (am-0255)
-	double toughBoxMiniRatio = 10.71; // ToughBox Mini for KoP Chassis (am-14u3), 10.71:1 Ratio (am-2598_107)
-	double toughBoxMiniOutputRpm = cimNoLoadRpm / toughBoxMiniRatio;
-	double wheelCircumfrenceMeters = 6 * 2.54 * Math.PI / 100;
-	double chassisNoLoadMps = toughBoxMiniOutputRpm * wheelCircumfrenceMeters /60 ;  // 3.95
-
 	
 	// Initialize your subsystem here
 	public VelocityControlPIDSubsystem(String name, double kP, double kI, double kD, Encoder encoder,
@@ -32,7 +27,6 @@ public class VelocityControlPIDSubsystem extends PIDSubsystem {
 		setInputRange(-1.0, +1.0);
 		setSetpoint(0.0); // initialize setpoint to zero
 		
-		SmartDashboard.putNumber("A - ChassisNoLoadMps",chassisNoLoadMps);
 	}
 
 	@Override
@@ -45,7 +39,7 @@ public class VelocityControlPIDSubsystem extends PIDSubsystem {
 		// Return your input value for the PID loop
 		// e.g. a sensor, like a potentiometer:
 		// yourPot.getAverageVoltage() / kYourMaxVoltage;
-		double input = encoder.getRate() / chassisNoLoadMps;
+		double input = encoder.getRate() / Robot.chassis.chassisNoLoadMps;
 		SmartDashboard.putNumber("A - PIDInput - " + getName(), input);
 		return input;
 	}

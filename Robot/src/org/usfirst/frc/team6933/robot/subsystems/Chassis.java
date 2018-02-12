@@ -3,14 +3,15 @@ package org.usfirst.frc.team6933.robot.subsystems;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.usfirst.frc.team6933.robot.Robot;
 import org.usfirst.frc.team6933.robot.RobotMap;
 import org.usfirst.frc.team6933.robot.commands.drive.JoystickDriveDefault;
-import org.usfirst.frc.team6933.robot.control.AhrsPIDSubsystem;
-import org.usfirst.frc.team6933.robot.control.OpenLoopControlSubsystem;
-import org.usfirst.frc.team6933.robot.control.PositionControlPIDSubsystem;
-import org.usfirst.frc.team6933.robot.control.VelocityControlPIDSubsystem;
+import org.usfirst.frc.team6933.robot.control.AhrsControl;
+import org.usfirst.frc.team6933.robot.control.IChassisControl;
+import org.usfirst.frc.team6933.robot.control.OpenLoopControl;
+import org.usfirst.frc.team6933.robot.control.PositionControl;
+import org.usfirst.frc.team6933.robot.control.VelocityControl;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -29,7 +30,13 @@ public class Chassis extends Subsystem {
 		Velocity, Position, Ahrs, OpenLoop
 	};
 
-	final double distancePerPulse = 6 * 2.54 * Math.PI / 100 / 360; // meters
+	// determine max speed
+	public double wheelCircumfrenceMeters = 6 * 2.54 * Math.PI / 100;
+	public final double distancePerPulse = wheelCircumfrenceMeters / 360; // meters
+	public int cimNoLoadRpm = 5310; // 2.5" CIM Motor (am-0255)
+	public double toughBoxMiniRatio = 10.71; // ToughBox Mini for KoP Chassis (am-14u3), 10.71:1 Ratio (am-2598_107)
+	public double toughBoxMiniOutputRpm = cimNoLoadRpm / toughBoxMiniRatio;
+	public double chassisNoLoadMps = toughBoxMiniOutputRpm * wheelCircumfrenceMeters / 60; // 3.95
 
 	// define AHRS
 	AHRS ahrs = new AHRS(SPI.Port.kMXP);
@@ -47,7 +54,7 @@ public class Chassis extends Subsystem {
 	PositionControl positionControl;
 	OpenLoopControl openLoopControl;
 	AhrsControl ahrsControl;
-	
+
 	boolean squaredInputs = false;
 	double decimator = 1.0;
 	boolean openLoop = true;
@@ -74,18 +81,19 @@ public class Chassis extends Subsystem {
 
 		// initialize control subsystems to encapsulate the PID behavior
 		velocityControl = new VelocityControl(encoder, motor);
-		positionControl = new PositionControl(encoder,velocityControl);
-		openLoopControl = new OpenLoopControl(encoder,motor);
-		ahrsControl = new AhrsControl(ahrs, velocityControl); // this one uses the velocity control for more precise driving
-		
-		// add controls to map
+		positionControl = new PositionControl(encoder, velocityControl);
+		openLoopControl = new OpenLoopControl(encoder, motor);
+		ahrsControl = new AhrsControl(ahrs, velocityControl); // this one uses the velocity control for more precise
+																// driving
+
+		// add controls to map 
 		allControls.put(ControlType.OpenLoop, openLoopControl);
 		allControls.put(ControlType.Velocity, velocityControl);
 		allControls.put(ControlType.Position, positionControl);
 		allControls.put(ControlType.Ahrs, ahrsControl);
-		
+
 		this.currentControlMode = ControlType.OpenLoop;
-		
+
 	}
 
 	@Override
@@ -103,30 +111,29 @@ public class Chassis extends Subsystem {
 		setCurrentControlMode(ControlType.Ahrs);
 		velocityControl.enable();
 	}
-	
+
 	public void setAhrsTarget(double angle) {
-		ahrsControl.controller.setTargetAngle(angle);
+		ahrsControl.setTargetAngle(angle);
 	}
-	
+
 	public boolean isAtTargetAngle() {
-		return ahrsControl.controller.onTarget();
+		return ahrsControl.onTarget();
 	}
-	
+
 	public void stopAhrsPID() {
-		ahrsControl.controller.disable();	
+		ahrsControl.disable();
 	}
-	
+
 	public void setDistanceTarget(double distance) {
-		positionControl.setTargetDistance(distance);		
+		positionControl.setTargetDistance(distance);
 	}
-	
+
 	public boolean isAtTargetDistance() {
 		return positionControl.onTarget();
 	}
-	
+
 	public void stopDistancePID() {
-		positionControl.controller[L].disable();				
-		positionControl.controller[R].disable();				
+		positionControl.disable();
 	}
 
 	// open loop arcade drive
@@ -205,10 +212,9 @@ public class Chassis extends Subsystem {
 
 	}
 
-	
 	private void setCurrentControlMode(ControlType mode) {
 
-		if ( mode != currentControlMode ) {
+		if (mode != currentControlMode) {
 			System.out.println("Switching from " + currentControlMode.toString() + " to " + mode.toString());
 		}
 
@@ -216,181 +222,10 @@ public class Chassis extends Subsystem {
 		for (Map.Entry<ControlType, IChassisControl> entry : allControls.entrySet()) {
 			entry.getValue().disable();
 		}
-		
+
 		// enable given mode
 		allControls.get(mode).enable();
 		this.currentControlMode = mode;
-	}
-
-
-	private interface IChassisControl {
-
-		public abstract void sendInfo();
-
-		public abstract void enable();
-
-		public abstract void disable();
-
-		public abstract void setMotorOutput(double leftMotorOutput, double rightMotorOutput);
-
-	}
-
-	private class AhrsControl implements IChassisControl {
-
-		AhrsPIDSubsystem controller;
-
-		public AhrsControl(AHRS ahrs, VelocityControl velocityControls) {
-			controller = new AhrsPIDSubsystem("Ahrs", 1.0, 0.1, 3.0, ahrs, velocityControls);
-		}
-
-		@Override
-		public void sendInfo() {
-			controller.sendInfo();
-		}
-
-		@Override
-
-		public void enable() {
-			controller.resetTraveled(); // reset every time we enable to all measurements are relative to that instant
-			controller.resetAngle();
-			controller.enable();
-		}
-
-		@Override
-		public void disable() {
-			controller.disable();
-		}
-
-		@Override
-		public void setMotorOutput(double leftMotorOutput, double rightMotorOutput) {
-			// n/a
-		}
-
-	}
-
-	public class VelocityControl implements IChassisControl {
-
-		VelocityControlPIDSubsystem[] controller = new VelocityControlPIDSubsystem[2];
-
-		public VelocityControl(Encoder[] encoder, SpeedControllerGroup[] motor) {
-			controller[L] = new VelocityControlPIDSubsystem("Left", 1, 0, 0.3, encoder[L], motor[L]);
-			controller[R] = new VelocityControlPIDSubsystem("Right", 1, 0, 0.3, encoder[R], motor[R]);
-		}
-
-		public void setSetpoints(double leftMotorOutput, double rightMotorOutput) {
-			controller[L].setSetpoint(leftMotorOutput);
-			controller[R].setSetpoint(rightMotorOutput);
-		}
-
-		public void setSetpointsSymmetrical(double output) {
-			controller[L].setSetpoint(output);
-			controller[R].setSetpoint(-output);
-		}
-
-		@Override
-		public void sendInfo() {
-			controller[L].sendInfo();
-			controller[R].sendInfo();
-		}
-
-		@Override
-		public void enable() {
-			controller[L].enable();
-			controller[R].enable();
-		}
-
-	
-		@Override
-		public void disable() {
-			controller[L].disable();
-			controller[R].disable();
-		}
-
-		@Override
-		public void setMotorOutput(double leftMotorOutput, double rightMotorOutput) {
-			setSetpoints(leftMotorOutput, rightMotorOutput);
-		}
-
-	}
-
-	private class PositionControl implements IChassisControl {
-
-		PositionControlPIDSubsystem[] controller = new PositionControlPIDSubsystem[2];
-
-		public PositionControl(Encoder[] encoder, VelocityControl velocityControl) {
-			controller[L] = new PositionControlPIDSubsystem("Left", 1.0, 0.1, 0.3, encoder[L], velocityControl.controller[L]);
-			controller[R] = new PositionControlPIDSubsystem("Right", 1.0, 0.1, 0.3, encoder[R], velocityControl.controller[R]);
-		}
-
-		@Override
-		public void disable() {
-			controller[L].disable();
-			controller[R].disable();
-		}
-
-		@Override
-		public void enable() {
-			controller[L].enable();
-			controller[R].enable();
-		}
-
-		@Override
-		public void sendInfo() {
-			controller[L].sendInfo();
-			controller[R].sendInfo();
-		}
-
-		@Override
-		public void setMotorOutput(double leftMotorOutput, double rightMotorOutput) {
-			// n/a
-		}
-
-		public void setTargetDistance(double distance) {
-			encoder[L].reset();
-			encoder[R].reset();
-			controller[L].setSetpoint(distance);
-			controller[R].setSetpoint(distance);
-		}
-		
-		public boolean onTarget() {
-			return controller[L].onTarget() && controller[R].onTarget();
-		}
-	}
-
-	private class OpenLoopControl implements IChassisControl {
-
-		OpenLoopControlSubsystem[] controller = new OpenLoopControlSubsystem[2];
-
-		public OpenLoopControl(Encoder[] encoder, SpeedControllerGroup[] motor) {
-			controller[L] = new OpenLoopControlSubsystem("Left", encoder[L], motor[L]);
-			controller[R] = new OpenLoopControlSubsystem("Right", encoder[R], motor[R]);
-		}
-
-		@Override
-		public void sendInfo() {
-			controller[L].sendInfo();
-			controller[R].sendInfo();
-		}
-
-		@Override
-		public void enable() {
-			controller[L].enable();
-			controller[R].enable();
-		}
-
-		@Override
-		public void disable() {
-			controller[L].disable();
-			controller[R].disable();
-		}
-
-		@Override
-		public void setMotorOutput(double leftMotorOutput, double rightMotorOutput) {
-			controller[L].setMotorOutput(leftMotorOutput);
-			controller[R].setMotorOutput(rightMotorOutput);
-
-		}
-
 	}
 
 }
