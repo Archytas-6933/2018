@@ -19,6 +19,7 @@ public class Arm extends Subsystem {
 			RobotMap.Solenoid.armDown);
 	DoubleSolenoid release = new DoubleSolenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.armLatch,
 			RobotMap.Solenoid.armUnlatch);
+	DoubleSolenoid grabberSolenoid = new DoubleSolenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.grabberOpen, RobotMap.Solenoid.grabberClose);
 	
 	@Override
 	public void initDefaultCommand() {
@@ -41,10 +42,20 @@ public class Arm extends Subsystem {
 	public void armUnlatch() {
 		release.set(DoubleSolenoid.Value.kReverse);
 	}
+	
+	public void grabberOpen() {
+		grabberSolenoid.set(DoubleSolenoid.Value.kForward);
+	}
+
+	public void grabberClose() {
+		grabberSolenoid.set(DoubleSolenoid.Value.kReverse);;
+	}
 
 	public void armOff() {
 		elevator.set(DoubleSolenoid.Value.kOff);
 		release.set(DoubleSolenoid.Value.kOff);
+		grabberSolenoid.set(DoubleSolenoid.Value.kOff);;
+
 	}
 
 	public void sendInfo() {

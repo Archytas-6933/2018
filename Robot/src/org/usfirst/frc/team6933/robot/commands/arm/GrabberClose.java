@@ -1,4 +1,4 @@
-package org.usfirst.frc.team6933.robot.commands.grabber;
+package org.usfirst.frc.team6933.robot.commands.arm;
 
 import org.usfirst.frc.team6933.robot.Robot;
 
@@ -11,7 +11,7 @@ public class GrabberClose extends TimedCommand {
 
 	public GrabberClose() {
 		super(Robot.arm.solenoidPulseWidth);
-		requires(Robot.grabber);
+		requires(Robot.arm);
 	}
 
 	// Called just before this Command runs the first time
@@ -23,7 +23,7 @@ public class GrabberClose extends TimedCommand {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.grabber.close();
+		Robot.arm.grabberClose();
 	}
 
 	// Called once after isFinished returns true

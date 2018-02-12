@@ -8,15 +8,14 @@
 package org.usfirst.frc.team6933.robot;
 
 import org.usfirst.frc.team6933.robot.commands.arm.ArmLatch;
+import org.usfirst.frc.team6933.robot.commands.arm.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousRight;
 import org.usfirst.frc.team6933.robot.commands.compressor.CompressorStart;
-import org.usfirst.frc.team6933.robot.commands.grabber.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.video.VideoStart;
 import org.usfirst.frc.team6933.robot.subsystems.Arm;
 import org.usfirst.frc.team6933.robot.subsystems.Chassis;
 import org.usfirst.frc.team6933.robot.subsystems.Compressor;
-import org.usfirst.frc.team6933.robot.subsystems.Grabber;
 import org.usfirst.frc.team6933.robot.subsystems.Video;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -42,7 +41,6 @@ public class Robot extends TimedRobot {
 	public static Arm arm = new Arm();
 	public static Chassis chassis = new Chassis();
 	public static Compressor compressor = new Compressor();;
-	public static Grabber grabber = new Grabber();
 	public static Video video = new Video();
 
 	public static OI oi = new OI();
@@ -127,7 +125,6 @@ public class Robot extends TimedRobot {
 		arm.sendInfo();
 		chassis.sendInfo();
 		compressor.sendInfo();
-		grabber.sendInfo();
 		video.sendInfo();
 		Scheduler.getInstance().run();
 		

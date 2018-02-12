@@ -11,6 +11,8 @@ import org.usfirst.frc.team6933.robot.commands.arm.ArmDown;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmLatch;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmUnlatch;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmUp;
+import org.usfirst.frc.team6933.robot.commands.arm.GrabberClose;
+import org.usfirst.frc.team6933.robot.commands.arm.GrabberOpen;
 import org.usfirst.frc.team6933.robot.commands.compressor.CompressorToggle;
 import org.usfirst.frc.team6933.robot.commands.drive.DriveDistance;
 import org.usfirst.frc.team6933.robot.commands.drive.DriveTimed;
@@ -18,8 +20,6 @@ import org.usfirst.frc.team6933.robot.commands.drive.JogCommand;
 import org.usfirst.frc.team6933.robot.commands.drive.SetOpenLoopDrive;
 import org.usfirst.frc.team6933.robot.commands.drive.SetVelocityControlDrive;
 import org.usfirst.frc.team6933.robot.commands.drive.TurnDegrees;
-import org.usfirst.frc.team6933.robot.commands.grabber.GrabberClose;
-import org.usfirst.frc.team6933.robot.commands.grabber.GrabberOpen;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 

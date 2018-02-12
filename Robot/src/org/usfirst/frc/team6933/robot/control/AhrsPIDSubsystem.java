@@ -1,8 +1,5 @@
 package org.usfirst.frc.team6933.robot.control;
 
-import org.usfirst.frc.team6933.robot.Robot;
-import org.usfirst.frc.team6933.robot.subsystems.Chassis;
-
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.command.PIDSubsystem;

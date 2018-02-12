@@ -3,7 +3,6 @@ package org.usfirst.frc.team6933.robot.subsystems;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.usfirst.frc.team6933.robot.Robot;
 import org.usfirst.frc.team6933.robot.RobotMap;
 import org.usfirst.frc.team6933.robot.commands.drive.JoystickDriveDefault;
 import org.usfirst.frc.team6933.robot.control.AhrsControl;
