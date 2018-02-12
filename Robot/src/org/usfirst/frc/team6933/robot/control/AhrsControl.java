@@ -44,4 +44,8 @@ public class AhrsControl implements IChassisControl {
 		return controller.onTarget();
 	}
 
+	public double getAngle() {
+		return controller.getAngle();
+	}
+
 }

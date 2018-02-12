@@ -37,12 +37,6 @@ public class Chassis extends Subsystem {
 	public double toughBoxMiniOutputRpm = cimNoLoadRpm / toughBoxMiniRatio;
 	public double chassisNoLoadMps = toughBoxMiniOutputRpm * wheelCircumfrenceMeters / 60; // 3.95
 
-	// define AHRS
-	AHRS ahrs = new AHRS(SPI.Port.kMXP);
-
-	SpeedControllerGroup[] motor = new SpeedControllerGroup[2];
-	Encoder[] encoder = new Encoder[2];
-
 	VelocityControl velocityControl;
 	PositionControl positionControl;
 	OpenLoopControl openLoopControl;
@@ -57,26 +51,29 @@ public class Chassis extends Subsystem {
 	public Chassis() {
 
 		// initialize encoders before passing into PID controllers
-		encoder[L] = new Encoder(RobotMap.DIO.motorLeftEncoderA, RobotMap.DIO.motorLeftEncoderB, true);
-		encoder[L].setDistancePerPulse(distancePerPulse);
-		encoder[L].setName("leftEncoder");
+		Encoder[] encoders = new Encoder[2];
+		encoders[L] = new Encoder(RobotMap.DIO.motorLeftEncoderA, RobotMap.DIO.motorLeftEncoderB, true);
+		encoders[L].setDistancePerPulse(distancePerPulse);
+		encoders[L].setName("leftEncoder");
+		encoders[R] = new Encoder(RobotMap.DIO.motorRightEncoderA, RobotMap.DIO.motorRightEncoderB);
+		encoders[R].setDistancePerPulse(distancePerPulse);
+		encoders[R].setName("rightEncoder");
 
-		encoder[R] = new Encoder(RobotMap.DIO.motorRightEncoderA, RobotMap.DIO.motorRightEncoderB);
-		encoder[R].setDistancePerPulse(distancePerPulse);
-		encoder[R].setName("rightEncoder");
-
-		// initialize motor speed controller groups with pairs of Talon motor
-		// controllers
-		motor[L] = new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN.motorLeftA),
+		// initialize motor groups with pairs of Talon motor controllers
+		SpeedControllerGroup[] motors = new SpeedControllerGroup[2];
+		motors[L] = new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN.motorLeftA),
 				new WPI_TalonSRX(RobotMap.CAN.motorLeftB));
-		motor[R] = new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN.motorRightA),
+		motors[R] = new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN.motorRightA),
 				new WPI_TalonSRX(RobotMap.CAN.motorRightB));
-		motor[R].setInverted(true);
+		motors[R].setInverted(true);
 
+		// initialize the ahrs interface
+		AHRS ahrs = new AHRS(SPI.Port.kMXP);
+		
 		// initialize control subsystems to encapsulate the PID behavior
-		velocityControl = new VelocityControl(encoder, motor);
-		positionControl = new PositionControl(encoder, velocityControl); 
-		openLoopControl = new OpenLoopControl(encoder, motor);
+		velocityControl = new VelocityControl(encoders, motors);
+		openLoopControl = new OpenLoopControl(encoders, motors);
+		positionControl = new PositionControl(encoders, velocityControl);
 		ahrsControl = new AhrsControl(ahrs, velocityControl);
 
 		// add controls to map
@@ -147,7 +144,7 @@ public class Chassis extends Subsystem {
 	}
 
 	public double getAngle() {
-		return ahrs.getAngle();
+		return ahrsControl.getAngle();
 	}
 
 	public void sendInfo() {

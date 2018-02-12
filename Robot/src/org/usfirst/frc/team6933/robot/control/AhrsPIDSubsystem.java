@@ -29,9 +29,7 @@ public class AhrsPIDSubsystem extends PIDSubsystem {
 		setOutputRange(-heading_Kp, heading_Kp);
 		setAbsoluteTolerance(headingTolerance);
 		// setContinuous(true);
-		
-		//should work best if velocity control is enabled!
-		velocityControl.enable();
+
 	}
 
 
@@ -77,6 +75,10 @@ public class AhrsPIDSubsystem extends PIDSubsystem {
 	
 	public void setTargetAngle(double angle) {
 		setSetpoint(angle);
+	}
+
+	public double getAngle() {
+		return ahrs.getAngle();
 	}
 	
 }
