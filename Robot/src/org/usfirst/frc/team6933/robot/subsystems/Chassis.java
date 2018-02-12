@@ -40,12 +40,6 @@ public class Chassis extends Subsystem {
 	// define AHRS
 	AHRS ahrs = new AHRS(SPI.Port.kMXP);
 
-	// define motors controllers
-	WPI_TalonSRX leftMotorA = new WPI_TalonSRX(RobotMap.CAN.motorLeftA);
-	WPI_TalonSRX leftMotorB = new WPI_TalonSRX(RobotMap.CAN.motorLeftB);
-	WPI_TalonSRX rightMotorA = new WPI_TalonSRX(RobotMap.CAN.motorRightA);
-	WPI_TalonSRX rightMotorB = new WPI_TalonSRX(RobotMap.CAN.motorRightB);
-
 	SpeedControllerGroup[] motor = new SpeedControllerGroup[2];
 	Encoder[] encoder = new Encoder[2];
 
@@ -56,7 +50,6 @@ public class Chassis extends Subsystem {
 
 	boolean squaredInputs = false;
 	double decimator = 1.0;
-	boolean openLoop = true;
 
 	Map<ControlType, IChassisControl> allControls = new HashMap<ControlType, IChassisControl>();
 	ControlType currentControlMode;
@@ -72,20 +65,21 @@ public class Chassis extends Subsystem {
 		encoder[R].setDistancePerPulse(distancePerPulse);
 		encoder[R].setName("rightEncoder");
 
-		// initialize motor speed controller groups
-		motor[L] = new SpeedControllerGroup(leftMotorA, leftMotorB);
-
-		motor[R] = new SpeedControllerGroup(rightMotorA, rightMotorB);
+		// initialize motor speed controller groups with pairs of Talon motor
+		// controllers
+		motor[L] = new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN.motorLeftA),
+				new WPI_TalonSRX(RobotMap.CAN.motorLeftB));
+		motor[R] = new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN.motorRightA),
+				new WPI_TalonSRX(RobotMap.CAN.motorRightB));
 		motor[R].setInverted(true);
 
 		// initialize control subsystems to encapsulate the PID behavior
 		velocityControl = new VelocityControl(encoder, motor);
-		positionControl = new PositionControl(encoder, velocityControl);
+		positionControl = new PositionControl(encoder, velocityControl); 
 		openLoopControl = new OpenLoopControl(encoder, motor);
-		ahrsControl = new AhrsControl(ahrs, velocityControl); // this one uses the velocity control for more precise
-																// driving
+		ahrsControl = new AhrsControl(ahrs, velocityControl);
 
-		// add controls to map 
+		// add controls to map
 		allControls.put(ControlType.OpenLoop, openLoopControl);
 		allControls.put(ControlType.Velocity, velocityControl);
 		allControls.put(ControlType.Position, positionControl);
@@ -108,7 +102,6 @@ public class Chassis extends Subsystem {
 	// open loop arcade drive
 	public void setAhrsControlDrive() {
 		setCurrentControlMode(ControlType.Ahrs);
-		velocityControl.enable();
 	}
 
 	public void setAhrsTarget(double angle) {
@@ -138,7 +131,6 @@ public class Chassis extends Subsystem {
 	// open loop arcade drive
 	public void setPositionControlDrive() {
 		setCurrentControlMode(ControlType.Position);
-		velocityControl.enable();
 	}
 
 	// open loop arcade drive

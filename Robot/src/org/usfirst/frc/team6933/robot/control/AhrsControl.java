@@ -6,9 +6,11 @@ import com.kauailabs.navx.frc.AHRS;
 public class AhrsControl implements IChassisControl {
 
 	private AhrsPIDSubsystem controller;
+	VelocityControl velocityControl;
 
-	public AhrsControl(AHRS ahrs, VelocityControl velocityControls) {
-		controller = new AhrsPIDSubsystem("Ahrs", 1.0, 0.1, 3.0, ahrs, velocityControls);
+	public AhrsControl(AHRS ahrs, VelocityControl velocityControl) {
+		controller = new AhrsPIDSubsystem("Ahrs", 1.0, 0.1, 3.0, ahrs, velocityControl);
+		this.velocityControl = velocityControl;
 	}
 
 	@Override
@@ -18,6 +20,7 @@ public class AhrsControl implements IChassisControl {
 
 	@Override
 	public void enable() {
+		velocityControl.enable();
 		controller.resetTraveled(); // reset every time we enable to all measurements are relative to that instant
 		controller.resetAngle();
 		controller.enable();
