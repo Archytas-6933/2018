@@ -19,9 +19,11 @@ import org.usfirst.frc.team6933.robot.commands.drive.DriveTimed;
 import org.usfirst.frc.team6933.robot.commands.drive.JogCommand;
 import org.usfirst.frc.team6933.robot.commands.drive.SetOpenLoopDrive;
 import org.usfirst.frc.team6933.robot.commands.drive.SetVelocityControlDrive;
+import org.usfirst.frc.team6933.robot.commands.drive.SwitchDriverMode;
 import org.usfirst.frc.team6933.robot.commands.drive.TurnDegrees;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -31,6 +33,8 @@ public class OI {
 
 	public LogitechExtreme3D driver = new LogitechExtreme3D(0);
 	public LogitechGamepadF310 operator = new LogitechGamepadF310(1);
+	
+	public static int driverMode = 0;
 
 	public OI() {
 		super();
@@ -72,16 +76,47 @@ public class OI {
 		testauto.addSequential(new DriveDistance(-1.0));
 		testauto.addSequential(new TurnDegrees(-45));
 		
-		driver.BaseButtonBottomLeft.whenPressed(testauto);
+		//driver.BaseButtonBottomLeft.whenPressed(testauto);
+		
+		
+		
+		driver.BaseButtonBottomLeft.whenPressed(new SwitchDriverMode());
 		
 	}
 
 	public double getYSpeed() {
-		return driver.getYAxis();
+		double YSpeed = 0;
+		YSpeed = operator.getLYAxis() + driver.getYAxis();
+		
+		if (YSpeed > 1)
+			return 1;
+		
+		else if (YSpeed < -1)
+			return -1;
+		
+		return YSpeed;
 	}
 
 	public double getZRotation() {
-		return driver.getXAxis();
+		double ZSpeed = driver.getZAxis();
+		if (driverMode == 1)
+			ZSpeed = driver.getXAxis();
+		
+		if (Math.abs(ZSpeed) < 0.2)
+			ZSpeed = 0;
+		
+		ZSpeed += operator.getRXAxis();
+		
+		//SmartDashboard.putNumber("Twist", driver.getZAxis());
+		
+
+		if (ZSpeed >  1)
+			return 1;
+		
+		else if (ZSpeed < -1)
+			return -1;
+		
+		return ZSpeed;
 	}
 
 	

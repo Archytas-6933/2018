@@ -17,7 +17,7 @@ public class LogitechGamepadF310 extends Joystick {
 
 	int LXAxis = 0; // was '4'
 	int LYAxis = 1;
-	int RXAxis = 3;
+	int RXAxis = 4; // was '3'
 	int RYAxis = 0;
 
 	int triggerAxis = 2;

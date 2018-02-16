@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -42,6 +43,7 @@ public class Robot extends TimedRobot {
 	public static Chassis chassis = new Chassis();
 	public static Compressor compressor = new Compressor();;
 	public static Video video = new Video();
+	SendableChooser<Command> m_chooser = new SendableChooser<>();
 
 	public static OI oi = new OI();
 
@@ -53,6 +55,8 @@ public class Robot extends TimedRobot {
 	
 	@Override
 	public void robotInit() {
+		m_chooser.addDefault("Autonomous Left", new AutonomousLeft());
+		m_chooser.addDefault("Autonomous Right", new AutonomousRight());
 		System.out.println("robotInit");
 
 	}
@@ -66,17 +70,17 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 
 		System.out.println("autonomousInit");
-
+		Command autonomousCommand = m_chooser.getSelected();
 		// Read game data from the Driver Station and select the Autonomous Mode
 		// by setting the autonomousCommand;
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if (gameData.charAt(0) == 'L') {
 			System.out.println("Left was read");
-			autonomousCommand = new AutonomousLeft();
+			//autonomousCommand = new AutonomousLeft();
 		} else {
 			System.out.println("Right was read");
-			autonomousCommand = new AutonomousRight();
+			//autonomousCommand = new AutonomousRight();
 		}
 
 		// start the chosen autonomous command

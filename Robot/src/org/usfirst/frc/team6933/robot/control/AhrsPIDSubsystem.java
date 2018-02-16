@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class AhrsPIDSubsystem extends PIDSubsystem {
 
 	final double heading_Kp = 0.8;
-	final double headingTolerance = 2.0f; // Heading will read as "on target" if + or - this many degrees
+	final double headingTolerance = 3.0f; // Heading will read as "on target" if + or - this many degrees
 
 	VelocityControl velocityControl;
 	

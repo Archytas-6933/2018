@@ -3,15 +3,17 @@ package org.usfirst.frc.team6933.robot.commands.drive;
 import org.usfirst.frc.team6933.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 
 /**
  *
  */
-public class TurnDegrees extends Command {
+public class TurnDegrees extends TimedCommand {
 
 	double angleTarget;
 	
 	public TurnDegrees(double angle) {
+		super(5.0);
 		// Use requires() here to declare subsystem dependencies
 		// eg. requires(chassis);
 		requires(Robot.chassis);
@@ -34,7 +36,7 @@ public class TurnDegrees extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return Robot.chassis.isAtTargetAngle();
+		return Robot.chassis.isAtTargetAngle() || isTimedOut();
 	}
 
 	// Called once after isFinished returns true

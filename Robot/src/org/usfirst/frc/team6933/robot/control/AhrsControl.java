@@ -9,7 +9,7 @@ public class AhrsControl implements IChassisControl {
 	VelocityControl velocityControl;
 
 	public AhrsControl(AHRS ahrs, VelocityControl velocityControl) {
-		controller = new AhrsPIDSubsystem("Ahrs", 1.0, 0.1, 3.0, ahrs, velocityControl);
+		controller = new AhrsPIDSubsystem("Ahrs", 0.5, 0.1, 5.0, ahrs, velocityControl);
 		this.velocityControl = velocityControl;
 	}
 
