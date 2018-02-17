@@ -11,12 +11,14 @@ import edu.wpi.first.wpilibj.command.PrintCommand;
 /**
  *
  */
-public class AutonomousLeft extends CommandGroup {
-private boolean leftScale = false;
-private boolean rightScale = false;
-	public AutonomousLeft() {
+public class AutonomousCenter extends CommandGroup {
 
-		addSequential(new PrintCommand("autonomous left group"));
+	private boolean leftScale = false;
+	private boolean rightScale = false;
+	
+	public AutonomousCenter() {
+		addSequential(new PrintCommand("autonomous center group"));
+
 		if (leftScale) {
 			addSequential(new PrintCommand("heading left scaleward!"));
 
@@ -25,15 +27,14 @@ private boolean rightScale = false;
 			addSequential(new PrintCommand("heading right scaleward!"));
 
 		}
-		/*addSequential(new DriveDistance(0.5));
-		addSequential(new TurnDegrees(-90));
-		addSequential(new DriveDistance(0.5));
-		addSequential(new TurnDegrees(90));
-		addSequential(new GrabberOpen());
-		addSequential(new DriveDistance(-0.5));*/
+//		addSequential(new DriveDistance(0.5));
+//		addSequential(new TurnDegrees(-90));
+//		addSequential(new DriveDistance(0.5));
+//		addSequential(new TurnDegrees(90));
+//		addSequential(new GrabberOpen());
+//		addSequential(new DriveDistance(-0.5));
 		
 	}
-
 	public void leftScale() {
 		leftScale = true;
 		

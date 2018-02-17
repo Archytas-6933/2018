@@ -9,6 +9,7 @@ package org.usfirst.frc.team6933.robot;
 
 import org.usfirst.frc.team6933.robot.commands.arm.ArmLatch;
 import org.usfirst.frc.team6933.robot.commands.arm.GrabberClose;
+import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousCenter;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousRight;
 import org.usfirst.frc.team6933.robot.commands.compressor.CompressorStart;
@@ -48,17 +49,20 @@ public class Robot extends TimedRobot {
 	public static OI oi = new OI();
 
 	private Command autonomousCommand = null;
-
+	private AutonomousLeft autoLeft = new AutonomousLeft();
+	private AutonomousCenter autoCenter = new AutonomousCenter();
+	private AutonomousRight autoRight = new AutonomousRight();
 	public static double testSpeed = 2.2;
 
 	boolean initialized = false;
 	
 	@Override
 	public void robotInit() {
-		m_chooser.addDefault("Autonomous Left", new AutonomousLeft());
-		m_chooser.addDefault("Autonomous Right", new AutonomousRight());
 		System.out.println("robotInit");
-
+		m_chooser.addDefault("Autonomous Left", autoLeft);
+		m_chooser.addDefault("Autonomous Center", autoCenter);
+		m_chooser.addDefault("Autonomous Right", autoRight);
+		SmartDashboard.putData("Auto Mode", m_chooser);
 	}
 
 	//
@@ -77,10 +81,27 @@ public class Robot extends TimedRobot {
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if (gameData.charAt(0) == 'L') {
 			System.out.println("Left was read");
+			if (autonomousCommand instanceof AutonomousLeft) {
+				autoLeft.leftScale();
+			}
+			else if (autonomousCommand instanceof AutonomousCenter) {
+				autoCenter.leftScale();
+			}
+			else if (autonomousCommand instanceof AutonomousRight) {
+				autoRight.leftScale();
+			}
 			//autonomousCommand = new AutonomousLeft();
 		} else {
 			System.out.println("Right was read");
-			//autonomousCommand = new AutonomousRight();
+			if (autonomousCommand instanceof AutonomousLeft) {
+				autoLeft.rightScale();
+			}
+			else if (autonomousCommand instanceof AutonomousCenter) {
+				autoCenter.rightScale();
+			}
+			else if (autonomousCommand instanceof AutonomousRight) {
+				autoRight.rightScale();
+			}
 		}
 
 		// start the chosen autonomous command
