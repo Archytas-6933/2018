@@ -31,7 +31,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class OI {
 
-	public LogitechExtreme3D driver = new LogitechExtreme3D(0);
+//	public LogitechExtreme3D driver = new LogitechExtreme3D(0);
+	public LogitechGamepadF310 driver = new LogitechGamepadF310(0);
 	public LogitechGamepadF310 operator = new LogitechGamepadF310(1);
 	
 	public static int driverMode = 0;
@@ -41,16 +42,18 @@ public class OI {
 
 		
 		// select open/close loop drive
-		driver.ThumbButtonUpperLeft.whenPressed(new SetOpenLoopDrive());
-		driver.ThumbButtonUpperRight.whenPressed(new SetVelocityControlDrive());
+		driver.LBButton.whenPressed(new SetOpenLoopDrive());
+		driver.RBButton.whenPressed(new SetVelocityControlDrive());
+//		driver.ThumbButtonUpperLeft.whenPressed(new SetOpenLoopDrive());
+//		driver.ThumbButtonUpperRight.whenPressed(new SetVelocityControlDrive());
 		
 		// start the autonomous testing group
 //		operator.LeftJoyClick.whenPressed(new AutonomousLeft());
 //		operator.RightJoyClick.whenPressed(new AutonomousRight());
 
 		// open/close the grabber
-		operator.BButton.whenPressed(new GrabberOpen());
-		operator.XButton.whenPressed(new GrabberClose());
+		operator.XButton.whenPressed(new GrabberOpen());
+		operator.BButton.whenPressed(new GrabberClose());
 
 		// raise/lower and release the arm
 		operator.YButton.whenPressed(new ArmUp());
@@ -80,42 +83,18 @@ public class OI {
 		
 		
 		
-		driver.BaseButtonBottomLeft.whenPressed(new SwitchDriverMode());
+		//driver.BaseButtonBottomLeft.whenPressed(new SwitchDriverMode());
 		
 	}
 
 	public double getYSpeed() {
 		double YSpeed = 0;
-		YSpeed = operator.getLYAxis() + driver.getYAxis();
-		
-		if (YSpeed > 1)
-			return 1;
-		
-		else if (YSpeed < -1)
-			return -1;
-		
+		YSpeed = driver.getLYAxis();
 		return YSpeed;
 	}
 
 	public double getZRotation() {
-		double ZSpeed = driver.getZAxis();
-		if (driverMode == 1)
-			ZSpeed = driver.getXAxis();
-		
-		if (Math.abs(ZSpeed) < 0.2)
-			ZSpeed = 0;
-		
-		ZSpeed += operator.getRXAxis();
-		
-		//SmartDashboard.putNumber("Twist", driver.getZAxis());
-		
-
-		if (ZSpeed >  1)
-			return 1;
-		
-		else if (ZSpeed < -1)
-			return -1;
-		
+		double ZSpeed = driver.getRXAxis();	
 		return ZSpeed;
 	}
 

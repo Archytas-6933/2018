@@ -22,7 +22,7 @@ public class JoystickDriveDefault extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.chassis.drive(Robot.oi.getYSpeed(), Robot.oi.getZRotation());
+		Robot.chassis.drive(Robot.oi.getYSpeed(), Robot.oi.getZRotation()/2);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

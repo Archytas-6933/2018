@@ -71,4 +71,11 @@ public class RobotMap {
 		public static final int analog2 = 2;
 		public static final int analog3 = 3;
 	}
+	public static class Relay {
+		public static final int relay0 = 0;
+		public static final int relay1 = 1;
+		public static final int relay2 = 2;
+		public static final int relay3 = 3;
+	}
+	
 }

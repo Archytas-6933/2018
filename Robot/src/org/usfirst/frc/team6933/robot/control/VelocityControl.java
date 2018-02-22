@@ -5,11 +5,14 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
 public class VelocityControl implements IChassisControl {
 	
+	
 	public static final int L = 0;
 	public static final int R = 1;
 	private VelocityControlPIDSubsystem[] controller = new VelocityControlPIDSubsystem[2];
 
-	public VelocityControl(Encoder[] encoder, SpeedControllerGroup[] motor) {
+	public VelocityControl(Encoder[] encoder, SpeedControllerGroup[] motor, double pGain, double iGain, double dGain) {
+	//	controller[L] = new VelocityControlPIDSubsystem("Left", pGain, iGain, dGain, encoder[L], motor[L]);
+	//	controller[R] = new VelocityControlPIDSubsystem("Right", pGain, iGain, dGain, encoder[R], motor[R]);
 		controller[L] = new VelocityControlPIDSubsystem("Left", 1, 0, 0.3, encoder[L], motor[L]);
 		controller[R] = new VelocityControlPIDSubsystem("Right", 1, 0, 0.3, encoder[R], motor[R]);
 	}

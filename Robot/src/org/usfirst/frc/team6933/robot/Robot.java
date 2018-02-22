@@ -8,6 +8,7 @@
 package org.usfirst.frc.team6933.robot;
 
 import org.usfirst.frc.team6933.robot.commands.arm.ArmLatch;
+
 import org.usfirst.frc.team6933.robot.commands.arm.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousCenter;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
@@ -19,7 +20,12 @@ import org.usfirst.frc.team6933.robot.subsystems.Chassis;
 import org.usfirst.frc.team6933.robot.subsystems.Compressor;
 import org.usfirst.frc.team6933.robot.subsystems.Video;
 
+//import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -53,8 +59,12 @@ public class Robot extends TimedRobot {
 	private AutonomousCenter autoCenter = new AutonomousCenter();
 	private AutonomousRight autoRight = new AutonomousRight();
 	public static double testSpeed = 2.2;
+	
+//	Preferences prefs;
 
 	boolean initialized = false;
+	
+	AnalogInput regVoltage = new AnalogInput(RobotMap.Analog.analog0);
 	
 	@Override
 	public void robotInit() {
@@ -63,6 +73,13 @@ public class Robot extends TimedRobot {
 		m_chooser.addDefault("Autonomous Center", autoCenter);
 		m_chooser.addDefault("Autonomous Right", autoRight);
 		SmartDashboard.putData("Auto Mode", m_chooser);
+//		prefs = Preferences.getInstance();
+//		chassis.setPgain(prefs.getDouble("velPgain", 1));
+//		chassis.setIgain(prefs.getDouble("velIgain", .1));
+//		chassis.setDgain(prefs.getDouble("velDgain", .3));
+		
+//		AHRS ahrs = new AHRS(SPI.Port.kMXP);
+//		ahrs.reset();
 	}
 
 	//
@@ -79,35 +96,55 @@ public class Robot extends TimedRobot {
 		// by setting the autonomousCommand;
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		System.out.print(gameData);
 		if (gameData.charAt(0) == 'L') {
 			System.out.println("Left was read");
 			if (autonomousCommand instanceof AutonomousLeft) {
-				autoLeft.leftScale();
+				AutonomousLeft auto = new AutonomousLeft();
+				auto.leftScale();
+				auto.start();	   
 			}
 			else if (autonomousCommand instanceof AutonomousCenter) {
-				autoCenter.leftScale();
+//				autoCenter.leftScale();				
+				System.out.println("In Center Left");
+				AutonomousCenter auto = new AutonomousCenter();
+				auto.leftScale();
+				auto.start();	  
 			}
 			else if (autonomousCommand instanceof AutonomousRight) {
-				autoRight.leftScale();
+//				autoRight.leftScale();
+				AutonomousRight auto = new AutonomousRight();
+				auto.leftScale();
+				auto.start();	  
 			}
-			//autonomousCommand = new AutonomousLeft();
-		} else {
+		} 
+		
+		if (gameData.charAt(0) == 'R') {
 			System.out.println("Right was read");
 			if (autonomousCommand instanceof AutonomousLeft) {
-				autoLeft.rightScale();
+//				autoLeft.rightScale();
+				AutonomousLeft auto = new AutonomousLeft();
+				auto.rightScale();
+				auto.start();	   
 			}
 			else if (autonomousCommand instanceof AutonomousCenter) {
-				autoCenter.rightScale();
+//				autoCenter.rightScale();
+				AutonomousCenter auto = new AutonomousCenter();
+				auto.rightScale();
+				auto.start();	  
 			}
 			else if (autonomousCommand instanceof AutonomousRight) {
-				autoRight.rightScale();
+//				autoRight.rightScale();
+				AutonomousRight auto = new AutonomousRight();
+				auto.rightScale();
+				auto.start();	  
 			}
 		}
 
-		// start the chosen autonomous command
-		if (autonomousCommand != null) {
-			autonomousCommand.start();
-		}
+//		// start the chosen autonomous command
+//		if (autonomousCommand != null) {
+//			autonomousCommand.start();
+//		}
 
 	}
 
@@ -130,6 +167,7 @@ public class Robot extends TimedRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
+		
 
 	}
 
@@ -190,6 +228,7 @@ public class Robot extends TimedRobot {
 	// periodic for the TEST mode
 	@Override
 	public void testPeriodic() {
+		System.out.println("Regulator Volotage = " + regVoltage.getVoltage());
 	}
 
 }

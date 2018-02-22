@@ -14,8 +14,8 @@ public class PositionControl implements IChassisControl {
 	public PositionControl(Encoder[] encoder, VelocityControl velocityControl) {
 		this.encoder = encoder;
 		this.velocityControl = velocityControl;
-		controller[L] = new PositionControlPIDSubsystem("Left", 1.0, 0.1, 0.3, encoder[L], velocityControl.getLeft());
-		controller[R] = new PositionControlPIDSubsystem("Right", 1.0, 0.1, 0.3, encoder[R], velocityControl.getRight());
+		controller[L] = new PositionControlPIDSubsystem("Left", 1.0, 0, 0.3, encoder[L], velocityControl.getLeft());//I = .1
+		controller[R] = new PositionControlPIDSubsystem("Right", 1.0, 0, 0.3, encoder[R], velocityControl.getRight());//I = .1
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class PositionControl implements IChassisControl {
 	}
 	
 	public boolean onTarget() {
-		return controller[L].onTarget() && controller[R].onTarget();
+		return controller[L].onTarget() || controller[R].onTarget();//changed to an OR
 	}
 
 }

@@ -22,7 +22,7 @@ public class AhrsControl implements IChassisControl {
 	public void enable() {
 		velocityControl.enable();
 		controller.resetTraveled(); // reset every time we enable to all measurements are relative to that instant
-		controller.resetAngle();
+	//	controller.resetAngle();
 		controller.enable();
 	}
 

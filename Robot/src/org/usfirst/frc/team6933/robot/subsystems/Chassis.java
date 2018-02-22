@@ -31,7 +31,7 @@ public class Chassis extends Subsystem {
 
 	// determine max speed
 	public double wheelCircumfrenceMeters = 6 * 2.54 * Math.PI / 100;
-	public final double distancePerPulse = wheelCircumfrenceMeters / 360; // meters
+	public final double distancePerPulse = wheelCircumfrenceMeters / 360; // meters //added .91 calibration factor
 	public int cimNoLoadRpm = 5310; // 2.5" CIM Motor (am-0255)
 	public double toughBoxMiniRatio = 10.71; // ToughBox Mini for KoP Chassis (am-14u3), 10.71:1 Ratio (am-2598_107)
 	public double toughBoxMiniOutputRpm = cimNoLoadRpm / toughBoxMiniRatio;
@@ -44,11 +44,15 @@ public class Chassis extends Subsystem {
 
 	boolean squaredInputs = false;
 	double decimator = 1.0;
-
+	private double velPgain;
+	private double velIgain;
+	private double velDgain;
+	
 	Map<ControlType, IChassisControl> allControls = new HashMap<ControlType, IChassisControl>();
 	ControlType currentControlMode;
 
 	public Chassis() {
+		
 
 		// initialize encoders before passing into PID controllers
 		Encoder[] encoders = new Encoder[2];
@@ -69,9 +73,10 @@ public class Chassis extends Subsystem {
 
 		// initialize the ahrs interface
 		AHRS ahrs = new AHRS(SPI.Port.kMXP);
+		ahrs.reset();
 		
 		// initialize control subsystems to encapsulate the PID behavior
-		velocityControl = new VelocityControl(encoders, motors);
+		velocityControl = new VelocityControl(encoders, motors, 1.0, 0.1, 0.3);
 		openLoopControl = new OpenLoopControl(encoders, motors);
 		positionControl = new PositionControl(encoders, velocityControl);
 		ahrsControl = new AhrsControl(ahrs, velocityControl);
@@ -105,6 +110,25 @@ public class Chassis extends Subsystem {
 		ahrsControl.setTargetAngle(angle);
 	}
 
+	public void setPgain(double gain) {
+		velPgain = gain;
+	}
+	public double getPgain() {
+		return velPgain;
+	}
+	public void setIgain(double gain) {
+		velIgain = gain;
+	}
+	public  double getIgain() {
+		return velIgain;
+	}
+	public void setDgain(double gain) {
+		velDgain = gain;
+	}
+	public double getDgain() {
+		return velDgain;
+	}
+	
 	public boolean isAtTargetAngle() {
 		return ahrsControl.onTarget();
 	}
