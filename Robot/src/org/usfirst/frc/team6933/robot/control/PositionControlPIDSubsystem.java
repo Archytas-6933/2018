@@ -55,7 +55,7 @@ public class PositionControlPIDSubsystem extends PIDSubsystem {
 	protected void usePIDOutput(double output) {
 		// Use output to drive your system, like a motor
 		// e.g. yourMotor.set(output)
-		output /= 2;
+		output /= 1.5;
 		SmartDashboard.putNumber("A - PIDOutput - " + getName(), output);
 //		System.out.println(getName() + " out " + Double.toString(output) + " to " + velocity.getName());
 		velocity.setSetpoint(output);

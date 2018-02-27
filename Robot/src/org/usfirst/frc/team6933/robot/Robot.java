@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
 	public static Video video = new Video();
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
 
+	// joystick disabled for test robot
 	public static OI oi = new OI();
 
 	private Command autonomousCommand = null;
@@ -91,12 +92,14 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 
 		System.out.println("autonomousInit");
+		Robot.chassis.ahrs.reset();
 		Command autonomousCommand = m_chooser.getSelected();
 		// Read game data from the Driver Station and select the Autonomous Mode
 		// by setting the autonomousCommand;
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
-		System.out.print(gameData);
+		System.out.println("Game data: " + gameData);
+		System.out.println("Autonomous start: " + autonomousCommand.getName());
 		if (gameData.charAt(0) == 'L') {
 			System.out.println("Left was read");
 			if (autonomousCommand instanceof AutonomousLeft) {

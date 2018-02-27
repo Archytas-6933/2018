@@ -12,12 +12,14 @@ public class DriveDistance extends TimedCommand {
 
 	double distanceTarget;
 	
+	public static double DISTANCE_FUDGE_FACTOR = 0.0;
+	
     public DriveDistance(double distance) {
-    	super(3.0);
+    	super(10.0);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
 		requires(Robot.chassis);
-		distanceTarget = distance;
+		distanceTarget = distance + DISTANCE_FUDGE_FACTOR;
     }
 
     // Called just before this Command runs the first time

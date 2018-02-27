@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class VelocityControlPIDSubsystem extends PIDSubsystem {
 
 	Encoder encoder;
-	SpeedController wheel;
+	public SpeedController wheel;
 
 	
 	// Initialize your subsystem here

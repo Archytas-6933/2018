@@ -9,7 +9,7 @@ public class AhrsControl implements IChassisControl {
 	VelocityControl velocityControl;
 
 	public AhrsControl(AHRS ahrs, VelocityControl velocityControl) {
-		controller = new AhrsPIDSubsystem("Ahrs", 0.5, 0.1, 5.0, ahrs, velocityControl);
+		controller = new AhrsPIDSubsystem("Ahrs", 1.0, 0.3, 0.3, ahrs, velocityControl);
 		this.velocityControl = velocityControl;
 	}
 
@@ -21,7 +21,7 @@ public class AhrsControl implements IChassisControl {
 	@Override
 	public void enable() {
 		velocityControl.enable();
-		controller.resetTraveled(); // reset every time we enable to all measurements are relative to that instant
+	//	controller.resetTraveled(); // reset every time we enable to all measurements are relative to that instant
 	//	controller.resetAngle();
 		controller.enable();
 	}

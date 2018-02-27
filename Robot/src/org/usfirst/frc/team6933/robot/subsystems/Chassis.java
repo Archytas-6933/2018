@@ -41,6 +41,8 @@ public class Chassis extends Subsystem {
 	PositionControl positionControl;
 	OpenLoopControl openLoopControl;
 	AhrsControl ahrsControl;
+	
+	public AHRS ahrs;
 
 	boolean squaredInputs = false;
 	double decimator = 1.0;
@@ -72,11 +74,11 @@ public class Chassis extends Subsystem {
 		motors[R].setInverted(true);
 
 		// initialize the ahrs interface
-		AHRS ahrs = new AHRS(SPI.Port.kMXP);
+		ahrs = new AHRS(SPI.Port.kMXP);
 		ahrs.reset();
 		
 		// initialize control subsystems to encapsulate the PID behavior
-		velocityControl = new VelocityControl(encoders, motors, 1.0, 0.1, 0.3);
+		velocityControl = new VelocityControl(encoders, motors, 1.0, 0, 0.1);
 		openLoopControl = new OpenLoopControl(encoders, motors);
 		positionControl = new PositionControl(encoders, velocityControl);
 		ahrsControl = new AhrsControl(ahrs, velocityControl);

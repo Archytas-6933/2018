@@ -18,46 +18,23 @@ public class AutonomousRight extends CommandGroup {
 	private boolean leftScale = false;
 	private boolean rightScale = false;
 	public AutonomousRight() {
-
 		addSequential(new PrintCommand("autonomous right group"));
-		if (leftScale) {
-			addSequential(new PrintCommand("heading left scaleward!"));
-
-		}
-		else if (rightScale) {
-			addSequential(new PrintCommand("heading right scaleward!"));
-
-		}
-//		addSequential(new TurnTo(-45));
-		
-//		addSequential(new DriveDistance(1.5));
-//		addSequential(new GrabberOpen());
 	}
 	public void leftScale() {
 		System.out.print("right to left scale");
-////		addSequential(new GrabberOpen());
-//		addSequential(new ArmUp());
-//		addSequential(new ArmUnlatch());
-////		addSequential(new ArmDown());
-////		addSequential(new GrabberClose());
-//		addSequential(new DriveDistance(2));
+		addSequential(new ArmUp());
+		addSequential(new ArmUnlatch());
+		addSequential(new DriveDistance(4.8));
 		addSequential(new TurnDegrees(-90));
-//		addSequential(new DriveDistance(6));
-//		addSequential(new TurnDegrees(90));
-//		addSequential(new DriveDistance(1.1));
-//		addSequential(new GrabberOpen());
-//		
+		addSequential(new DriveDistance(3.35));
 	}
 	public void rightScale() {
 		System.out.print("right to right scale");
-////		addSequential(new GrabberOpen());
-//		addSequential(new ArmUp());
-//		addSequential(new ArmUnlatch());
-////		addSequential(new ArmDown());
-////		addSequential(new GrabberClose());
-		addSequential(new DriveDistance(2));//3.5 meters
-//		addSequential(new TurnDegrees(-90));
-//		addSequential(new DriveDistance(1.5));
-//		addSequential(new GrabberOpen());
+		addSequential(new ArmUp());
+		addSequential(new ArmUnlatch());
+		addSequential(new DriveDistance(3.2));
+		addSequential(new TurnDegrees(-90));
+		addSequential(new DriveDistance(0.9));
+		addSequential(new GrabberOpen());
 	}
 }

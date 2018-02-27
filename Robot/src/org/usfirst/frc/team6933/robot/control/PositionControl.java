@@ -14,8 +14,8 @@ public class PositionControl implements IChassisControl {
 	public PositionControl(Encoder[] encoder, VelocityControl velocityControl) {
 		this.encoder = encoder;
 		this.velocityControl = velocityControl;
-		controller[L] = new PositionControlPIDSubsystem("Left", 1.0, 0, 0.3, encoder[L], velocityControl.getLeft());//I = .1
-		controller[R] = new PositionControlPIDSubsystem("Right", 1.0, 0, 0.3, encoder[R], velocityControl.getRight());//I = .1
+		controller[L] = new PositionControlPIDSubsystem("Left", 1.0, 0.3, 0.3, encoder[L], velocityControl.getLeft());//I = .1
+		controller[R] = new PositionControlPIDSubsystem("Right", 1.0, 0.3, 0.3, encoder[R], velocityControl.getRight());//I = .1
 	}
 
 	@Override
