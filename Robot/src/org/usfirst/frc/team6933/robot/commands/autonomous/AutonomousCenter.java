@@ -32,25 +32,25 @@ public class AutonomousCenter extends CommandGroup {
 	}
 	public void leftScale() {
 		System.out.print("center to left scale");
-		addSequential(new ArmUp());
-		addSequential(new ArmUnlatch());
 		addSequential(new DriveDistance(1.5));
 		addSequential(new TurnDegrees(-90));
 		addSequential(new DriveDistance(1.5));
 		addSequential(new TurnDegrees(0));
 		addSequential(new DriveDistance(1.06));
+		addSequential(new ArmUp());
+		addSequential(new ArmUnlatch());
 		addSequential(new GrabberOpen());
 		
 	}
 	public void rightScale() {
 		System.out.print("center to right scale");
-		addSequential(new ArmUp());
-		addSequential(new ArmUnlatch());
 		addSequential(new DriveDistance(1.5)); 
 		addSequential(new TurnDegrees(90));
 		addSequential(new DriveDistance(1.5));
 		addSequential(new TurnDegrees(0));
 		addSequential(new DriveDistance(1.06)); 
+		addSequential(new ArmUp());
+		addSequential(new ArmUnlatch());
 		addSequential(new GrabberOpen());
 	}
 }
