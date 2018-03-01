@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -55,7 +56,7 @@ public class Robot extends TimedRobot {
 	// joystick disabled for test robot
 	public static OI oi = new OI();
 
-	private Command autonomousCommand = null;
+	private CommandGroup autonomousCommand =null 	;
 	private AutonomousLeft autoLeft = new AutonomousLeft();
 	private AutonomousCenter autoCenter = new AutonomousCenter();
 	private AutonomousRight autoRight = new AutonomousRight();
@@ -63,8 +64,7 @@ public class Robot extends TimedRobot {
 	
 //	Preferences prefs;
 
-	boolean initialized = false;
-	
+
 	AnalogInput regVoltage = new AnalogInput(RobotMap.Analog.analog0);
 	
 	@Override
@@ -81,6 +81,15 @@ public class Robot extends TimedRobot {
 		
 //		AHRS ahrs = new AHRS(SPI.Port.kMXP);
 //		ahrs.reset();
+		
+		
+		// start the camera server
+		Robot.video.startAutomaticCapture();
+		
+		// start the compressor
+		Robot.compressor.start();
+		
+		
 	}
 
 	//
@@ -93,61 +102,67 @@ public class Robot extends TimedRobot {
 
 		System.out.println("autonomousInit");
 		Robot.chassis.ahrs.reset();
-		Command autonomousCommand = m_chooser.getSelected();
+		Command selectedCommand = m_chooser.getSelected();
 		// Read game data from the Driver Station and select the Autonomous Mode
 		// by setting the autonomousCommand;
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		System.out.println("Game data: " + gameData);
-		System.out.println("Autonomous start: " + autonomousCommand.getName());
+		System.out.println("Autonomous start: " + selectedCommand.getName());
+		
+		// latch the arm & close grabber
+		autonomousCommand = new CommandGroup();
+     	autonomousCommand.addSequential(new ArmLatch());
+		autonomousCommand.addSequential(new GrabberClose());
+		
 		if (gameData.charAt(0) == 'L') {
 			System.out.println("Left was read");
-			if (autonomousCommand instanceof AutonomousLeft) {
+			if (selectedCommand instanceof AutonomousLeft) {
 				AutonomousLeft auto = new AutonomousLeft();
 				auto.leftScale();
-				auto.start();	   
+				autonomousCommand.addSequential(auto);
 			}
-			else if (autonomousCommand instanceof AutonomousCenter) {
+			else if (selectedCommand instanceof AutonomousCenter) {
 //				autoCenter.leftScale();				
 				System.out.println("In Center Left");
 				AutonomousCenter auto = new AutonomousCenter();
 				auto.leftScale();
-				auto.start();	  
+				autonomousCommand.addSequential(auto);	  
 			}
-			else if (autonomousCommand instanceof AutonomousRight) {
+			else if (selectedCommand instanceof AutonomousRight) {
 //				autoRight.leftScale();
 				AutonomousRight auto = new AutonomousRight();
 				auto.leftScale();
-				auto.start();	  
+				autonomousCommand.addSequential(auto);	  
 			}
 		} 
 		
 		if (gameData.charAt(0) == 'R') {
 			System.out.println("Right was read");
-			if (autonomousCommand instanceof AutonomousLeft) {
+			if (selectedCommand instanceof AutonomousLeft) {
 //				autoLeft.rightScale();
 				AutonomousLeft auto = new AutonomousLeft();
 				auto.rightScale();
-				auto.start();	   
+				autonomousCommand.addSequential(auto);	   
 			}
-			else if (autonomousCommand instanceof AutonomousCenter) {
+			else if (selectedCommand instanceof AutonomousCenter) {
 //				autoCenter.rightScale();
 				AutonomousCenter auto = new AutonomousCenter();
 				auto.rightScale();
-				auto.start();	  
+				autonomousCommand.addSequential(auto);	  
 			}
-			else if (autonomousCommand instanceof AutonomousRight) {
+			else if (selectedCommand instanceof AutonomousRight) {
 //				autoRight.rightScale();
 				AutonomousRight auto = new AutonomousRight();
 				auto.rightScale();
-				auto.start();	  
+				autonomousCommand.addSequential(auto);	  
 			}
 		}
 
-//		// start the chosen autonomous command
-//		if (autonomousCommand != null) {
-//			autonomousCommand.start();
-//		}
+		// start the chosen autonomous command
+		if (autonomousCommand != null) {
+			autonomousCommand.start();
+		}
 
 	}
 
@@ -155,7 +170,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 		System.out.println("disabledInit");
-	
+		
 	}
 
 	// enter TELEOP mode
@@ -194,28 +209,13 @@ public class Robot extends TimedRobot {
 		video.sendInfo();
 		Scheduler.getInstance().run();
 		
-		// run initialization commands only while we have the scheduler running
-		if ( !initialized && this.isEnabled() ) {
-			
-			// start the camera server
-			new VideoStart().start();
-
-			// start the compressor
-			new CompressorStart().start();
-
-			// latch the arm
-			new ArmLatch().start();
-
-			// close the grabber
-			new GrabberClose().start();
-			
-			initialized = true;
-		}
+		
 	}
 
 	// periodic for the AUTONOMOUS mode
 	@Override
 	public void autonomousPeriodic() {
+		//Scheduler.getInstance().run();
 	}
 
 	// periodic for the DISABLED mode
@@ -226,6 +226,7 @@ public class Robot extends TimedRobot {
 	// periodic for the TELEOP mode
 	@Override
 	public void teleopPeriodic() {
+		//.getInstance().run();
 	}
 
 	// periodic for the TEST mode

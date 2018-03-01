@@ -23,7 +23,7 @@ public class CompressorStart extends InstantCommand {
     // Called repeatedly when this Command is scheduled to run
     @Override
 	protected void execute() {
-    		Robot.compressor.start();
+    		
     }
 
     // Called once after isFinished returns true
