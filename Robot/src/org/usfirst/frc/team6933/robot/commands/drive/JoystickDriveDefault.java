@@ -17,6 +17,7 @@ public class JoystickDriveDefault extends Command {
 	@Override
 	protected void initialize() {
 		System.out.println(this.getClass().getSimpleName() + " initalize");
+		Robot.chassis.setOpenLoopDrive();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
