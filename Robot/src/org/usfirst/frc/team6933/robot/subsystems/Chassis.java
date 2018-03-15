@@ -1,7 +1,15 @@
 package org.usfirst.frc.team6933.robot.subsystems;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.usfirst.frc.team6933.robot.RobotMap;
 import org.usfirst.frc.team6933.robot.commands.drive.JoystickDriveDefault;
+import org.usfirst.frc.team6933.robot.control.AhrsControl;
+import org.usfirst.frc.team6933.robot.control.IChassisControl;
+import org.usfirst.frc.team6933.robot.control.OpenLoopControl;
+import org.usfirst.frc.team6933.robot.control.PositionControl;
+import org.usfirst.frc.team6933.robot.control.VelocityControl;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
@@ -10,50 +18,79 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Chassis extends Subsystem {
 
-	final double distancePerPulse = 6 * 2.54 * Math.PI / 100 / 360; // meters
+	public static final int L = 0;
+	public static final int R = 1;
 
-	// Define the two motors as CANTalons
-	WPI_TalonSRX leftMotorA = new WPI_TalonSRX(RobotMap.CAN.motorLeftA);
-	WPI_TalonSRX leftMotorB = new WPI_TalonSRX(RobotMap.CAN.motorLeftB);
-	WPI_TalonSRX rightMotorA = new WPI_TalonSRX(RobotMap.CAN.motorRightA);
-	WPI_TalonSRX rightMotorB = new WPI_TalonSRX(RobotMap.CAN.motorRightB);
+	public enum ControlType {
+		Velocity, Position, Ahrs, OpenLoop
+	};
 
-	SpeedControllerGroup leftGroup = new SpeedControllerGroup(leftMotorA, leftMotorB);
-	SpeedControllerGroup rightGroup = new SpeedControllerGroup(rightMotorA, rightMotorB);
+	// determine max speed
+	public double wheelCircumfrenceMeters = 6 * 2.54 * Math.PI / 100;
+	public final double distancePerPulse = wheelCircumfrenceMeters / 360; // meters //added .91 calibration factor
+	public int cimNoLoadRpm = 5310; // 2.5" CIM Motor (am-0255)
+	public double toughBoxMiniRatio = 10.71; // ToughBox Mini for KoP Chassis (am-14u3), 10.71:1 Ratio (am-2598_107)
+	public double toughBoxMiniOutputRpm = cimNoLoadRpm / toughBoxMiniRatio;
+	public double chassisNoLoadMps = toughBoxMiniOutputRpm * wheelCircumfrenceMeters / 60; // 3.95
 
-	Encoder leftEncoder = new Encoder(RobotMap.DIO.motorLeftEncoderA, RobotMap.DIO.motorLeftEncoderB, true);
-	Encoder rightEncoder = new Encoder(RobotMap.DIO.motorRightEncoderA, RobotMap.DIO.motorRightEncoderB);
-	AHRS ahrs = new AHRS(SPI.Port.kMXP);
-
-	// AhrsPIDSubsystem ahrsPIDSubsystem;
-	WheelPIDSubsystem leftWheelPIDSubsystem;
-	WheelPIDSubsystem rightWheelPIDSubsystem;
+	VelocityControl velocityControl;
+	PositionControl positionControl;
+	OpenLoopControl openLoopControl;
+	AhrsControl ahrsControl;
+	
+	public AHRS ahrs;
 
 	boolean squaredInputs = false;
 	double decimator = 1.0;
-	boolean openLoop = true;
+	private double velPgain;
+	private double velIgain;
+	private double velDgain;
+	
+	Map<ControlType, IChassisControl> allControls = new HashMap<ControlType, IChassisControl>();
+	ControlType currentControlMode;
 
 	public Chassis() {
 		
+
 		// initialize encoders before passing into PID controllers
-		leftEncoder.setDistancePerPulse(distancePerPulse);
-		rightEncoder.setDistancePerPulse(distancePerPulse);
-		leftEncoder.setName("leftEncoder");
-		rightEncoder.setName("rightEncoder");
+		Encoder[] encoders = new Encoder[2];
+		encoders[L] = new Encoder(RobotMap.DIO.motorLeftEncoderA, RobotMap.DIO.motorLeftEncoderB, true);
+		encoders[L].setDistancePerPulse(distancePerPulse);
+		encoders[L].setName("leftEncoder");
+		encoders[R] = new Encoder(RobotMap.DIO.motorRightEncoderA, RobotMap.DIO.motorRightEncoderB);
+		encoders[R].setDistancePerPulse(distancePerPulse);
+		encoders[R].setName("rightEncoder");
+
+		// initialize motor groups with pairs of Talon motor controllers
+		SpeedControllerGroup[] motors = new SpeedControllerGroup[2];
+		motors[L] = new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN.motorLeftA),
+				new WPI_TalonSRX(RobotMap.CAN.motorLeftB));
+		motors[R] = new SpeedControllerGroup(new WPI_TalonSRX(RobotMap.CAN.motorRightA),
+				new WPI_TalonSRX(RobotMap.CAN.motorRightB));
+		motors[R].setInverted(true);
+
+		// initialize the ahrs interface
+		ahrs = new AHRS(SPI.Port.kMXP);
+		ahrs.reset();
 		
-		rightGroup.setInverted(true);
-		
-		// initialize PIDSubsystems as a way to encapsulate the PID behavior
-		leftWheelPIDSubsystem = new WheelPIDSubsystem("LeftWheelPID", 1, 0, .3, 0, leftEncoder, leftGroup);
-		rightWheelPIDSubsystem = new WheelPIDSubsystem("RightWheelPID", 1, 0, .3, 0, rightEncoder, rightGroup);
-		// ahrsPIDSubsystem = new AhrsPIDSubsystem(0.04, 0.0, 0.0, ahrs, leftWheelPIDSubsystem, rightWheelPIDSubsystem);
-//	LiveWindow.updateValues();
-		enableOpenLoopDrive();
+		// initialize control subsystems to encapsulate the PID behavior
+		velocityControl = new VelocityControl(encoders, motors, 1.0, 0, 0.1);
+		openLoopControl = new OpenLoopControl(encoders, motors);
+		positionControl = new PositionControl(encoders, velocityControl);
+		ahrsControl = new AhrsControl(ahrs, velocityControl);
+
+		// add controls to map
+		allControls.put(ControlType.OpenLoop, openLoopControl);
+		allControls.put(ControlType.Velocity, velocityControl);
+		allControls.put(ControlType.Position, positionControl);
+		allControls.put(ControlType.Ahrs, ahrsControl);
+
+		this.currentControlMode = ControlType.OpenLoop;
+
 	}
 
 	@Override
@@ -62,29 +99,70 @@ public class Chassis extends Subsystem {
 	}
 
 	// open loop arcade drive
-	public void enableOpenLoopDrive() {
-		openLoop = true;
-		leftWheelPIDSubsystem.disable();
-		rightWheelPIDSubsystem.disable();
+	public void setOpenLoopDrive() {
+		setCurrentControlMode(ControlType.OpenLoop);
 	}
 
-	// closed loop arcade drive
-	public void enableClosedLoopDrive() {
-		openLoop = false;
-		leftWheelPIDSubsystem.enable();
-		rightWheelPIDSubsystem.enable();
+	// open loop arcade drive
+	public void setAhrsControlDrive() {
+		setCurrentControlMode(ControlType.Ahrs);
+	}
+
+	public void setAhrsTarget(double angle) {
+		ahrsControl.setTargetAngle(angle);
+	}
+
+	public void setPgain(double gain) {
+		velPgain = gain;
+	}
+	public double getPgain() {
+		return velPgain;
+	}
+	public void setIgain(double gain) {
+		velIgain = gain;
+	}
+	public  double getIgain() {
+		return velIgain;
+	}
+	public void setDgain(double gain) {
+		velDgain = gain;
+	}
+	public double getDgain() {
+		return velDgain;
+	}
+	
+	public boolean isAtTargetAngle() {
+		return ahrsControl.onTarget();
+	}
+
+	public void stopAhrsPID() {
+		ahrsControl.disable();
+	}
+
+	public void setDistanceTarget(double distance) {
+		positionControl.setTargetDistance(distance);
+	}
+
+	public boolean isAtTargetDistance() {
+		return positionControl.onTarget();
+	}
+
+	public void stopDistancePID() {
+		positionControl.disable();
+	}
+
+	// open loop arcade drive
+	public void setPositionControlDrive() {
+		setCurrentControlMode(ControlType.Position);
+	}
+
+	// open loop arcade drive
+	public void setVelocityControlDrive() {
+		setCurrentControlMode(ControlType.Velocity);
 	}
 
 	public void drive(double forwardAxis, double turnAxis) {
 		arcadeDrive(forwardAxis * decimator, turnAxis * decimator, squaredInputs);
-	}
-
-	public void enableAhrsDriveClosedLoop() {
-		// this.ahrsPIDSubsystem.enable();
-	}
-
-	public void disableAhrsDriveClosedLoop() {
-		// this.ahrsPIDSubsystem.disable();
 	}
 
 	public void ahrsDrive(double speed, double angle) {
@@ -92,33 +170,21 @@ public class Chassis extends Subsystem {
 	}
 
 	public double getAngle() {
-		return ahrs.getAngle();
+		return ahrsControl.getAngle();
 	}
 
 	public void sendInfo() {
-
-//		SmartDashboard.putNumber("AhrsDisplacementX", ahrs.getDisplacementX());
-//		SmartDashboard.putNumber("AhrsDisplacementY", ahrs.getDisplacementY());
-//		SmartDashboard.putNumber("AhrsDisplacementZ", ahrs.getDisplacementZ());
-//		SmartDashboard.putNumber("AhrsAngle", ahrs.getAngle());
-//		SmartDashboard.putNumber("EncoderLeftDistance", leftEncoder.getDistance());
-//		SmartDashboard.putNumber("EncoderRightDistance", rightEncoder.getDistance());
-//		SmartDashboard.putNumber("EncoderLeftSpeed", leftEncoder.getRate());
-//		SmartDashboard.putNumber("EncoderRightSpeed", rightEncoder.getRate());
 		SmartDashboard.putData(this);
-
-		leftWheelPIDSubsystem.sendInfo();
-		rightWheelPIDSubsystem.sendInfo();
-		// ahrsPIDSubsystem.sendInfo();
+		allControls.get(currentControlMode).sendInfo();
 	}
 
 	// arcadeDrive code from wpilib modified to set setpoints on the wheel pid
 	// controllers
-	public void arcadeDrive(double xSpeed, double zRotation, boolean squaredInputs) {
+	private void arcadeDrive(double xSpeed, double zRotation, boolean squaredInputs) {
 
 		SmartDashboard.putNumber("A - xSpeed", xSpeed);
 		SmartDashboard.putNumber("A - zRotation", zRotation);
-		
+
 		// Square the inputs (while preserving the sign) to increase fine control
 		// while permitting full power.
 		if (squaredInputs) {
@@ -154,23 +220,26 @@ public class Chassis extends Subsystem {
 		SmartDashboard.putNumber("A - leftOutput", leftMotorOutput);
 		SmartDashboard.putNumber("A - rightOutput", rightMotorOutput);
 
-		if (openLoop) {
-			leftGroup.set(leftMotorOutput);
-			rightGroup.set(rightMotorOutput);
-		} else {
-			leftWheelPIDSubsystem.setSetpoint(leftMotorOutput);
-			rightWheelPIDSubsystem.setSetpoint(rightMotorOutput);
+		// send to any control mode, if in appropriate for that mode they are just stub
+		// functions
+		this.allControls.get(currentControlMode).setMotorOutput(leftMotorOutput, rightMotorOutput);
+
+	}
+
+	private void setCurrentControlMode(ControlType mode) {
+
+		if (mode != currentControlMode) {
+			System.out.println("Switching from " + currentControlMode.toString() + " to " + mode.toString());
 		}
-	}
 
-	public void resetTraveled() {
-		// TODO Auto-generated method stub
+		// disable all
+		for (Map.Entry<ControlType, IChassisControl> entry : allControls.entrySet()) {
+			entry.getValue().disable();
+		}
 
-	}
-
-	public double getTraveled() {
-		// TODO Auto-generated method stub
-		return 0;
+		// enable given mode
+		allControls.get(mode).enable();
+		this.currentControlMode = mode;
 	}
 
 }

@@ -1,10 +1,9 @@
 package org.usfirst.frc.team6933.robot.subsystems;
 
 import org.usfirst.frc.team6933.robot.RobotMap;
-import org.usfirst.frc.team6933.robot.commands.arm.ArmDefaultOff;
+import org.usfirst.frc.team6933.robot.commands.arm.ArmOff;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -13,41 +12,52 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Arm extends Subsystem {
 
-	final double solenoidPulseWidth = 0.5;  // seconds
-	
-	// Put methods for controlling this subsystem
-	DoubleSolenoid armSolenoid = new DoubleSolenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.armUp,
-			RobotMap.Solenoid.armDown);
-	Solenoid releaseSolenoid = new Solenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.armRelease);
+	public final double solenoidPulseWidth = 0.5; // seconds
 
+	// Put methods for controlling this subsystem
+	DoubleSolenoid elevator = new DoubleSolenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.armUp,
+			RobotMap.Solenoid.armDown);
+	DoubleSolenoid release = new DoubleSolenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.armLatch,
+			RobotMap.Solenoid.armUnlatch);
+	DoubleSolenoid grabberSolenoid = new DoubleSolenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.grabberOpen, RobotMap.Solenoid.grabberClose);
+	
 	@Override
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
-		setDefaultCommand(new ArmDefaultOff());
+		setDefaultCommand(new ArmOff());
 	}
 
 	public void armUp() {
-		armSolenoid.set(DoubleSolenoid.Value.kForward);
+		elevator.set(DoubleSolenoid.Value.kForward);
 	}
 
 	public void armDown() {
-		armSolenoid.set(DoubleSolenoid.Value.kReverse);
+		elevator.set(DoubleSolenoid.Value.kReverse);
+	}
+	
+	public void armLatch() {
+		release.set(DoubleSolenoid.Value.kForward);
+	}
+	
+	public void armUnlatch() {
+		release.set(DoubleSolenoid.Value.kReverse);
+	}
+	
+	public void grabberOpen() {
+		grabberSolenoid.set(DoubleSolenoid.Value.kForward);
+	}
+
+	public void grabberClose() {
+		grabberSolenoid.set(DoubleSolenoid.Value.kReverse);;
 	}
 
 	public void armOff() {
-		armSolenoid.set(DoubleSolenoid.Value.kOff);
-	}
-	
-	public void release() {
-		System.out.println("arm release");
-		releaseSolenoid.setPulseDuration(solenoidPulseWidth);
-		releaseSolenoid.startPulse();
+		elevator.set(DoubleSolenoid.Value.kOff);
+		release.set(DoubleSolenoid.Value.kOff);
+		grabberSolenoid.set(DoubleSolenoid.Value.kOff);;
+
 	}
 
-	public double getSolenoidPulseWidth() {
-		return solenoidPulseWidth;
-	}
-	
 	public void sendInfo() {
 		SmartDashboard.putData(this);
 	}

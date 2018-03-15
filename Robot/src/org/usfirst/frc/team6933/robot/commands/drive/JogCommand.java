@@ -4,7 +4,6 @@ import org.usfirst.frc.team6933.robot.PovButton;
 import org.usfirst.frc.team6933.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.PrintCommand;
 
 /**
  *
@@ -26,16 +25,16 @@ public class JogCommand extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		System.out.println(this.getClass().getName() + " initialize");
+		System.out.println(this.getClass().getSimpleName() + " initialize");
 		// reset nav to so list of points can have zero reference
 		// create command instance specific list of points to follow
+		Robot.chassis.setAhrsControlDrive();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-	   // TODO	
-		// follow a list of points specific to each instance of this command
+	   Robot.chassis.ahrsDrive(.3, direction);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
@@ -47,13 +46,13 @@ public class JogCommand extends Command {
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-		System.out.println(this.getClass().getName() + " end");
+		System.out.println(this.getClass().getSimpleName() + " end");
 	}
 
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
 	@Override
 	protected void interrupted() {
-		System.out.println(this.getClass().getName() + " interrupted");
+		System.out.println(this.getClass().getSimpleName() + " interrupted");
 	}
 }

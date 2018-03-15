@@ -26,15 +26,13 @@ public class AhrsDrive extends Command {
 		this.speed=speed;
 		this.angle = angle;
 		this.distance = distance;
-		
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		System.out.println(this.getClass().getName() + " initialize");
-		Robot.chassis.resetTraveled();
-		Robot.chassis.enableAhrsDriveClosedLoop(); // needs values for rate control
+		System.out.println(this.getClass().getSimpleName() + " initialize");
+		Robot.chassis.setVelocityControlDrive(); // needs values for rate control
 		
 	}
 
@@ -47,22 +45,21 @@ public class AhrsDrive extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		double traveled = Robot.chassis.getTraveled();
-		return isTimedOut() || traveled >= distance; 
+//		double traveled = Robot.chassis.getTraveled();
+	return isTimedOut() ;//|| traveled >= distance; 
 	}
 
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-		System.out.println(this.getClass().getName() + " end");
-//		Robot.chassis.disableAhrsDriveClosedLoop(); // restore open loop when done
+//		System.out.println(this.getClass().getSimpleName() + " end");
 	}
 
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
 	@Override
 	protected void interrupted() {
-//		System.out.println(this.getClass().getName() + " interrupted");
+//		System.out.println(this.getClass().getSimpleName() + " interrupted");
 	}
 
 }

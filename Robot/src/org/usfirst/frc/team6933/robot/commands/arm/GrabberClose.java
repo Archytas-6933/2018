@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj.command.TimedCommand;
 /**
  *
  */
-public class ArmUp extends TimedCommand {
+public class GrabberClose extends TimedCommand {
 
-	public ArmUp() {
-		super("ArmUpCommand", Robot.arm.solenoidPulseWidth);
+	public GrabberClose() {
+		super(Robot.arm.solenoidPulseWidth);
 		requires(Robot.arm);
 	}
 
@@ -23,19 +23,19 @@ public class ArmUp extends TimedCommand {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.arm.armUp();
+		Robot.arm.grabberClose();
 	}
 
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-//		System.out.println(this.getClass().getSimpleName() + " end");
+		// System.out.println(this.getClass().getSimpleName() + " end");
 	}
 
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
 	@Override
 	protected void interrupted() {
-//		System.out.println(this.getClass().getSimpleName() + " interrupted");
+		// System.out.println(this.getClass().getSimpleName() + " interrupted");
 	}
 }

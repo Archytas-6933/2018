@@ -7,18 +7,30 @@
 
 package org.usfirst.frc.team6933.robot;
 
+import org.usfirst.frc.team6933.robot.commands.arm.ArmLatch;
+
+import org.usfirst.frc.team6933.robot.commands.arm.GrabberClose;
+import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousCenter;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousRight;
+import org.usfirst.frc.team6933.robot.commands.compressor.CompressorStart;
+import org.usfirst.frc.team6933.robot.commands.video.VideoStart;
 import org.usfirst.frc.team6933.robot.subsystems.Arm;
 import org.usfirst.frc.team6933.robot.subsystems.Chassis;
 import org.usfirst.frc.team6933.robot.subsystems.Compressor;
-import org.usfirst.frc.team6933.robot.subsystems.Grabber;
 import org.usfirst.frc.team6933.robot.subsystems.Video;
 
+//import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -38,24 +50,46 @@ public class Robot extends TimedRobot {
 	public static Arm arm = new Arm();
 	public static Chassis chassis = new Chassis();
 	public static Compressor compressor = new Compressor();;
-	public static Grabber grabber = new Grabber();
 	public static Video video = new Video();
+	SendableChooser<Command> m_chooser = new SendableChooser<>();
 
+	// joystick disabled for test robot
 	public static OI oi = new OI();
 
-	private Command autonomousCommand = null;
-
+	private CommandGroup autonomousCommand =null 	;
+	private AutonomousLeft autoLeft = new AutonomousLeft();
+	private AutonomousCenter autoCenter = new AutonomousCenter();
+	private AutonomousRight autoRight = new AutonomousRight();
 	public static double testSpeed = 2.2;
+	
+//	Preferences prefs;
 
+
+	AnalogInput regVoltage = new AnalogInput(RobotMap.Analog.analog0);
+	
 	@Override
 	public void robotInit() {
 		System.out.println("robotInit");
-
+		m_chooser.addDefault("Autonomous Left", autoLeft);
+		m_chooser.addDefault("Autonomous Center", autoCenter);
+		m_chooser.addDefault("Autonomous Right", autoRight);
+		SmartDashboard.putData("Auto Mode", m_chooser);
+//		prefs = Preferences.getInstance();
+//		chassis.setPgain(prefs.getDouble("velPgain", 1));
+//		chassis.setIgain(prefs.getDouble("velIgain", .1));
+//		chassis.setDgain(prefs.getDouble("velDgain", .3));
+		
+//		AHRS ahrs = new AHRS(SPI.Port.kMXP);
+//		ahrs.reset();
+		
+		
 		// start the camera server
-		video.startAutomaticCapture();
-
+		Robot.video.startAutomaticCapture();
+		
 		// start the compressor
-		compressor.start();
+		Robot.compressor.start();
+		
+		
 	}
 
 	//
@@ -67,17 +101,62 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 
 		System.out.println("autonomousInit");
-
+		Robot.chassis.ahrs.reset();
+		Command selectedCommand = m_chooser.getSelected();
 		// Read game data from the Driver Station and select the Autonomous Mode
 		// by setting the autonomousCommand;
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		System.out.println("Game data: " + gameData);
+		System.out.println("Autonomous start: " + selectedCommand.getName());
+		
+		// latch the arm & close grabber
+		autonomousCommand = new CommandGroup();
+     	autonomousCommand.addSequential(new ArmLatch());
+		autonomousCommand.addSequential(new GrabberClose());
+		
 		if (gameData.charAt(0) == 'L') {
 			System.out.println("Left was read");
-			autonomousCommand = new AutonomousLeft();
-		} else {
+			if (selectedCommand instanceof AutonomousLeft) {
+				AutonomousLeft auto = new AutonomousLeft();
+				auto.leftScale();
+				autonomousCommand.addSequential(auto);
+			}
+			else if (selectedCommand instanceof AutonomousCenter) {
+//				autoCenter.leftScale();				
+				System.out.println("In Center Left");
+				AutonomousCenter auto = new AutonomousCenter();
+				auto.leftScale();
+				autonomousCommand.addSequential(auto);	  
+			}
+			else if (selectedCommand instanceof AutonomousRight) {
+//				autoRight.leftScale();
+				AutonomousRight auto = new AutonomousRight();
+				auto.leftScale();
+				autonomousCommand.addSequential(auto);	  
+			}
+		} 
+		
+		if (gameData.charAt(0) == 'R') {
 			System.out.println("Right was read");
-			autonomousCommand = new AutonomousRight();
+			if (selectedCommand instanceof AutonomousLeft) {
+//				autoLeft.rightScale();
+				AutonomousLeft auto = new AutonomousLeft();
+				auto.rightScale();
+				autonomousCommand.addSequential(auto);	   
+			}
+			else if (selectedCommand instanceof AutonomousCenter) {
+//				autoCenter.rightScale();
+				AutonomousCenter auto = new AutonomousCenter();
+				auto.rightScale();
+				autonomousCommand.addSequential(auto);	  
+			}
+			else if (selectedCommand instanceof AutonomousRight) {
+//				autoRight.rightScale();
+				AutonomousRight auto = new AutonomousRight();
+				auto.rightScale();
+				autonomousCommand.addSequential(auto);	  
+			}
 		}
 
 		// start the chosen autonomous command
@@ -91,6 +170,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 		System.out.println("disabledInit");
+		
 	}
 
 	// enter TELEOP mode
@@ -105,6 +185,7 @@ public class Robot extends TimedRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
+		
 
 	}
 
@@ -125,14 +206,16 @@ public class Robot extends TimedRobot {
 		arm.sendInfo();
 		chassis.sendInfo();
 		compressor.sendInfo();
-		grabber.sendInfo();
 		video.sendInfo();
 		Scheduler.getInstance().run();
+		
+		
 	}
 
 	// periodic for the AUTONOMOUS mode
 	@Override
 	public void autonomousPeriodic() {
+		//Scheduler.getInstance().run();
 	}
 
 	// periodic for the DISABLED mode
@@ -143,59 +226,13 @@ public class Robot extends TimedRobot {
 	// periodic for the TELEOP mode
 	@Override
 	public void teleopPeriodic() {
+		//.getInstance().run();
 	}
 
 	// periodic for the TEST mode
 	@Override
 	public void testPeriodic() {
+		System.out.println("Regulator Volotage = " + regVoltage.getVoltage());
 	}
-
-	// public void driveForward(double distance) {
-	// Drive drive;
-	// drive = new Drive();
-	// drive.distance_ = distance;
-	// autonomousCommand.addSequential(drive);
-	// }
-	//
-	// public void driveBackward(double distance) {
-	// Drive drive;
-	// drive = new Drive();
-	// drive.speed_ = -1;
-	// drive.distance_ = distance;
-	// autonomousCommand.addSequential(drive);
-	// }
-	//
-	// public void turnLeft(double degrees) {
-	// Drive drive;
-	// drive = new Drive();
-	// drive.direction_ = -1;
-	// drive.goalAngle_ = chassis.getAngle() - degrees;
-	// autonomousCommand.addSequential(drive);
-	// }
-	//
-	// public void turnRight(double degrees) {
-	// Drive drive;
-	// drive = new Drive();
-	// //drive.direction_ = 0.6;
-	// //System.out.println( "a" + Double.toString(Robot.navx_ahrs_.getAngle()));
-	// //drive.goalAngle_ = navx_ahrs_.getAngle() + degrees;
-	// //System.out.println("goal" + Double.toString(drive.goalAngle_));
-	// drive.goalDegrees_ = degrees;
-	// autonomousCommand.addSequential(drive);
-	// }
-	//
-	// public void turnTo(double angle) {
-	// Drive drive;
-	// drive = new Drive();
-	//
-	// if (chassis.getAngle() > angle)
-	// drive.direction_ = -1;
-	// else
-	// drive.direction_ = 1;
-	//
-	// drive.goalAngle_ = angle;
-	// autonomousCommand.addSequential(drive);
-	// }
-	//
 
 }

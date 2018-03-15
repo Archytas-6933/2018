@@ -7,8 +7,6 @@
 
 package org.usfirst.frc.team6933.robot;
 
-import edu.wpi.first.wpilibj.Encoder;
-
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking
@@ -31,9 +29,10 @@ public class RobotMap {
 	public static class Solenoid {
 		public static final int armUp = 0;
 		public static final int armDown = 1;
-		public static final int grabberOpen = 2;
-		public static final int grabberClose = 3; 
-		public static final int armRelease = 4;
+		public static final int grabberClose = 2;
+		public static final int grabberOpen = 3; 
+		public static final int armLatch = 4;
+		public static final int armUnlatch = 5;
 	}
 	
 	public static class PWM {
@@ -72,4 +71,11 @@ public class RobotMap {
 		public static final int analog2 = 2;
 		public static final int analog3 = 3;
 	}
+	public static class Relay {
+		public static final int relay0 = 0;
+		public static final int relay1 = 1;
+		public static final int relay2 = 2;
+		public static final int relay3 = 3;
+	}
+	
 }

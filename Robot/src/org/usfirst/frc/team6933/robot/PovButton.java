@@ -16,6 +16,7 @@ public class PovButton extends Button {
 		this.direction = direction;
 	}
 
+	@Override
 	public boolean get() {
 		return joystick.getPOV() == direction;
 	}
