@@ -25,6 +25,7 @@ public class Chassis extends Subsystem {
 	public static final int L = 0;
 	public static final int R = 1;
 
+	
 	public enum ControlType {
 		Velocity, Position, Ahrs, OpenLoop
 	};
@@ -43,15 +44,17 @@ public class Chassis extends Subsystem {
 	AhrsControl ahrsControl;
 	
 	public AHRS ahrs;
-
-	boolean squaredInputs = false;
+	
 	double decimator = 1.0;
+	boolean squaredInputs = false;
+	
 	private double velPgain;
 	private double velIgain;
 	private double velDgain;
 	
 	Map<ControlType, IChassisControl> allControls = new HashMap<ControlType, IChassisControl>();
 	ControlType currentControlMode;
+	public double wallProximity = 41; //inches
 
 	public Chassis() {
 		
@@ -162,6 +165,7 @@ public class Chassis extends Subsystem {
 	}
 
 	public void drive(double forwardAxis, double turnAxis) {
+		
 		arcadeDrive(forwardAxis * decimator, turnAxis * decimator, squaredInputs);
 	}
 
@@ -175,6 +179,13 @@ public class Chassis extends Subsystem {
 
 	public void sendInfo() {
 		SmartDashboard.putData(this);
+		SmartDashboard.putNumber("AHRS ANGLE", ahrs.getAngle());
+		SmartDashboard.putNumber("AHRS HEADING", ahrs.getCompassHeading());
+		SmartDashboard.putData(ahrs);
+		SmartDashboard.putNumber("Decimator",  decimator);
+		SmartDashboard.putBoolean("SquaredInputs",  squaredInputs);
+		
+		
 		allControls.get(currentControlMode).sendInfo();
 	}
 
@@ -240,6 +251,17 @@ public class Chassis extends Subsystem {
 		// enable given mode
 		allControls.get(mode).enable();
 		this.currentControlMode = mode;
+	}
+
+	public void setPrecisionDrive(boolean state) {
+		if ( state ) {
+			this.decimator = 0.5;
+		} else {
+			this.decimator = 1.0;
+		}
+	}
+	public void setSquaredInputs(boolean state) {
+		squaredInputs = state;
 	}
 
 }

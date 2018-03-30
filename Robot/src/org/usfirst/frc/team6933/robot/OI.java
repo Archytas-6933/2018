@@ -11,17 +11,27 @@ import org.usfirst.frc.team6933.robot.commands.arm.ArmDown;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmLatch;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmUnlatch;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmUp;
+import org.usfirst.frc.team6933.robot.commands.arm.StartSomeCommand;
+import org.usfirst.frc.team6933.robot.commands.arm.CancelSomeCommand;
+import org.usfirst.frc.team6933.robot.commands.arm.Eject;
+import org.usfirst.frc.team6933.robot.commands.arm.EjectSetHighPressure;
+import org.usfirst.frc.team6933.robot.commands.arm.EjectSetLowPressure;
 import org.usfirst.frc.team6933.robot.commands.arm.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.arm.GrabberOpen;
+import org.usfirst.frc.team6933.robot.commands.arm.GrabberOpenAtDistance;
+import org.usfirst.frc.team6933.robot.commands.arm.OpenGrabberWhenCloseToWall;
 import org.usfirst.frc.team6933.robot.commands.compressor.CompressorToggle;
 import org.usfirst.frc.team6933.robot.commands.drive.DriveDistance;
 import org.usfirst.frc.team6933.robot.commands.drive.DriveTimed;
 import org.usfirst.frc.team6933.robot.commands.drive.JogCommand;
+import org.usfirst.frc.team6933.robot.commands.drive.PrecisionDrive;
 import org.usfirst.frc.team6933.robot.commands.drive.SetOpenLoopDrive;
 import org.usfirst.frc.team6933.robot.commands.drive.SetVelocityControlDrive;
+import org.usfirst.frc.team6933.robot.commands.drive.SquaredInputDrive;
 import org.usfirst.frc.team6933.robot.commands.drive.SwitchDriverMode;
 import org.usfirst.frc.team6933.robot.commands.drive.TurnDegrees;
 
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -40,10 +50,9 @@ public class OI {
 	public OI() {
 		super();
 
-		
 		// select open/close loop drive
-		driver.LBButton.whenPressed(new SetOpenLoopDrive());
-		driver.RBButton.whenPressed(new SetVelocityControlDrive());
+//		driver.LBButton.whenPressed(new SetOpenLoopDrive());
+//		driver.RBButton.whenPressed(new SetVelocityControlDrive());
 //		driver.ThumbButtonUpperLeft.whenPressed(new SetOpenLoopDrive());
 //		driver.ThumbButtonUpperRight.whenPressed(new SetVelocityControlDrive());
 		
@@ -52,8 +61,8 @@ public class OI {
 //		operator.RightJoyClick.whenPressed(new AutonomousRight());
 
 		// open/close the grabber
-		operator.XButton.whenPressed(new GrabberOpen());
-		operator.BButton.whenPressed(new GrabberClose());
+		operator.RBButton.whenPressed(new GrabberOpen());
+		operator.LBButton.whenPressed(new GrabberClose());
 
 		// raise/lower and release the arm
 		operator.YButton.whenPressed(new ArmUp());
@@ -61,29 +70,21 @@ public class OI {
 		operator.StartButton.whenPressed(new ArmUnlatch());
 		operator.BackButton.whenPressed(new ArmLatch());
 
-		// toggle compressor on/off - for testing and demo mostly
-		operator.RightJoyClick.toggleWhenPressed(new CompressorToggle());
+		// opens the grabber when close enough to wall - if button pressed
+		Command openGrabberWhenCloseToWall = new OpenGrabberWhenCloseToWall(Robot.chassis.wallProximity);
+		operator.RightTriggerButton.whenPressed(new StartSomeCommand(openGrabberWhenCloseToWall));
+		operator.RightTriggerButton.whenReleased(new CancelSomeCommand(openGrabberWhenCloseToWall));
+		
+		// ejector pressure selection
+		operator.DPadButtonN.whenPressed(new EjectSetHighPressure());
+		operator.DPadButtonS.whenPressed(new EjectSetLowPressure());
+		operator.LeftTriggerButton.whenPressed(new Eject());
+		
 	
-		// jog commands
-		driver.DPadButtonN.whenPressed(new JogCommand(driver.DPadButtonN));
-		driver.DPadButtonE.whenPressed(new JogCommand(driver.DPadButtonE));
-		driver.DPadButtonS.whenPressed(new JogCommand(driver.DPadButtonS));
-		driver.DPadButtonW.whenPressed(new JogCommand(driver.DPadButtonW));
+		driver.RightTriggerButton.whileHeld(new PrecisionDrive());
+		driver.LeftTriggerButton.whileHeld(new SquaredInputDrive());
 		
-		// button to drive forward Y direction only for testing
-//		driver.BaseButtonBottomLeft.whileHeld(new DriveTimed(.5,0,10));
-		
-		CommandGroup testauto = new CommandGroup();
-		testauto.addSequential(new TurnDegrees(45));
-		testauto.addSequential(new DriveDistance(1.0));
-		testauto.addSequential(new DriveDistance(-1.0));
-		testauto.addSequential(new TurnDegrees(-45));
-		
-		//driver.BaseButtonBottomLeft.whenPressed(testauto);
-		
-		
-		
-		//driver.BaseButtonBottomLeft.whenPressed(new SwitchDriverMode());
+
 		
 	}
 

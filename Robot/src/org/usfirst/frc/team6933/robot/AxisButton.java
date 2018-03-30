@@ -6,23 +6,21 @@ import edu.wpi.first.wpilibj.buttons.Button;
 /**
  * A {@link Button} that gets its state from a {@link GenericHID}.
  */
-public class PovButton extends Button {
+public class AxisButton extends Button {
 
 	GenericHID joystick;
-	private int direction;
+	private double threshold;
+	private int axis;
 
-	public PovButton(GenericHID joystick, int direction) {
+	public AxisButton(GenericHID joystick, int axis, double threshold) {
 		this.joystick = joystick;
-		this.direction = direction;
+		this.axis = axis;
+		this.threshold = threshold;
 	}
 
 	@Override
 	public boolean get() {
-		return joystick.getPOV() == direction;
-	}
-
-	public int getDirection() {
-		return direction;
+		return joystick.getRawAxis(axis) >= threshold;
 	}
 
 }

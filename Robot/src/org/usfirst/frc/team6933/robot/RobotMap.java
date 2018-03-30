@@ -33,6 +33,8 @@ public class RobotMap {
 		public static final int grabberOpen = 3; 
 		public static final int armLatch = 4;
 		public static final int armUnlatch = 5;
+		public static final int ejectorPressure25 = 6;
+		public static final int armEjector = 7;
 	}
 	
 	public static class PWM {
@@ -66,7 +68,7 @@ public class RobotMap {
 	}
 	
 	public static class Analog {	
-		public static final int analog0 = 0;
+		public static final int ultrasonic = 0;
 		public static final int analog1 = 1;
 		public static final int analog2 = 2;
 		public static final int analog3 = 3;

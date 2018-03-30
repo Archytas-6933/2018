@@ -8,36 +8,45 @@ import edu.wpi.first.wpilibj.command.Command;
  *
  */
 
-
 public class GrabberOpenAtDistance extends Command {
-	
+
 	protected double threshold;
+	boolean active = false;
 
-    public GrabberOpenAtDistance(double threshold) {
-    	this.threshold = threshold;
-        // Use requires() here to declare subsystem dependencies
-       // requires(Robot.arm);
-    }
+	public GrabberOpenAtDistance(double threshold) {
+		this.threshold = threshold;
+		// Use requires() here to declare subsystem dependencies
+		// requires(Robot.arm);
+	}
 
-    // Called just before this Command runs the first time
-    protected void initialize() {
-    }
+	// Called just before this Command runs the first time
+	protected void initialize() {
 
-    // Called repeatedly when this Command is scheduled to run
-    protected void execute() {
-    }
+		active = true;
+	}
 
-    // Make this return true when this Command no longer needs to run execute()
-    protected boolean isFinished() {
-        return false;
-    }
+	// Called repeatedly when this Command is scheduled to run
+	protected void execute() {
+	}
 
-    // Called once after isFinished returns true
-    protected void end() {
-    }
+	// Make this return true when this Command no longer needs to run execute()
+	protected boolean isFinished() {
+		double dist = Robot.ultrasonic.getDistance();
+		if (active && dist < threshold) {
+			Command command = new GrabberOpen();
+			command.start();
+			active = false;
 
-    // Called when another command which requires one or more of the same
-    // subsystems is scheduled to run
-    protected void interrupted() {
-    }
+		}
+		return false;
+	}
+
+	// Called once after isFinished returns true
+	protected void end() {
+	}
+
+	// Called when another command which requires one or more of the same
+	// subsystems is scheduled to run
+	protected void interrupted() {
+	}
 }

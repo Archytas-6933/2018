@@ -12,6 +12,7 @@ import org.usfirst.frc.team6933.robot.subsystems.Chassis;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.PrintCommand;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 
 /**
  *
@@ -31,20 +32,21 @@ public class AutonomousCenter extends CommandGroup {
 	}
 	public void leftScale() {
 		System.out.print("center to left scale");
-		addSequential(new DriveDistance(1));
-		addSequential(new TurnDegrees(-75));
-		addSequential(new DriveDistance(1.6));
+		addSequential(new DriveDistance(0.4));
+		addSequential(new TurnDegrees(-45));
+		addSequential(new DriveDistance(2.32));
 		addSequential(new TurnDegrees(0));
-		addSequential(new DriveDistance(1.61, 1.7));
+		addSequential(new DriveDistance(0.5, 1
+				));
 		addSequential(new GrabberOpen());
 	}
 	public void rightScale() {
 		System.out.print("center to right scale");
-		addSequential(new DriveDistance(1));
-		addSequential(new TurnDegrees(75));
-		addSequential(new DriveDistance(1.4));
+		addSequential(new DriveDistance(0.4));
+		addSequential(new TurnDegrees(45));
+		addSequential(new DriveDistance(2.32));
 		addSequential(new TurnDegrees(0));
-		addSequential(new DriveDistance(1.61, 1.7));
+		addSequential(new DriveDistance(0.5, 1));
 		addSequential(new GrabberOpen());
 	}
 }

@@ -18,6 +18,7 @@ import org.usfirst.frc.team6933.robot.commands.video.VideoStart;
 import org.usfirst.frc.team6933.robot.subsystems.Arm;
 import org.usfirst.frc.team6933.robot.subsystems.Chassis;
 import org.usfirst.frc.team6933.robot.subsystems.Compressor;
+import org.usfirst.frc.team6933.robot.subsystems.Ultrasonic;
 import org.usfirst.frc.team6933.robot.subsystems.Video;
 
 //import com.kauailabs.navx.frc.AHRS;
@@ -49,10 +50,10 @@ public class Robot extends TimedRobot {
 
 	public static Arm arm = new Arm();
 	public static Chassis chassis = new Chassis();
-	public static Compressor compressor = new Compressor();;
+	public static Compressor compressor = new Compressor();
 	public static Video video = new Video();
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
-
+	public static Ultrasonic ultrasonic = new Ultrasonic();
 	// joystick disabled for test robot
 	public static OI oi = new OI();
 
@@ -61,11 +62,13 @@ public class Robot extends TimedRobot {
 	private AutonomousCenter autoCenter = new AutonomousCenter();
 	private AutonomousRight autoRight = new AutonomousRight();
 	public static double testSpeed = 2.2;
+	public static boolean softEnabled = false;
+	public static boolean hardEnabled = false;
 	
 //	Preferences prefs;
 
 
-	AnalogInput regVoltage = new AnalogInput(RobotMap.Analog.analog0);
+//	AnalogInput regVoltage = new AnalogInput(RobotMap.Analog.ultrasonic);
 	
 	@Override
 	public void robotInit() {
@@ -112,28 +115,28 @@ public class Robot extends TimedRobot {
 		
 		// latch the arm & close grabber
 		autonomousCommand = new CommandGroup();
-     	autonomousCommand.addSequential(new ArmLatch());
-		autonomousCommand.addSequential(new GrabberClose());
+     	autonomousCommand.addParallel(new ArmLatch());
+		autonomousCommand.addParallel(new GrabberClose());
 		
 		if (gameData.charAt(0) == 'L') {
 			System.out.println("Left was read");
 			if (selectedCommand instanceof AutonomousLeft) {
 				AutonomousLeft auto = new AutonomousLeft();
 				auto.leftScale();
-				autonomousCommand.addSequential(auto);
+				autonomousCommand.addParallel(auto);
 			}
 			else if (selectedCommand instanceof AutonomousCenter) {
 //				autoCenter.leftScale();				
 				System.out.println("In Center Left");
 				AutonomousCenter auto = new AutonomousCenter();
 				auto.leftScale();
-				autonomousCommand.addSequential(auto);	  
+				autonomousCommand.addParallel(auto);	  
 			}
 			else if (selectedCommand instanceof AutonomousRight) {
 //				autoRight.leftScale();
 				AutonomousRight auto = new AutonomousRight();
 				auto.leftScale();
-				autonomousCommand.addSequential(auto);	  
+				autonomousCommand.addParallel(auto);	  
 			}
 		} 
 		
@@ -143,19 +146,19 @@ public class Robot extends TimedRobot {
 //				autoLeft.rightScale();
 				AutonomousLeft auto = new AutonomousLeft();
 				auto.rightScale();
-				autonomousCommand.addSequential(auto);	   
+				autonomousCommand.addParallel(auto);	   
 			}
 			else if (selectedCommand instanceof AutonomousCenter) {
 //				autoCenter.rightScale();
 				AutonomousCenter auto = new AutonomousCenter();
 				auto.rightScale();
-				autonomousCommand.addSequential(auto);	  
+				autonomousCommand.addParallel(auto);	  
 			}
 			else if (selectedCommand instanceof AutonomousRight) {
 //				autoRight.rightScale();
 				AutonomousRight auto = new AutonomousRight();
 				auto.rightScale();
-				autonomousCommand.addSequential(auto);	  
+				autonomousCommand.addParallel(auto);	  
 			}
 		}
 
@@ -207,6 +210,7 @@ public class Robot extends TimedRobot {
 		chassis.sendInfo();
 		compressor.sendInfo();
 		video.sendInfo();
+		ultrasonic.sendInfo();
 		Scheduler.getInstance().run();
 		
 		
@@ -232,7 +236,8 @@ public class Robot extends TimedRobot {
 	// periodic for the TEST mode
 	@Override
 	public void testPeriodic() {
-		System.out.println("Regulator Volotage = " + regVoltage.getVoltage());
+//		System.out.println("Regulator Volotage = " + regVoltage.getVoltage());
+		System.out.println("Distance = " + ultrasonic.getDistance());
 	}
 
 }
