@@ -11,29 +11,18 @@ import org.usfirst.frc.team6933.robot.commands.arm.ArmDown;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmLatch;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmUnlatch;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmUp;
-import org.usfirst.frc.team6933.robot.commands.arm.StartSomeCommand;
 import org.usfirst.frc.team6933.robot.commands.arm.CancelSomeCommand;
 import org.usfirst.frc.team6933.robot.commands.arm.Eject;
 import org.usfirst.frc.team6933.robot.commands.arm.EjectSetHighPressure;
 import org.usfirst.frc.team6933.robot.commands.arm.EjectSetLowPressure;
 import org.usfirst.frc.team6933.robot.commands.arm.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.arm.GrabberOpen;
-import org.usfirst.frc.team6933.robot.commands.arm.GrabberOpenAtDistance;
 import org.usfirst.frc.team6933.robot.commands.arm.OpenGrabberWhenCloseToWall;
-import org.usfirst.frc.team6933.robot.commands.compressor.CompressorToggle;
-import org.usfirst.frc.team6933.robot.commands.drive.DriveDistance;
-import org.usfirst.frc.team6933.robot.commands.drive.DriveTimed;
-import org.usfirst.frc.team6933.robot.commands.drive.JogCommand;
+import org.usfirst.frc.team6933.robot.commands.arm.StartSomeCommand;
 import org.usfirst.frc.team6933.robot.commands.drive.PrecisionDrive;
-import org.usfirst.frc.team6933.robot.commands.drive.SetOpenLoopDrive;
-import org.usfirst.frc.team6933.robot.commands.drive.SetVelocityControlDrive;
 import org.usfirst.frc.team6933.robot.commands.drive.SquaredInputDrive;
-import org.usfirst.frc.team6933.robot.commands.drive.SwitchDriverMode;
-import org.usfirst.frc.team6933.robot.commands.drive.TurnDegrees;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -97,6 +86,11 @@ public class OI {
 	public double getZRotation() {
 		double ZSpeed = driver.getRXAxis();	
 		return ZSpeed;
+	}
+
+	// one of the eject pressure buttons is being held down
+	public boolean isEjectPressureButtonPressed() {
+		return operator.DPadButtonN.get() || operator.DPadButtonS.get();
 	}
 
 	

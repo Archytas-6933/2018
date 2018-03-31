@@ -2,14 +2,15 @@ package org.usfirst.frc.team6933.robot.commands.arm;
 
 import org.usfirst.frc.team6933.robot.Robot;
 
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.TimedCommand;
 
 /**
  *
  */
-public class Eject extends TimedCommand {
+public class EjectConditional extends TimedCommand {
 
-	public Eject() {
+	public EjectConditional() {
 		super(Robot.arm.solenoidPulseWidth);
 		requires(Robot.arm);
 	}
@@ -23,7 +24,9 @@ public class Eject extends TimedCommand {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.arm.eject();
+		if (Robot.oi.isEjectPressureButtonPressed()) {
+			Robot.arm.eject();
+		}
 	}
 
 	// Called once after isFinished returns true
@@ -38,4 +41,5 @@ public class Eject extends TimedCommand {
 	protected void interrupted() {
 		System.out.println(this.getClass().getSimpleName() + " interrupted");
 	}
+
 }
