@@ -1,8 +1,6 @@
 package org.usfirst.frc.team6933.robot.subsystems;
 
 import org.usfirst.frc.team6933.robot.RobotMap;
-import org.usfirst.frc.team6933.robot.commands.arm.HardPush;
-import org.usfirst.frc.team6933.robot.commands.arm.SoftPush;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmOff;
 import org.usfirst.frc.team6933.robot.OI;
 import org.usfirst.frc.team6933.robot.Robot;
