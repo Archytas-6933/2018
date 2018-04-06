@@ -2,8 +2,6 @@ package org.usfirst.frc.team6933.robot.subsystems;
 
 import org.usfirst.frc.team6933.robot.RobotMap;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmOff;
-import org.usfirst.frc.team6933.robot.OI;
-import org.usfirst.frc.team6933.robot.Robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
