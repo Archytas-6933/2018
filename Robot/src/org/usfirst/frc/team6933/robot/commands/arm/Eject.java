@@ -23,7 +23,9 @@ public class Eject extends TimedCommand {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
+		Robot.arm.grabberOpen();
 		Robot.arm.eject();
+		
 	}
 
 	// Called once after isFinished returns true

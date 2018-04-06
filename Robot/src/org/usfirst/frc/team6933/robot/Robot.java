@@ -8,7 +8,7 @@
 package org.usfirst.frc.team6933.robot;
 
 import org.usfirst.frc.team6933.robot.commands.arm.ArmLatch;
-
+import org.usfirst.frc.team6933.robot.commands.arm.ArmUnlatch;
 import org.usfirst.frc.team6933.robot.commands.arm.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousCenter;
 import org.usfirst.frc.team6933.robot.commands.autonomous.AutonomousLeft;
@@ -114,29 +114,37 @@ public class Robot extends TimedRobot {
 		System.out.println("Autonomous start: " + selectedCommand.getName());
 		
 		// latch the arm & close grabber
-		autonomousCommand = new CommandGroup();
-     	autonomousCommand.addParallel(new ArmLatch());
-		autonomousCommand.addParallel(new GrabberClose());
+//		autonomousCommand = new CommandGroup();
+//     	autonomousCommand.addParallel(new ArmLatch());
+//		autonomousCommand.addParallel(new GrabberClose());
 		
+		CommandGroup auto = null;
+
 		if (gameData.charAt(0) == 'L') {
 			System.out.println("Left was read");
 			if (selectedCommand instanceof AutonomousLeft) {
-				AutonomousLeft auto = new AutonomousLeft();
-				auto.leftScale();
-				autonomousCommand.addParallel(auto);
+				auto = new AutonomousLeft();
+				auto.addSequential(new GrabberClose());
+		     	auto.addSequential(new ArmLatch());
+				((AutonomousLeft)auto).leftScale();
+//				autonomousCommand.addParallel(auto);
 			}
 			else if (selectedCommand instanceof AutonomousCenter) {
 //				autoCenter.leftScale();				
 				System.out.println("In Center Left");
-				AutonomousCenter auto = new AutonomousCenter();
-				auto.leftScale();
-				autonomousCommand.addParallel(auto);	  
+				auto = new AutonomousCenter();
+				auto.addSequential(new GrabberClose());
+		     	auto.addSequential(new ArmLatch());
+				((AutonomousCenter)auto).leftScale();
+//				autonomousCommand.addParallel(auto);	  
 			}
 			else if (selectedCommand instanceof AutonomousRight) {
 //				autoRight.leftScale();
-				AutonomousRight auto = new AutonomousRight();
-				auto.leftScale();
-				autonomousCommand.addParallel(auto);	  
+				auto = new AutonomousRight();
+				auto.addSequential(new GrabberClose());
+		     	auto.addSequential(new ArmLatch());
+				((AutonomousRight)auto).leftScale();
+//				autonomousCommand.addParallel(auto);	  
 			}
 		} 
 		
@@ -144,28 +152,36 @@ public class Robot extends TimedRobot {
 			System.out.println("Right was read");
 			if (selectedCommand instanceof AutonomousLeft) {
 //				autoLeft.rightScale();
-				AutonomousLeft auto = new AutonomousLeft();
-				auto.rightScale();
-				autonomousCommand.addParallel(auto);	   
+				auto = new AutonomousLeft();
+				auto.addSequential(new GrabberClose());
+		     	auto.addSequential(new ArmLatch());
+				((AutonomousLeft)auto).rightScale();
+//				autonomousCommand.addParallel(auto);	   
 			}
 			else if (selectedCommand instanceof AutonomousCenter) {
 //				autoCenter.rightScale();
-				AutonomousCenter auto = new AutonomousCenter();
-				auto.rightScale();
-				autonomousCommand.addParallel(auto);	  
+				auto = new AutonomousCenter();
+				auto.addSequential(new GrabberClose());
+		     	auto.addSequential(new ArmLatch());
+				((AutonomousCenter)auto).rightScale();
+//				autonomousCommand.addParallel(auto);	  
 			}
 			else if (selectedCommand instanceof AutonomousRight) {
 //				autoRight.rightScale();
-				AutonomousRight auto = new AutonomousRight();
-				auto.rightScale();
-				autonomousCommand.addParallel(auto);	  
+				auto = new AutonomousRight();
+				auto.addSequential(new GrabberClose());
+		     	auto.addSequential(new ArmLatch());
+				((AutonomousRight)auto).rightScale();
+//				autonomousCommand.addParallel(auto);	  
 			}
 		}
 
 		// start the chosen autonomous command
-		if (autonomousCommand != null) {
-			autonomousCommand.start();
-		}
+//		if (autonomousCommand != null) {
+//			autonomousCommand.start();
+//		}
+		if (auto != null)
+			auto.start();
 
 	}
 
