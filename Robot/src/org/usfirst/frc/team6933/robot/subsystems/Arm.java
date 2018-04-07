@@ -27,6 +27,7 @@ public class Arm extends Subsystem {
 
 	public Arm() {
 		ejectorPressure.setPulseDuration(2.0);
+		ejector.setPulseDuration(0.5);
 	}
 	
 	@Override

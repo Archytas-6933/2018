@@ -134,7 +134,7 @@ public class Robot extends TimedRobot {
 				System.out.println("In Center Left");
 				auto = new AutonomousCenter();
 				auto.addSequential(new GrabberClose());
-		     	auto.addSequential(new ArmLatch());
+		     	//auto.addSequential(new ArmLatch());
 				((AutonomousCenter)auto).leftScale();
 //				autonomousCommand.addParallel(auto);	  
 			}
@@ -162,7 +162,7 @@ public class Robot extends TimedRobot {
 //				autoCenter.rightScale();
 				auto = new AutonomousCenter();
 				auto.addSequential(new GrabberClose());
-		     	auto.addSequential(new ArmLatch());
+		     	//auto.addSequential(new ArmLatch());
 				((AutonomousCenter)auto).rightScale();
 //				autonomousCommand.addParallel(auto);	  
 			}

@@ -21,13 +21,13 @@ public class Eject extends TimedCommand {
 		if ( Robot.oi.isHighPressurePressed() ) {
 			Robot.arm.ejectorSetHighPressure();
 		}
+		Robot.arm.grabberOpen();
+		Robot.arm.eject();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.arm.grabberOpen();
-		Robot.arm.eject();
 	}
 
 	// Called once after isFinished returns true
