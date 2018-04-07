@@ -13,8 +13,6 @@ import org.usfirst.frc.team6933.robot.commands.arm.ArmUnlatch;
 import org.usfirst.frc.team6933.robot.commands.arm.ArmUp;
 import org.usfirst.frc.team6933.robot.commands.arm.CancelSomeCommand;
 import org.usfirst.frc.team6933.robot.commands.arm.Eject;
-import org.usfirst.frc.team6933.robot.commands.arm.EjectSetHighPressure;
-import org.usfirst.frc.team6933.robot.commands.arm.EjectSetLowPressure;
 import org.usfirst.frc.team6933.robot.commands.arm.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.arm.GrabberOpen;
 import org.usfirst.frc.team6933.robot.commands.arm.OpenGrabberWhenCloseToWall;
@@ -65,11 +63,8 @@ public class OI {
 		operator.RightTriggerButton.whenReleased(new CancelSomeCommand(openGrabberWhenCloseToWall));
 		
 		// ejector pressure selection
-		operator.DPadButtonN.whenPressed(new EjectSetHighPressure());
-		operator.DPadButtonS.whenPressed(new EjectSetLowPressure());
 		operator.LeftTriggerButton.whenPressed(new Eject());
 		
-	
 		driver.RightTriggerButton.whileHeld(new PrecisionDrive());
 		driver.LeftTriggerButton.whileHeld(new SquaredInputDrive());
 		
@@ -93,6 +88,9 @@ public class OI {
 		return operator.DPadButtonN.get() || operator.DPadButtonS.get();
 	}
 
+	public boolean isHighPressurePressed() {
+		return operator.DPadButtonN.get();
+	}
 	
 
 	//// CREATING BUTTONS

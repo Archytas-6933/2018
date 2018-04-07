@@ -18,6 +18,9 @@ public class Eject extends TimedCommand {
 	@Override
 	protected void initialize() {
 		System.out.println(this.getClass().getSimpleName() + " initalize");
+		if ( Robot.oi.isHighPressurePressed() ) {
+			Robot.arm.ejectorSetHighPressure();
+		}
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -25,7 +28,6 @@ public class Eject extends TimedCommand {
 	protected void execute() {
 		Robot.arm.grabberOpen();
 		Robot.arm.eject();
-		
 	}
 
 	// Called once after isFinished returns true

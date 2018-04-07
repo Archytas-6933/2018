@@ -25,6 +25,10 @@ public class Arm extends Subsystem {
 	public Solenoid ejector = new Solenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.armEjector);
 	public Solenoid ejectorPressure = new Solenoid(RobotMap.CAN.pcmId, RobotMap.Solenoid.ejectorPressure25);
 
+	public Arm() {
+		ejectorPressure.setPulseDuration(2.0);
+	}
+	
 	@Override
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
@@ -45,10 +49,6 @@ public class Arm extends Subsystem {
 
 	public void armUnlatch() {
 		release.set(DoubleSolenoid.Value.kReverse);
-	}
-
-	public void ejectorSetLowPressure() {
-		ejectorPressure.set(false);
 	}
 
 	public void ejectorSetHighPressure() {
@@ -72,7 +72,6 @@ public class Arm extends Subsystem {
 		release.set(DoubleSolenoid.Value.kOff);
 		grabberSolenoid.set(DoubleSolenoid.Value.kOff);
 		ejector.set(false);
-		ejectorPressure.set(false);
 	}
 
 	public void sendInfo() {
