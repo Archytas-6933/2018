@@ -12,7 +12,7 @@ public class GrabberOpenAndOptionalEject extends CommandGroup {
 	public GrabberOpenAndOptionalEject() {
 
 		addSequential(new GrabberOpen());
-		addSequential(new TimedCommand(0.25));
+		addSequential(new TimedCommand(0.015));
 		addSequential(new EjectConditional());
 
 	}

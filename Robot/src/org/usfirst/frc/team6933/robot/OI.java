@@ -17,6 +17,7 @@ import org.usfirst.frc.team6933.robot.commands.arm.EjectSetHighPressure;
 import org.usfirst.frc.team6933.robot.commands.arm.EjectSetLowPressure;
 import org.usfirst.frc.team6933.robot.commands.arm.GrabberClose;
 import org.usfirst.frc.team6933.robot.commands.arm.GrabberOpen;
+import org.usfirst.frc.team6933.robot.commands.arm.GrabberOpenAndOptionalEject;
 import org.usfirst.frc.team6933.robot.commands.arm.OpenGrabberWhenCloseToWall;
 import org.usfirst.frc.team6933.robot.commands.arm.StartSomeCommand;
 import org.usfirst.frc.team6933.robot.commands.drive.PrecisionDrive;
@@ -50,7 +51,7 @@ public class OI {
 //		operator.RightJoyClick.whenPressed(new AutonomousRight());
 
 		// open/close the grabber
-		operator.RBButton.whenPressed(new GrabberOpen());
+		operator.RBButton.whenPressed(new GrabberOpenAndOptionalEject());//GrabberOpen
 		operator.LBButton.whenPressed(new GrabberClose());
 
 		// raise/lower and release the arm
